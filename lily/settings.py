@@ -27,8 +27,13 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key-for-dev')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', 'lilybeautybar.onrender.com']
-
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'lilybeautybar.onrender.com',
+    'lilybeautybar.com',
+    'www.lilybeautybar.com',
+]
 
 # Application definition
 
