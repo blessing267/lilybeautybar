@@ -13,7 +13,6 @@ env/
 
 # Django
 staticfiles/
-static/
 media/
 
 # VSCode
