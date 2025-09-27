@@ -1,55 +1,115 @@
 {% extends 'shop/base.html' %}
+{% load static %}
 {% block title %}Shop • Lily Beauty Bar{% endblock %}
 {% block content %}
+
 <!-- Hero / Banner -->
 <section class="bg-gradient-to-br from-pink-50 to-violet-50 border-b">
-<div class="max-w-6xl mx-auto px-4 py-14 grid md:grid-cols-2 gap-8 items-center">
-<div>
-<h1 class="text-3xl md:text-4xl font-semibold leading-tight">Glow with confidence ✨</h1>
-<p class="mt-3 text-slate-600">Simple, secure checkout. No account required — just add to cart and pay with Stripe.</p>
-<div class="mt-6 flex gap-3">
-<a href="#products" class="px-5 py-3 rounded-xl bg-[var(--brand)] text-white">Shop bestsellers</a>
-<a href="https://lilybeautybar.onrender.com" class="px-5 py-3 rounded-xl border">Visit live site</a>
-</div>
-</div>
-<div class="relative">
-<div class="aspect-[4/3] rounded-2xl bg-white shadow-xl border"></div>
-<!-- You can place a promotional image here -->
-</div>
-</div>
+  <div class="max-w-6xl mx-auto px-4 py-14 grid md:grid-cols-2 gap-8 items-center">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-semibold leading-tight">Glow with confidence ✨</h1>
+      <p class="mt-3 text-slate-600">Simple, secure checkout. No account required — just add to cart and pay with Stripe.</p>
+      <div class="mt-6 flex gap-3">
+        <a href="#products" class="px-5 py-3 rounded-xl bg-[var(--brand)] text-white">Shop bestsellers</a>
+        <a href="https://lilybeautybar.onrender.com" class="px-5 py-3 rounded-xl border">Visit live site</a>
+      </div>
+    </div>
+    <div class="relative">
+      <!-- Hero Image -->
+      <img src="{% static 'img/lbb.jpeg' %}" alt="Lily Beauty Bar" class="rounded-2xl shadow-xl object-cover w-full h-80">
+      <div class="absolute inset-0 bg-black/10 rounded-2xl"></div>
+    </div>
+  </div>
 </section>
 
+<!-- Categories -->
+<section class="py-10 bg-white border-b">
+  <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <a href="#" class="p-6 rounded-xl bg-pink-50 hover:bg-pink-100 transition">
+      <span class="block text-lg font-semibold">Makeup</span>
+    </a>
+    <a href="#" class="p-6 rounded-xl bg-violet-50 hover:bg-violet-100 transition">
+      <span class="block text-lg font-semibold">Skincare</span>
+    </a>
+    <a href="#" class="p-6 rounded-xl bg-rose-50 hover:bg-rose-100 transition">
+      <span class="block text-lg font-semibold">Fragrance</span>
+    </a>
+    <a href="#" class="p-6 rounded-xl bg-blue-50 hover:bg-blue-100 transition">
+      <span class="block text-lg font-semibold">Lashes</span>
+    </a>
+  </div>
+</section>
+
+<!-- Selling Points -->
+<section class="py-12 bg-gradient-to-r from-pink-50 to-violet-50 border-y">
+  <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-center">
+    <div>
+      <h4 class="font-semibold text-lg">✨ Premium Quality</h4>
+      <p class="text-slate-600 text-sm mt-2">Curated beauty products tested for excellence.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold text-lg">⚡ Fast Checkout</h4>
+      <p class="text-slate-600 text-sm mt-2">Quick, secure Stripe payments — no account needed.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold text-lg">📦 Free Delivery</h4>
+      <p class="text-slate-600 text-sm mt-2">On all orders over £50 across the UK.</p>
+    </div>
+  </div>
+</section>
 
 <!-- Product Grid -->
-<section id="products" class="max-w-6xl mx-auto px-4 py-10">
-<div class="flex items-end justify-between">
-<h2 class="text-2xl font-semibold">Products</h2>
-<!-- Optional category filters for later -->
-</div>
+<section id="products" class="max-w-6xl mx-auto px-4 py-12">
+  <div class="flex items-end justify-between">
+    <h2 class="text-2xl font-semibold">Products</h2>
+  </div>
 
-
-{% if products %}
-<div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-{% for product in products %}
-<a href="{% url 'product_detail' product.id %}" class="group block rounded-2xl border bg-white overflow-hidden shadow-sm hover:shadow-md transition">
-{% if product.image %}
-<img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover" />
-{% else %}
-<div class="w-full h-48 bg-slate-100"></div>
-{% endif %}
-<div class="p-4">
-<h3 class="font-semibold group-hover:text-[var(--brand)]">{{ product.name }}</h3>
-<p class="text-sm text-slate-600 line-clamp-2">{{ product.description|truncatechars:80 }}</p>
-<div class="mt-3 flex items-center justify-between">
-<span class="font-semibold">£{{ product.price }}</span>
-<span class="text-xs text-slate-500">View</span>
-</div>
-</div>
-</a>
-{% endfor %}
-</div>
-{% else %}
-<p class="mt-8 text-slate-500">No products yet. Add some in the admin panel.</p>
-{% endif %}
+  {% if products %}
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+    {% for product in products %}
+    <a href="{% url 'product_detail' product.id %}" class="group block rounded-2xl border bg-white overflow-hidden shadow-sm hover:shadow-md transition">
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover" />
+      {% else %}
+      <div class="w-full h-48 bg-slate-100"></div>
+      {% endif %}
+      <div class="p-4">
+        <h3 class="font-semibold group-hover:text-[var(--brand)]">{{ product.name }}</h3>
+        <p class="text-sm text-slate-600 line-clamp-2">{{ product.description|truncatechars:80 }}</p>
+        <div class="mt-3 flex items-center justify-between">
+          <span class="font-semibold">£{{ product.price }}</span>
+          <span class="text-xs text-slate-500">View</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="mt-8 text-slate-500">No products yet. Add some in the admin panel.</p>
+  {% endif %}
 </section>
+
+<!-- Testimonials -->
+<section class="py-12 bg-white border-t">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <h2 class="text-2xl font-semibold mb-6">What our customers say 💕</h2>
+    <blockquote class="bg-pink-50 p-6 rounded-xl shadow">
+      <p class="text-lg italic">"Absolutely love the lashes from Lily Beauty Bar — they’re my new go-to!"</p>
+      <footer class="mt-3 text-sm text-slate-600">— Sarah J.</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-12 bg-gradient-to-br from-violet-50 to-pink-50 border-t">
+  <div class="max-w-3xl mx-auto px-4 text-center">
+    <h2 class="text-2xl font-semibold">Stay in the glow ✨</h2>
+    <p class="text-slate-600 mt-2">Join our newsletter for exclusive offers & beauty tips.</p>
+    <form class="mt-6 flex justify-center gap-2">
+      <input type="email" placeholder="Enter your email" class="px-4 py-3 rounded-xl border w-2/3">
+      <button class="px-5 py-3 bg-[var(--brand)] text-white rounded-xl">Subscribe</button>
+    </form>
+  </div>
+</section>
+
 {% endblock %}
