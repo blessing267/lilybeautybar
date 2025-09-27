@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Payment Successful</title>
-</head>
-<body>
-    <h1>🎉 Payment Successful!</h1>
-    <p>Thank you for booking with Lily Beauty Bar.</p>
-    <a href="/checkout/">Back to Checkout</a>
-</body>
-</html>
+
+{% extends 'shop/base.html' %}
+{% block title %}Thank you! • Lily Beauty Bar{% endblock %}
+{% block content %}
+<section class="max-w-2xl mx-auto px-4 py-16 text-center">
+<div class="mx-auto w-16 h-16 rounded-2xl bg-green-100 flex items-center justify-center">✅</div>
+<h1 class="mt-6 text-3xl font-semibold">Payment successful</h1>
+<p class="mt-2 text-slate-600">We’ve emailed your receipt. Your order is now recorded in our system.</p>
+<a class="mt-8 inline-block px-6 py-3 rounded-xl bg-[var(--brand)] text-white" href="{% url 'home' %}">Back to shop</a>
+</section>
+{% endblock %}

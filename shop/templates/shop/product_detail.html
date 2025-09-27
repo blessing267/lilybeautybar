@@ -1,0 +1,33 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ product.name }} • Lily Beauty Bar{% endblock %}
+{% block content %}
+<section class="max-w-6xl mx-auto px-4 py-10">
+<div class="grid md:grid-cols-2 gap-8">
+<div>
+{% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full rounded-2xl border shadow" />
+{% else %}
+<div class="w-full aspect-square bg-slate-100 rounded-2xl"></div>
+{% endif %}
+</div>
+<div>
+<h1 class="text-2xl font-semibold">{{ product.name }}</h1>
+<p class="mt-2 text-slate-600">{{ product.description }}</p>
+<div class="mt-4 text-2xl font-bold">£{{ product.price }}</div>
+
+
+<!-- Buy Now form: posts to view that creates a Stripe Checkout Session -->
+<form method="post" action="{% url 'create_checkout_session' product.id %}" class="mt-6">
+{% csrf_token %}
+<!-- Optional: quantity for later -->
+<button type="submit" class="px-6 py-3 rounded-xl bg-[var(--brand)] text-white hover:opacity-90">Buy now</button>
+<p class="mt-2 text-xs text-slate-500">Guest checkout supported. We’ll only ask for your email at payment.</p>
+</form>
+
+
+<!-- Optional: continue shopping link -->
+<a href="{% url 'home' %}#products" class="inline-block mt-6 text-[var(--brand)]">← Continue shopping</a>
+</div>
+</div>
+</section>
+{% endblock %}

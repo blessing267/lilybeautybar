@@ -10,14 +10,13 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}. You can now log in.')
+            messages.success(request, f'Account created for {user.username}. You can now log in.')
             return redirect('login')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
 
-def login(request):
+def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -30,7 +29,7 @@ def login(request):
             messages.error(request, 'Invalid username or password')
     return render(request, 'users/login.html')
 
-def logout(request):
+def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('login')

@@ -1,0 +1,22 @@
+<header class="border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50">
+<div class="max-w-6xl mx-auto px-4">
+<div class="flex items-center justify-between h-16">
+<a href="{% url 'home' %}" class="flex items-center gap-2 group">
+<span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand)] text-white font-bold">LB</span>
+<span class="text-lg font-semibold group-hover:text-[var(--brand)] transition">Lily Beauty Bar</span>
+</a>
+<nav class="flex items-center gap-2">
+<a href="{% url 'home' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Home</a>
+<!-- Add links as needed -->
+<a href="{% url 'home' %}#products" class="px-3 py-2 rounded-lg hover:bg-slate-100">Shop</a>
+{% if request.user.is_authenticated %}
+<a href="#" class="px-3 py-2 rounded-lg hover:bg-slate-100">My Orders</a>
+<a href="{% url 'logout' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Logout</a>
+{% else %}
+<a href="{% url 'login' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Login</a>
+<a href="{% url 'register' %}" class="px-3 py-2 rounded-lg bg-[var(--brand)] text-white">Create account</a>
+{% endif %}
+</nav>
+</div>
+</div>
+</header>
