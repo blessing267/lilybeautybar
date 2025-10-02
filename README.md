@@ -24,11 +24,23 @@ It was built to practice Django, Stripe payments, and cloud deployment and it is
 - **Version Control:** Git & GitHub  
 
 ## 👩🏽‍💻 My Role  
-I developed the entire application, including the backend (Django models, views, and Stripe integration), the frontend templates, and deployment to Render.  
+I developed the entire application.    
+- Designed and implemented the backend (models, views, URLs)
+- Created the responsive frontend templates  
+- Integrated Stripe checkout  
+- Deployed to Render for public access  
 
 ## 📸 Screenshots  
 ![Homepage Screenshot](link-to-image)
 ![Product Page Screenshot](link-to-image)
 
 ## 📚 Learnings  
-This project helped me strengthen my skills in Django, Stripe API, and deploying production-ready apps to the cloud.  
+This project helped me strengthen my skills in:     
+- Django e-commerce patterns  
+- Stripe payment integration  
+- Cloud deployment on Render  
+- Building responsive interfaces with TailwindCSS  
+
+## 🔗 Related Projects  
+- [FarmMarket – MSc Dissertation Project] https://github.com/blessing267/repo.git  
+- [AHU Student Portal – Group Project]https://github.com/blessing/dev-1.git
