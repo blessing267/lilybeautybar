@@ -42,5 +42,5 @@ This project helped me strengthen my skills in:
 - Building responsive interfaces with TailwindCSS  
 
 ## 🔗 Related Projects  
-- [FarmMarket – MSc Dissertation Project] https://github.com/blessing267/repo.git  
-- [AHU Student Portal – Group Project]https://github.com/blessing/dev-1.git
+- FarmMarket – MSc Dissertation Project: https://github.com/blessing267/repo.git  
+- AHU Student Portal – Group Project: https://github.com/Blessing1-dev/django-app.git
