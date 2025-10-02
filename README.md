@@ -1,6 +1,5 @@
 # 🌸 Lily Beauty Bar – E-Commerce Web App  
 
----
 
 **Live Demo:** https://lilybeautybar.onrender.com  
 **GitHub Repo:** https://github.com/blessing267/lilybeautybar.git
