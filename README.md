@@ -1,12 +1,18 @@
 # 🌸 Lily Beauty Bar – E-Commerce Web App  
 
+---
+
 **Live Demo:** https://lilybeautybar.onrender.com  
 **GitHub Repo:** https://github.com/blessing267/lilybeautybar.git
+
+---
 
 ## 📖 About the Project  
 Lily Beauty Bar is an online beauty store I built as a personal project to strengthen my web-development and cloud skills. 
 It allows customers to browse, view, and purchase beauty products securely with Stripe integration.  
 It was built to practice Django, Stripe payments, and cloud deployment and it is designed to be lightweight, mobile-friendly, and easy for small businesses to manage.  
+
+---
 
 ## 🚀 Features  
 - 🛍️ **Product Listings & Details** – Browse products with images, descriptions and prices  
@@ -14,6 +20,8 @@ It was built to practice Django, Stripe payments, and cloud deployment and it is
 - 💳 **Secure Payments** – Integrated Stripe API for payments  
 - 📱 **Responsive Design** – Works smoothly on mobile and desktop  
 - 🗄️ **Admin Panel** – Manage products and orders with Django admin  
+
+---
 
 ## 🛠️ Technologies Used  
 - **Backend:** Python 3, Django 5  
@@ -23,6 +31,8 @@ It was built to practice Django, Stripe payments, and cloud deployment and it is
 - **Deployment:** Render  
 - **Version Control:** Git & GitHub  
 
+---
+
 ## 👩🏽‍💻 My Role  
 I developed the entire application.    
 - Designed and implemented the backend (models, views, URLs)
@@ -30,9 +40,13 @@ I developed the entire application.
 - Integrated Stripe checkout  
 - Deployed to Render for public access  
 
+---
+
 ## 📸 Screenshots  
 ![Homepage Screenshot](link-to-image)
 ![Product Page Screenshot](link-to-image)
+
+---
 
 ## 📚 Learnings  
 This project helped me strengthen my skills in:     
@@ -40,6 +54,8 @@ This project helped me strengthen my skills in:
 - Stripe payment integration  
 - Cloud deployment on Render  
 - Building responsive interfaces with TailwindCSS  
+
+---
 
 ## 🔗 Related Projects  
 - FarmMarket – MSc Dissertation Project: https://github.com/blessing267/repo.git  
