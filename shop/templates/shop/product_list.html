@@ -1,0 +1,50 @@
+{% extends 'shop/base.html' %}
+{% block title %}Shop • Lily Beauty Bar{% endblock %}
+
+{% block content %}
+<section class="max-w-6xl mx-auto px-4 py-12">
+
+  <!-- Page heading -->
+  <div class="text-center mb-12">
+    <h1 class="text-3xl font-bold tracking-tight">Our Bestsellers</h1>
+    <p class="mt-3 text-slate-600">Discover beauty essentials handpicked to enhance your glow.</p>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {% for product in products %}
+      <div class="group rounded-2xl border bg-white shadow hover:shadow-lg transition overflow-hidden">
+        <!-- Product Image -->
+        <a href="{% url 'product_detail' product.pk %}">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                 class="w-full h-64 object-cover group-hover:scale-105 transition-transform" />
+          {% else %}
+            <div class="w-full h-64 bg-slate-100 flex items-center justify-center">
+              <span class="text-slate-400">No Image</span>
+            </div>
+          {% endif %}
+        </a>
+
+        <!-- Product Info -->
+        <div class="p-5">
+          <h2 class="font-semibold text-lg group-hover:text-[var(--brand)] transition">
+            <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+          </h2>
+          <p class="mt-2 text-sm text-slate-600 line-clamp-2">{{ product.description }}</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="text-xl font-bold">£{{ product.price }}</span>
+            <a href="{% url 'product_detail' product.pk %}" 
+               class="px-4 py-2 rounded-lg bg-[var(--brand)] text-white text-sm hover:opacity-90">
+               View
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-slate-500 col-span-full">No products available yet.</p>
+    {% endfor %}
+  </div>
+
+</section>
+{% endblock %}

@@ -21,7 +21,7 @@ import dj_database_url
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='fallback-secret-key-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',

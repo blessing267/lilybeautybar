@@ -10,6 +10,10 @@ def home(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'shop/home.html')
 
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'shop/product_list.html', {'products': products})
+
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'shop/product_detail.html', { 'product': product })
