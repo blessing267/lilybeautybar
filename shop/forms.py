@@ -1,4 +1,5 @@
 from django import forms
+from .models import Product
 
 class CheckoutForm(forms.Form):
     email = forms.EmailField(required=True)
@@ -8,3 +9,8 @@ class CheckoutForm(forms.Form):
     city = forms.CharField(required=False, max_length=100)
     create_account = forms.BooleanField(required=False, initial=False, label="Create an account after payment (optional)")
     # optional password fields if you want immediate account creation -- we will create account after successful payment instead
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'image']
