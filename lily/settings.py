@@ -80,14 +80,11 @@ WSGI_APPLICATION = 'lily.wsgi.application'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_URL = config("DATABASE_URL", default=None)
-
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL is not set. Please configure it in your .env file.")
+DATABASE_URL = config("DATABASE_URL")
 
 DATABASES = {
-    "default": dj_database_url.parse(
-        DATABASE_URL,
+    "default": dj_database_url.config(
+        default=DATABASE_URL,
         conn_max_age=600,
         ssl_require=True
     )
