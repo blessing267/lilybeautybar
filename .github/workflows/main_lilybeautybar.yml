@@ -15,6 +15,7 @@ jobs:
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
       STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
 
     steps:
       # Step 1: Checkout code
