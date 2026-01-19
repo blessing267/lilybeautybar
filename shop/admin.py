@@ -6,3 +6,4 @@ from .models import Order
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'email', 'amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
+
