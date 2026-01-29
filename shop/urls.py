@@ -7,7 +7,10 @@ urlpatterns = [
     path('products/', views.product_list, name='product_list'),
     path('products/<int:pk>/', views.product_detail, name='product_detail'),
     
-    # Dashboard (admin only)
+    # Dashboard (API)
+    path('api/dashboard/', views.dashboard_api, name='dashboard_api'),
+    
+    # Dashboard (HTML)
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/product/add/', views.add_product, name='add_product'),
     path('dashboard/product/<int:pk>/edit/', views.edit_product, name='edit_product'),

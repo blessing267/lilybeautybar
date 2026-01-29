@@ -13,4 +13,18 @@ class CheckoutForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'image']
+        fields = '__all__' #['name', 'description', 'price', 'image']
+        labels = {
+            'price': 'Price (₦)',
+        }
+        help_texts = {
+            'price': 'Minimum charge is ₦200. Enter amount in Naira only.',
+        }
+
+    def clean_price(self):
+        price = self.cleaned_data['price']
+        if price < 200:
+            raise forms.ValidationError(
+                "Stripe requires a minimum charge of ₦200."
+            )
+        return price
