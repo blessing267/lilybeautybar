@@ -42,8 +42,8 @@ I developed the entire application.
 ---
 
 ## 📸 Screenshots  
-![Homepage Screenshot](link-to-image)
-![Product Page Screenshot](link-to-image)
+![Homepage Screenshot](/media/Home.PNG)
+![Product Page Screenshot](/media/Produts.PNG)
 
 ---
 
