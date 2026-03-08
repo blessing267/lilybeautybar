@@ -17,6 +17,9 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -83,10 +86,11 @@ ROOT_URLCONF = 'lily.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "frontend" / "dist"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -99,8 +103,6 @@ WSGI_APPLICATION = 'lily.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASE_URL = config("DATABASE_URL")
 
@@ -148,7 +150,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # Development: where Django looks for your project’s static assets
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / "frontend" / "dist" / "assets",
+]
 # Production: where collectstatic copies everything
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Whitenoise for serving in production

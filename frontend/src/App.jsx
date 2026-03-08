@@ -1,43 +1,44 @@
-import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import { isLoggedIn, logout } from "./auth/auth";
 
-function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
-
-  useEffect(() => {
-  setLoggedIn(isLoggedIn());
-  setAuthLoading(false);
-}, []);
-
+export default function App() {
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
 
   const handleLogout = () => {
-    logout();              // remove token
-    setLoggedIn(false);    // update UI
+    logout();
+    setLoggedIn(false);
   };
-
-  // ⛔ BLOCK rendering until auth is resolved
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-600 text-lg">Checking authentication...</p>
-      </div>
-    );
-  }
 
   return (
     <>
-      <Toaster position="top-right" />  {/* This shows all toast notifications */}
-      {loggedIn ? (
-        <Dashboard onLogout={handleLogout} />
-      ) : (
-        <Login onLogin={() => setLoggedIn(true)} />
-      )}
+      <Toaster position="top-right" />
+      <Routes>
+        <Route
+          path="/dashboard"
+          element={
+            loggedIn ? (
+              <Dashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            loggedIn ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login onLogin={() => setLoggedIn(true)} />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to={loggedIn ? "/dashboard" : "/login"} />} />
+      </Routes>
     </>
   );
 }
-
-export default App;

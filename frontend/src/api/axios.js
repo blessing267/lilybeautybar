@@ -5,6 +5,8 @@ export const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api/",
 });
 
+api.defaults.headers.post["Content-Type"] = "multipart/form-data";
+
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token) {

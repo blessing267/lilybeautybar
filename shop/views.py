@@ -20,12 +20,12 @@ from .serializers import ProductSerializer
 # -------------------------------
 # Admin-only decorator
 # -------------------------------
-def admin_required(view_func):
-    decorated_view_func = user_passes_test(
+@user_passes_test(
         lambda u: u.is_active and u.is_superuser,
         login_url='login'  # redirect to login page if not admin
-    )(view_func)
-    return decorated_view_func
+    )
+def dashboard(request):
+    return render(request, "shop/dashboard/index.html")
 
 # -------------------------------
 # Protect product API
@@ -107,22 +107,6 @@ def success(request):
 def cancel(request):
     return render(request, 'shop/cancel.html')
 
-# -------------------------------
-# Admin Dashboard (Django template)
-# -------------------------------
-@admin_required
-def dashboard(request):
-    products = Product.objects.all().order_by('-created_at')
-    
-    # Handle deletion inline
-    if request.method == "POST" and 'delete_product_id' in request.POST:
-        product = get_object_or_404(Product, pk=request.POST['delete_product_id'])
-        product.delete()
-        return redirect('dashboard')
-
-    return render(request, 'shop/dashboard/dashboard_home.html', {'products': products})
-
-@admin_required
 def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
@@ -133,7 +117,6 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'shop/dashboard/product_form.html', {'form': form, 'product': None})
 
-@admin_required
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == "POST":
