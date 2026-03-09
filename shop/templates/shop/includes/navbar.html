@@ -1,68 +1,39 @@
-<header class="border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50">
-  <div class="max-w-6xl mx-auto px-4">
+<nav x-data="{ open:false }" class="bg-white shadow-md sticky top-0 z-50">
+
+  <div class="max-w-7xl mx-auto px-6">
     <div class="flex items-center justify-between h-16">
-      
-      <!-- Logo and Brand -->
-      <a href="{% url 'home' %}" class="flex items-center gap-2 group">
-        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--brand)] text-white font-bold">
-          LBB
-        </span>
-        <span class="text-lg font-semibold group-hover:text-[var(--brand)] transition">
-          Lily Beauty Bar
-        </span>
+
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-bold text-gray-900">
+        Lily Beauty Bar
       </a>
 
-      <!-- Mobile Hamburger -->
-      <button id="menu-toggle" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg hover:bg-slate-100 focus:outline-none">
-        <!-- Icon (hamburger / close) -->
-        <svg id="menu-icon" class="h-6 w-6 text-slate-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex space-x-8">
+        <a href="/" class="text-gray-700 hover:text-pink-500">Home</a>
+        <a href="/products" class="text-gray-700 hover:text-pink-500">Shop</a>
+        <a href="/gallery" class="text-gray-700 hover:text-pink-500">Gallery</a>
+        <a href="/contact" class="text-gray-700 hover:text-pink-500">Contact</a>
+      </div>
 
-      <!-- Navigation -->
-      <nav id="menu" class="hidden md:flex items-center gap-2">
-        <a href="{% url 'home' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Home</a>
-        <a href="{% url 'home' %}#products" class="px-3 py-2 rounded-lg hover:bg-slate-100">Shop</a>
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button @click="open = !open" class="text-gray-700 hover:text-pink-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
 
-        {% if request.user.is_authenticated and request.user.is_superuser %}
-        <a href="{% url 'dashboard' %}" class="px-3 py-2 rounded-lg bg-[var(--brand)] text-white">Dashboard</a>
-        {% endif %}
-
-
-        {% if request.user.is_authenticated %}
-          <a href="#" class="px-3 py-2 rounded-lg hover:bg-slate-100">My Orders</a>
-          <a href="{% url 'logout' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Logout</a>
-        {% else %}
-          <a href="{% url 'login' %}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Login</a>
-          <a href="{% url 'register' %}" class="px-3 py-2 rounded-lg bg-[var(--brand)] text-white">Create account</a>
-        {% endif %}
-      </nav>
-
-    </div>
-
-    <!-- Mobile Menu Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden flex flex-col gap-2 mt-2 px-2 pb-3">
-      <a href="{% url 'home' %}" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Home</a>
-      <a href="{% url 'home' %}#products" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Shop</a>
-
-      {% if request.user.is_authenticated %}
-        <a href="#" class="block px-3 py-2 rounded-lg hover:bg-slate-100">My Orders</a>
-        <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Logout</a>
-      {% else %}
-        <a href="{% url 'login' %}" class="block px-3 py-2 rounded-lg hover:bg-slate-100">Login</a>
-        <a href="{% url 'register' %}" class="block px-3 py-2 rounded-lg bg-[var(--brand)] text-white">Create account</a>
-      {% endif %}
     </div>
   </div>
-</header>
 
-<!-- JS to toggle mobile menu -->
-<script>
-  const toggleBtn = document.getElementById("menu-toggle");
-  const mobileMenu = document.getElementById("mobile-menu");
+  <!-- Mobile Menu -->
+  <div x-show="open" @click.away="open=false" class="md:hidden px-6 pb-4">
+    <a href="/" class="block py-2 text-gray-700 hover:text-pink-500">Home</a>
+    <a href="/shop" class="block py-2 text-gray-700 hover:text-pink-500">Shop</a>
+    <a href="/gallery" class="block py-2 text-gray-700 hover:text-pink-500">Gallery</a>
+    <a href="/contact" class="block py-2 text-gray-700 hover:text-pink-500">Contact</a>
+  </div>
 
-  toggleBtn.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
-  });
-</script>
+</nav>

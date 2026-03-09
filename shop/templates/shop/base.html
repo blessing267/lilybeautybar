@@ -1,59 +1,36 @@
 {% load static %}
+{% load tailwind_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-  <title>{% block title %}Lily Beauty Bar{% endblock %}</title>
-  
-  <!-- Tailwind CDN for rapid prototyping -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  
-  <!-- Custom Styles -->
-  <style>
-    :root { 
-      --brand: #a855f7; 
-    }
-    body { 
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 
-                   'Helvetica Neue', Arial, 'Noto Sans', 
-                   'Apple Color Emoji', 'Segoe UI Emoji'; 
-    }
-  </style>
 
-  {% block head %}{% endblock %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}Lily Beauty Bar{% endblock %}</title>
+
+{% tailwind_css %}
+
 </head>
-<body class="bg-white text-slate-800">
 
-  <!-- Skip link for accessibility -->
-  <a href="#main" class="sr-only focus:not-sr-only">Skip to main content</a>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-  <!-- Top bar / Nav -->
-  {% include 'shop/includes/navbar.html' %}
-  {% if request.user.is_authenticated and request.user.is_superuser %}
-  <a href="{% url 'dashboard_api' %}" class="px-3 py-2 rounded-lg bg-[var(--brand)] text-white">Dashboard</a>
-  {% endif %}
+  <!-- Navbar -->
+  {% include "shop/includes/navbar.html" %}
 
-
-  <!-- Flash messages -->
-  <div class="max-w-6xl mx-auto px-4 mt-4">
-    {% include 'shop/includes/messages.html' %}
-  </div>
-
-  <!-- Main content -->
+  <!-- Main Content -->
   <main class="min-h-screen">
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
   </main>
 
   <!-- Footer -->
-  {% include 'shop/includes/footer.html' %}
+  {% include "shop/includes/footer.html" %}
 
-  {% block scripts %}{% endblock %}
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </body>
 </html>

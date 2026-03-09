@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
-import stripe
+
+from paystackapi.transaction import Transaction
+from paystackapi.paystack import Paystack
+
 from decimal import Decimal
 from django.urls import reverse
 from django.contrib import messages
@@ -43,6 +46,10 @@ def home(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'shop/home.html', {'products': products})
 
+def product(request):
+    products = Product.objects.all()
+    return render(request, 'shop/products.html', {'products': products})
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'shop/product_list.html', {'products': products})
@@ -51,61 +58,65 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'shop/product_detail.html', { 'product': product })
 
+# -------------------------------
+# Payment Method
+# -------------------------------
+paystack = Paystack(secret_key=settings.PAYSTACK_SECRET_KEY)
+
 def checkout(request, product_id):
     if request.method != "POST":
         return redirect('product_detail', pk=product_id)
 
     product = get_object_or_404(Product, pk=product_id)
-    stripe.api_key = settings.STRIPE_SECRET_KEY
 
-    # Email (optional for guests)
-    customer_email = request.user.email if request.user.is_authenticated else None
+    # Email (required for Paystack)
+    customer_email = request.user.email if request.user.is_authenticated else request.POST.get('email')
+    if not customer_email:
+        messages.error(request, "Email is required for payment.")
+        return redirect('product_detail', pk=product_id)
 
-    # 🔒 Stripe minimum for NGN (≈ ₦200)
-    MIN_NGN_AMOUNT = Decimal('1000')
-
-    if product.price is None or product.price < MIN_NGN_AMOUNT:
-        messages.error(
-            request,
-            "This product price is too low to process payment. Minimum is ₦200."
-        )
+    # 🔒 Paystack minimum for NGN (≈ ₦200)
+    MIN_NGN_AMOUNT = Decimal('200')
+    if product.price < MIN_NGN_AMOUNT:
+        messages.error(request, "This product price is too low to process payment. Minimum is ₦200.")
         return redirect('product_detail', pk=product.id)
 
-    unit_amount = int(product.price)  # NGN is zero-decimal → convert safely
+    # Convert to kobo
+    amount_kobo = int(product.price * 100)
 
-    session = stripe.checkout.Session.create(
-        mode='payment',
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'ngn',
-                'product_data': {
-                    'name': product.name,
-                    'description': (product.description or '')[:200],
-                },
-                'unit_amount': unit_amount,
-            },
-            'quantity': 1,
-        }],
-        customer_email=customer_email,
-        success_url=request.build_absolute_uri(
-            reverse('success')
-        ) + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=request.build_absolute_uri(reverse('cancel')),
+    # Initialize Paystack transaction
+    response = Transaction.initialize(
+        email=customer_email,
+        amount=amount_kobo,
+        callback_url=request.build_absolute_uri(reverse('success')),
         metadata={
-            'product_id': str(product.id),
-            'product_name': product.name,
-        },
+            "product_id": str(product.id),
+            "product_name": product.name
+        }
     )
 
-    return redirect(session.url)
+    if response['status']:
+        # Redirect to Paystack payment page
+        return redirect(response['data']['authorization_url'])
+    else:
+        messages.error(request, "Error initializing payment. Please try again.")
+        return redirect('product_detail', pk=product.id)
+
 
 def success(request):
-    return render(request, 'shop/success.html')
+    reference = request.GET.get('reference')  # Paystack sends ?reference=xxxx
+    if not reference:
+        messages.error(request, "No payment reference provided.")
+        return redirect('home')
 
+    response = Transaction.verify(reference=reference)
+    if response['status'] and response['data']['status'] == 'success':
+        # Payment successful
+        return render(request, 'shop/success.html')
+    else:
+        messages.error(request, "Payment could not be verified. Please contact support.")
+        return redirect('home')
 
-def cancel(request):
-    return render(request, 'shop/cancel.html')
 
 def add_product(request):
     if request.method == "POST":
