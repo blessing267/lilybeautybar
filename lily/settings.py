@@ -27,12 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-CORS_ALLOWED_ALL_ORIGINS = True
+DEBUG = False
+CORS_ALLOWED_ALL_ORIGINS = False
 
 CSRF_TRUSTED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
     "https://www.lilybeautybar.onrender.com",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://lilybeautybar.onrender.com",
 ]
 
 ALLOWED_HOSTS = [
@@ -192,10 +196,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_CALLBACK_URL = "http://lilybeautybar.onrender.com/payment/success/"  # adjust for production
-
-LOGIN_URL = '/users/login'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/users/login'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 TAILWIND_APP_NAME = "theme"
