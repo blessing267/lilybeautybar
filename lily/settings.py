@@ -186,7 +186,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Paystack keys 
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
-PAYSTACK_CALLBACK_URL = "http://127.0.0.1:8000/payment/success/"  # adjust for production
+PAYSTACK_CALLBACK_URL = "http://lilybeautybar.onrender.com/payment/success/"  # adjust for production
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
