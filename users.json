@@ -1,0 +1,36 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$E2YQ9KqDIET9UyufYwvLre$V7NnSEwpOGPIExrvfQe9ZWXyhvTvoMlHS5fZWgeYW7s=",
+    "last_login": "2026-03-17T10:47:58.874Z",
+    "is_superuser": true,
+    "username": "Lilybeautybar",
+    "first_name": "",
+    "last_name": "",
+    "email": "Lilybeautybar11@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-12-02T08:07:51.667Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$B4dIAeq8k6chFDNleO3ZHs$9+kxMJxeT/IpnaLmgddR9TzWP2lMgdN8v//K5inupNY=",
+    "last_login": "2026-01-25T08:13:22.339Z",
+    "is_superuser": true,
+    "username": "Omokaro",
+    "first_name": "",
+    "last_name": "",
+    "email": "blessingomokaro16@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-12-04T04:48:57.574Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
