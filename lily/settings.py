@@ -29,6 +29,13 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 CORS_ALLOWED_ALL_ORIGINS = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://lilybeautybar.onrender.com",
+    "https://www.lilybeautybar.onrender.com",
+]
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -189,7 +196,7 @@ PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_CALLBACK_URL = "http://lilybeautybar.onrender.com/payment/success/"  # adjust for production
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"

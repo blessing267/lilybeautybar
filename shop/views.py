@@ -46,6 +46,9 @@ def home(request):
     products = Product.objects.all().order_by('-id')
     return render(request, 'shop/home.html', {'products': products})
 
+def contact(request):
+    return render(request, 'shop/contact.html')
+
 def product(request):
     products = Product.objects.all()
     return render(request, 'shop/products.html', {'products': products})
@@ -116,7 +119,6 @@ def success(request):
     else:
         messages.error(request, "Payment could not be verified. Please contact support.")
         return redirect('home')
-
 
 def add_product(request):
     if request.method == "POST":

@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     # Public shop pages
     path('', views.home, name='home'),
+    path('contact/', views.contact, name='contact'),
     path('products/', views.product, name='products'),
     path('product/', views.product_list, name='product_list'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
