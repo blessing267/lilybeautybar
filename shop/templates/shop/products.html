@@ -15,7 +15,7 @@
       <div class="w-full h-48 bg-slate-100"></div>
       {% endif %}
       <div class="p-4">
-        <h3 class="font-semibold group-hover:text-[var(--brand)]">{{ product.name }}</h3>
+        <h3 class="font-semibold group-hover:text-(--brand)">{{ product.name }}</h3>
         <p class="text-sm text-slate-600 line-clamp-2">{{ product.description|truncatechars:80 }}</p>
         <div class="mt-3 flex items-center justify-between">
           <span class="font-semibold">₦{{ product.price }}</span>
