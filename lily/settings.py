@@ -193,9 +193,9 @@ PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_CALLBACK_URL = "http://lilybeautybar.onrender.com/payment/success/"  # adjust for production
 
-LOGIN_URL = 'login'
+LOGIN_URL = '/users/login'
 LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = '/users/login'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 TAILWIND_APP_NAME = "theme"
