@@ -29,8 +29,6 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 CORS_ALLOWED_ALL_ORIGINS = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
