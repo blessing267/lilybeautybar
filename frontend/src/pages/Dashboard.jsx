@@ -274,7 +274,7 @@ const filteredProducts = safeProducts
 
             <h2 className="text-lg font-bold mt-2">{product.name}</h2>
             <p className="text-gray-600">{product.description}</p>
-            <p className="font-semibold mt-1">£{product.price}</p>
+            <p className="font-semibold mt-1">₦{product.price}</p>
 
             <div className="flex gap-2 mt-3">
               <button
