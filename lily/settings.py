@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 CORS_ALLOWED_ALL_ORIGINS = False
 
 CSRF_TRUSTED_ORIGINS = [
@@ -170,7 +170,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Whitenoise for serving in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-WHITENOISE_USE_FINDERS = True
+WHITENOISE_USE_FINDERS = False
 WHITENOISE_AUTOREFRESH = DEBUG
 
 # Cloudinary configuration
