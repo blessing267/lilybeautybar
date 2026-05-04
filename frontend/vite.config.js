@@ -7,5 +7,5 @@ export default defineConfig({
     outDir: 'dist',           // default Vite build folder
     assetsDir: 'assets',       // folder inside dist for JS/CSS
   },
-  base: '/static/assets',            // ⚠️ important: Django serves static via STATIC_URL + 'assets/'
+  base: '/static/',            // ⚠️ important: Django serves static via STATIC_URL + 'assets/'
 })

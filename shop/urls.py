@@ -10,14 +10,13 @@ urlpatterns = [
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     
     # Dashboard (API)
-    path('api/dashboard/', views.dashboard_api, name='dashboard_api'),
-    
+    path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
+    path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),
+
     # Dashboard (HTML)
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('dashboard/product/add/', views.add_product, name='add_product'),
-    path('dashboard/product/<int:pk>/edit/', views.edit_product, name='edit_product'),
 
-    #Stripe checkout
+    #Paystack
     path('checkout/<int:product_id>/', views.checkout, name='checkout'),
     path('success/', views.success, name='success'),
 ]

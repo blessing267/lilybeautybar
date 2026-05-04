@@ -24,9 +24,9 @@ from .serializers import ProductSerializer
 # Admin-only decorator
 # -------------------------------
 #@user_passes_test(
-#        lambda u: u.is_active and u.is_superuser,
-#       login_url='login'  # redirect to login page if not admin
-#    )
+#    lambda u: u.is_active and u.is_superuser,
+#    login_url='/dashboard/login'  # redirect to login page if not admin
+#)
 def dashboard(request):
     return render(request, "shop/dashboard/index.html")
 

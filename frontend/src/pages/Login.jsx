@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { login } from "../api/authApi";
 import { setTokens } from "../auth/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login({ onLogin }) {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -12,6 +13,8 @@ export default function Login({ onLogin }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -21,6 +24,7 @@ export default function Login({ onLogin }) {
 
       toast.success("Logged in successfully!");
       onLogin();
+      navigate("/");
     } catch (err) {
       console.error(err); 
       toast.error("Login failed. Check credentials.");

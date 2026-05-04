@@ -9,29 +9,51 @@ export default function ProductModal({
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    if (!e || !e.target) return;
+
+    const { name, value, files } = e.target;
+
+    console.log("Typing:", name, value);
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleImageChange = (e) => {
-    setForm({ ...form, image: e.target.files[0] });
-  };
+    if (!e || !e.target) return;
+
+    const file = e.target.files?.[0];
+
+      setForm((prev) => ({
+        ...prev,
+        image: file || null,
+      }));
+    };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("name", form.name);
-  formData.append("description", form.description);
-  formData.append("price", form.price);
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("description", form.description);
+    formData.append("price", form.price);
 
   // Only append file if user selected a new one
-  if (form.image) {
-    formData.append("image", form.image);
-  }
+    if (form.image) {
+      formData.append("image", form.image);
+    } else if (!isEditing) {
+      alert("Please select an image");
+      return;
+    }
 
-  await onSubmit(formData); // Pass FormData to dashboard
-};
+    try {
+      await onSubmit(formData);
+    } catch (err) {
+      console.error("Modal submit error:", err);
+    } // Pass FormData to dashboard
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -46,7 +68,7 @@ export default function ProductModal({
             name="name"
             type="text"
             placeholder="Product Name"
-            value={form.name}
+            value={form.name || ""}
             onChange={handleChange}
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
@@ -56,7 +78,7 @@ export default function ProductModal({
           <textarea
             name="description"
             placeholder="Description"
-            value={form.description}
+            value={form.description || ""}
             onChange={handleChange}
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             rows={3}
@@ -68,7 +90,7 @@ export default function ProductModal({
             name="price"
             type="number"
             placeholder="Price"
-            value={form.price}
+            value={form.price || ""}
             onChange={handleChange}
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
@@ -76,6 +98,7 @@ export default function ProductModal({
 
           {/* Image Upload */}
           <input
+            name="image"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
@@ -100,6 +123,7 @@ export default function ProductModal({
             >
               Cancel
             </button>
+
             <button
               type="submit"
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"

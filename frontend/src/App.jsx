@@ -17,8 +17,10 @@ export default function App() {
     <>
       <Toaster position="top-right" />
       <Routes>
+        
+        {/* Dashboard page */}
         <Route
-          path="/dashboard"
+          path="/"
           element={
             loggedIn ? (
               <Dashboard onLogout={handleLogout} />
@@ -27,17 +29,21 @@ export default function App() {
             )
           }
         />
+
+        {/* Login page */}
         <Route
           path="/login"
           element={
             loggedIn ? (
-              <Navigate to="/dashboard" replace />
+              <Navigate to="/" replace />
             ) : (
               <Login onLogin={() => setLoggedIn(true)} />
             )
           }
         />
-        <Route path="*" element={<Navigate to={loggedIn ? "/dashboard" : "/login"} />} />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
       </Routes>
     </>
   );

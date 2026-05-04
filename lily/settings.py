@@ -87,7 +87,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
 }
 
@@ -163,7 +163,7 @@ STATIC_URL = '/static/'
 # Development: where Django looks for your project’s static assets
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "frontend" / "dist" / "assets",
+    BASE_DIR / "frontend" / "dist",
 ]
 # Production: where collectstatic copies everything
 STATIC_ROOT = BASE_DIR / 'staticfiles'
