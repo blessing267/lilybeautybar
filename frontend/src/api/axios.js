@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken, logout } from "../auth/auth";
 
 export const api = axios.create({
-  baseURL: "http://lilybeautybar.onrender.com/api/",
+  baseURL: "/api/",
 });
 
 api.defaults.headers.post["Content-Type"] = "multipart/form-data";
