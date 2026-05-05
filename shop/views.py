@@ -15,10 +15,15 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
-from .models import Product
+from .models import Product, Payment
 from .forms import ProductForm
 from .serializers import ProductSerializer
 
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import hmac
+import hashlib
+import json
 
 # -------------------------------
 # Admin-only decorator
@@ -91,7 +96,7 @@ def checkout(request, product_id):
     response = Transaction.initialize(
         email=customer_email,
         amount=amount_kobo,
-        callback_url=request.build_absolute_uri(reverse('success')),
+        callback_url=settings.PAYSTACK_CALLBACK_URL,
         metadata={
             "product_id": str(product.id),
             "product_name": product.name
@@ -113,12 +118,69 @@ def success(request):
         return redirect('home')
 
     response = Transaction.verify(reference=reference)
-    if response['status'] and response['data']['status'] == 'success':
-        # Payment successful
+
+    if response['status'] and response['data']['status'] == 'success': # Payment successful
+
+        metadata = response['data']['metadata']
+        email = response['data']['customer']['email']
+        amount = response['data']['amount'] / 100
+
+        Payment.objects.get_or_create(
+            reference=reference,
+            defaults={
+                "email": email,
+                "amount": amount,
+                "product_id": metadata.get("product_id"),
+                "verified": True
+            }
+        )
+
         return render(request, 'shop/success.html')
     else:
         messages.error(request, "Payment could not be verified. Please contact support.")
         return redirect('home')
+    
+# -------------------------------
+# Paystack Webhook
+# -------------------------------
+@csrf_exempt
+def paystack_webhook(request):
+    if request.method == "POST":
+        payload = request.body
+        signature = request.headers.get('x-paystack-signature')
+
+        # Verify Paystack signature
+        secret = settings.PAYSTACK_SECRET_KEY.encode('utf-8')
+        hash_signature = hmac.new(secret, payload, hashlib.sha512).hexdigest()
+
+        if hash_signature != signature:
+            return JsonResponse({'status': 'invalid signature'}, status=400)
+
+        event = json.loads(payload)
+
+        # Handle successful payment
+        if event['event'] == 'charge.success':
+            data = event['data']
+
+            reference = data['reference']
+            email = data['customer']['email']
+            amount = data['amount'] / 100
+
+            # TODO: update Payment model here
+            from .models import Payment
+
+            Payment.objects.update_or_create(
+                reference=reference,
+                defaults={
+                    "email": email,
+                    "amount": amount,
+                    "verified": True
+                }
+            )
+
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'invalid method'}, status=405)
 
 def add_product(request):
     if request.method == "POST":

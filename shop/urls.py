@@ -19,4 +19,5 @@ urlpatterns = [
     #Paystack
     path('checkout/<int:product_id>/', views.checkout, name='checkout'),
     path('success/', views.success, name='success'),
+    path('paystack/webhook/', views.paystack_webhook, name='paystack_webhook'),
 ]
