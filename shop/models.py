@@ -38,6 +38,7 @@ class OrderItem(models.Model):
         return f"{self.product.name} x {self.quantity}"
 
 class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -45,5 +46,8 @@ class Payment(models.Model):
     verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'product')  # 🚨 prevents duplicate purchase
+
     def __str__(self):
-        return f"{self.email} - {self.reference}"
+        return f"{self.email} - {self.product.name}"

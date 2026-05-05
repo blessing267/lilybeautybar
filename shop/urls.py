@@ -8,7 +8,8 @@ urlpatterns = [
     path('products/', views.product, name='products'),
     path('product/', views.product_list, name='product_list'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
-    
+    path('orders/', views.orders, name='orders'),
+
     # Dashboard (API)
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
     path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),

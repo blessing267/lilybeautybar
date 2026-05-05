@@ -7,7 +7,7 @@ from paystackapi.paystack import Paystack
 from decimal import Decimal
 from django.urls import reverse
 from django.contrib import messages
-from django.contrib.admin.views.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -26,12 +26,8 @@ import hashlib
 import json
 
 # -------------------------------
-# Admin-only decorator
+# Dashboard
 # -------------------------------
-#@user_passes_test(
-#    lambda u: u.is_active and u.is_superuser,
-#    login_url='/dashboard/login'  # redirect to login page if not admin
-#)
 def dashboard(request):
     return render(request, "shop/dashboard/index.html")
 
@@ -64,7 +60,28 @@ def product_list(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'shop/product_detail.html', { 'product': product })
+
+    has_paid = False
+    if request.user.is_authenticated:
+        has_paid = Payment.objects.filter(
+            product=product,
+            user=request.user,
+            verified=True
+        ).exists()
+
+    return render(request, 'shop/product_detail.html', { 
+        'product': product,
+        'has_paid': has_paid
+     })
+
+@login_required
+def orders(request):
+    payments = Payment.objects.filter(
+        user=request.user,
+        verified=True
+    ).order_by('-created_at')
+
+    return render(request, 'shop/orders.html', {'payments': payments})
 
 # -------------------------------
 # Payment Method
@@ -84,13 +101,24 @@ def checkout(request, product_id):
         return redirect('product_detail', pk=product_id)
 
     # 🔒 Paystack minimum for NGN (≈ ₦200)
-    MIN_NGN_AMOUNT = Decimal('200')
+    MIN_NGN_AMOUNT = Decimal('100')
     if product.price < MIN_NGN_AMOUNT:
-        messages.error(request, "This product price is too low to process payment. Minimum is ₦200.")
+        messages.error(request, "This product price is too low to process payment. Minimum is ₦100.")
         return redirect('product_detail', pk=product.id)
 
     # Convert to kobo
     amount_kobo = int(product.price * 100)
+
+    #Prevent duplicate payment
+    existing_payment = Payment.objects.filter(
+        product=product,
+        email=customer_email,
+        verified=True
+    ).first()
+
+    if existing_payment:
+        messages.warning(request, "You have already purchased this product.")
+        return redirect('product_detail', pk=product.id)
 
     # Initialize Paystack transaction
     response = Transaction.initialize(
@@ -128,6 +156,7 @@ def success(request):
         Payment.objects.get_or_create(
             reference=reference,
             defaults={
+                "user": request.user if request.user.is_authenticated else None,
                 "email": email,
                 "amount": amount,
                 "product_id": metadata.get("product_id"),
@@ -166,14 +195,15 @@ def paystack_webhook(request):
             email = data['customer']['email']
             amount = data['amount'] / 100
 
-            # TODO: update Payment model here
-            from .models import Payment
+            metadata = data.get("metadata", {})
+            product_id = metadata.get("product_id")
 
             Payment.objects.update_or_create(
                 reference=reference,
                 defaults={
                     "email": email,
                     "amount": amount,
+                    "product_id": product_id,
                     "verified": True
                 }
             )

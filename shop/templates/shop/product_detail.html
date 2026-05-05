@@ -1,48 +1,65 @@
 {% extends 'shop/base.html' %}
 {% block title %}{{ product.name }} • Lily Beauty Bar{% endblock %}
+
 {% block content %}
 <section class="max-w-6xl mx-auto px-4 py-10">
-<div class="grid md:grid-cols-2 gap-8">
-<div>
-{% if product.image %}
-<img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full rounded-2xl border shadow" />
-{% else %}
-<div class="w-full aspect-square bg-slate-100 rounded-2xl"></div>
-{% endif %}
-</div>
-<div>
-<h1 class="text-2xl font-semibold">{{ product.name }}</h1>
-<p class="mt-2 text-slate-600">{{ product.description }}</p>
-<div class="mt-4 text-2xl font-bold">₦{{ product.price }}</div>
+  <div class="grid md:grid-cols-2 gap-8">
 
+    <!-- Product Image -->
+    <div>
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full rounded-2xl border shadow" />
+      {% else %}
+        <div class="w-full aspect-square bg-slate-100 rounded-2xl"></div>
+      {% endif %}
+    </div>
 
-<!-- Buy Now form: posts to view that creates a Paystack Checkout Session -->
-<form method="post" action="{% url 'checkout' product.id %}" class="mt-6">
-  {% csrf_token %}
+    <!-- Product Info -->
+    <div>
+      <h1 class="text-2xl font-semibold">{{ product.name }}</h1>
+      <p class="mt-2 text-slate-600">{{ product.description }}</p>
+      <div class="mt-4 text-2xl font-bold">₦{{ product.price }}</div>
 
-  {% if not user.is_authenticated %}
-    <input 
-      type="email" 
-      name="email" 
-      placeholder="Enter your email" 
-      required
-      class="w-full mb-4 px-4 py-2 border rounded-lg"
-    >
-  {% endif %}
+      <!-- PAYMENT SECTION -->
+      <div class="mt-6">
 
-  <button type="submit" class="px-6 py-3 rounded-xl bg-[var(--brand)] text-blue-800 hover:opacity-90">
-    Buy now
-  </button>
+        {% if has_paid %}
+          <button class="w-full px-6 py-3 rounded-xl bg-green-600 text-white cursor-not-allowed">
+            Purchased ✅
+          </button>
+        {% else %}
 
-  <p class="mt-2 text-xs text-slate-500">
-    Guest checkout supported. We’ll only ask for your email at payment.
-  </p>
-</form>
+          <form method="post" action="{% url 'checkout' product.id %}">
+            {% csrf_token %}
 
+            {% if not user.is_authenticated %}
+              <input 
+                type="email" 
+                name="email" 
+                placeholder="Enter your email"
+                required
+                class="w-full mb-4 px-4 py-2 border rounded-lg"
+              >
+            {% endif %}
 
-<!-- Optional: continue shopping link -->
-<a href="{% url 'home' %}#products" class="inline-block mt-6 text-[var(--brand)]">← Continue shopping</a>
-</div>
-</div>
+            <button type="submit" class="w-full px-6 py-3 rounded-xl bg-[var(--brand)] text-blue-700 hover:opacity-90">
+              Buy now
+            </button>
+          </form>
+
+          <p class="mt-2 text-xs text-slate-500">
+            Secure payment powered by Paystack
+          </p>
+
+        {% endif %}
+
+      </div>
+
+      <a href="{% url 'home' %}" class="inline-block mt-6 text-[var(--brand)]">
+        ← Continue shopping
+      </a>
+    </div>
+
+  </div>
 </section>
 {% endblock %}

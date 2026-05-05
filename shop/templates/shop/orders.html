@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+{% block title %}My Orders • Lily Beauty Bar{% endblock %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-4 py-10">
+  <h2 class="text-2xl font-semibold mb-6">My Orders</h2>
+
+  {% for payment in payments %}
+    <div class="border p-4 rounded-lg mb-4 shadow">
+      <p class="font-semibold">{{ payment.product.name }}</p>
+      <p>₦{{ payment.amount }}</p>
+      <p class="text-sm text-gray-500">{{ payment.created_at }}</p>
+    </div>
+  {% empty %}
+    <p>No orders yet.</p>
+  {% endfor %}
+</section>
+{% endblock %}
