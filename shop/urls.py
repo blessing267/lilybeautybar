@@ -1,12 +1,12 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Public shop pages
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
     path('products/', views.product, name='products'),
-    path('product/', views.product_list, name='product_list'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     path('orders/', views.orders, name='orders'),
 
@@ -21,4 +21,7 @@ urlpatterns = [
     path('checkout/<int:product_id>/', views.checkout, name='checkout'),
     path('success/', views.success, name='success'),
     path('paystack/webhook/', views.paystack_webhook, name='paystack_webhook'),
+
+    #Logout
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

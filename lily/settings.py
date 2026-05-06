@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from decouple import config
 from pathlib import Path
+from corsheaders.defaults import default_headers
 import dj_database_url
 import cloudinary
 import cloudinary.uploader
@@ -27,16 +28,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-CORS_ALLOWED_ALL_ORIGINS = False
+DEBUG = True
+CORS_ALLOWED_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
     "https://www.lilybeautybar.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'authorization',
 ]
 
 ALLOWED_HOSTS = [
@@ -199,3 +209,7 @@ PAYSTACK_CALLBACK_URL = "https://lilybeautybar.onrender.com/success/"  # adjust 
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 TAILWIND_APP_NAME = "theme"
+
+LOGIN_URL = 'login'   # where to send unauthenticated users
+LOGIN_REDIRECT_URL = 'orders'   # where to go AFTER login
+

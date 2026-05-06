@@ -54,10 +54,6 @@ def product(request):
     products = Product.objects.all()
     return render(request, 'shop/products.html', {'products': products})
 
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'shop/product_list.html', {'products': products})
-
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
