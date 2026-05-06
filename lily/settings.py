@@ -28,21 +28,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-CORS_ALLOWED_ALL_ORIGINS = True
+DEBUG = False
+
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
     "https://www.lilybeautybar.onrender.com",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
+    "https://www.lilybeautybar.com",
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
