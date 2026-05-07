@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='order',
-            name='stripe_session_id',
+            name='paystack_session_id',
         ),
         migrations.AddField(
             model_name='order',

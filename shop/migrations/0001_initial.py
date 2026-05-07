@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('city', models.CharField(blank=True, max_length=100)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('paid', models.BooleanField(default=False)),
-                ('stripe_session_id', models.CharField(blank=True, max_length=255, null=True)),
+                ('paystack_session_id', models.CharField(blank=True, max_length=255, null=True)),
                 ('create_account_after_payment', models.BooleanField(default=False)),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
             ],

@@ -8,15 +8,15 @@
 
 ## 📖 About the Project  
 Lily Beauty Bar is an online beauty store I built as a personal project to strengthen my web-development and cloud skills. 
-It allows customers to browse, view, and purchase beauty products securely with Stripe integration.  
-It was built to practice Django, Stripe payments, and cloud deployment and it is designed to be lightweight, mobile-friendly, and easy for small businesses to manage.  
+It allows customers to browse, view, and purchase beauty products securely with paystack integration.  
+It was built to practice Django, paystack payments, and cloud deployment and it is designed to be lightweight, mobile-friendly, and easy for small businesses to manage.  
 
 ---
 
 ## 🚀 Features  
 - 🛍️ **Product Listings & Details** – Browse products with images, descriptions and prices  
 - 🔐 **Guest Checkout** – Account is optional; customers can check out quickly  
-- 💳 **Secure Payments** – Integrated Stripe API for payments  
+- 💳 **Secure Payments** – Integrated Paystack API for payments  
 - 📱 **Responsive Design** – Works smoothly on mobile and desktop  
 - 🗄️ **Admin Panel** – Manage products and orders with Django admin  
 
@@ -25,7 +25,7 @@ It was built to practice Django, Stripe payments, and cloud deployment and it is
 ## 🛠️ Technologies Used  
 - **Backend:** Python 3, Django 5  
 - **Frontend:** HTML, TailwindCSS  
-- **Payments:** Stripe API  
+- **Payments:** paystack API  
 - **Database:** PostgreSQL   
 - **Deployment:** Render  
 - **Version Control:** Git & GitHub  
@@ -36,7 +36,7 @@ It was built to practice Django, Stripe payments, and cloud deployment and it is
 I developed the entire application.    
 - Designed and implemented the backend (models, views, URLs)
 - Created the responsive frontend templates  
-- Integrated Stripe checkout  
+- Integrated paystack checkout  
 - Deployed to Render for public access  
 
 ---
@@ -50,7 +50,7 @@ I developed the entire application.
 ## 📚 Learnings  
 This project helped me strengthen my skills in:     
 - Django e-commerce patterns  
-- Stripe payment integration  
+- paystack payment integration  
 - Cloud deployment on Render  
 - Building responsive interfaces with TailwindCSS  
 

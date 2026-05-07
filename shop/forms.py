@@ -25,6 +25,6 @@ class ProductForm(forms.ModelForm):
         price = self.cleaned_data['price']
         if price < 200:
             raise forms.ValidationError(
-                "Stripe requires a minimum charge of ₦200."
+                "paystack requires a minimum charge of ₦200."
             )
         return price

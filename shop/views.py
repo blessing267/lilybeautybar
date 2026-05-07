@@ -5,7 +5,6 @@ from paystackapi.transaction import Transaction
 from paystackapi.paystack import Paystack
 
 from decimal import Decimal
-from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -166,8 +165,6 @@ def success(request):
     try:
         response = Transaction.verify(reference=reference)
 
-        print("FULL PAYSTACK RESPONSE:", response)
-
         if not response:
             messages.error(request, "Empty response from Paystack.")
             return redirect('home')
@@ -178,20 +175,13 @@ def success(request):
 
         data = response.get('data', {})
 
-        print("PAYSTACK DATA:", data)
-
         if data.get('status') != 'success':
             messages.error(request, "Payment not successful.")
             return redirect('home')
 
         # SAFE metadata handling
         metadata = data.get('metadata') or {}
-
-        print("METADATA:", metadata)
-
         order_id = metadata.get("order_id")
-
-        print("ORDER ID:", order_id)
 
         if not order_id:
             messages.error(request, "Order ID missing from payment.")
@@ -205,7 +195,7 @@ def success(request):
 
         # Mark order paid
         order.status = "paid"
-        order.amount = order.get_total()
+        order.amount = amount
         order.save()
 
         # SAFE amount conversion
@@ -223,16 +213,13 @@ def success(request):
             }
         )
 
-        print("PAYMENT SAVED:", payment.id)
-
         return render(request, 'shop/success.html', {
             "payment": payment,
             "order": order
         })
 
     except Exception as e:
-        print("SUCCESS VIEW ERROR:", str(e))
-        messages.error(request, f"An error occurred: {str(e)}")
+        messages.error(request, "Something went wrong while verifying payment.")
         return redirect('home')
     
 # -------------------------------
@@ -245,7 +232,7 @@ def paystack_webhook(request):
         signature = request.headers.get('x-paystack-signature')
 
         # Verify Paystack signature
-        secret = settings.PAYSTACK_SECRET_KEY.encode('utf-8')
+        secret = settings.PAYSTACK_SECRET_KEY.encode()
         hash_signature = hmac.new(secret, payload, hashlib.sha512).hexdigest()
 
         if hash_signature != signature:
@@ -259,7 +246,8 @@ def paystack_webhook(request):
 
             reference = data['reference']
             email = data['customer']['email']
-            amount = data['amount'] / 100
+            amount = Decimal(str(data['amount'])) / Decimal("100")
+
 
             metadata = data.get("metadata", {})
             order_id = metadata.get("order_id")
@@ -270,7 +258,7 @@ def paystack_webhook(request):
                 return JsonResponse({'status': 'order not found'}, status=400)
 
             order.status = "paid"
-            order.amount = order.get_total()
+            order.amount = amount
             order.save()
 
             Payment.objects.update_or_create(

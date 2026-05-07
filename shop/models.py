@@ -63,4 +63,4 @@ class Payment(models.Model):
 
     def __str__(self):
         order_id = self.order.id if self.order else "No Order"
-        return f"{self.email} - {self.order.id}"
+        return f"{self.email} - {order_id}"
