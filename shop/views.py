@@ -15,7 +15,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
-from .models import Product, Payment
+from .models import Product, Payment, Order, OrderItem
 from .forms import ProductForm
 from .serializers import ProductSerializer
 
@@ -60,7 +60,7 @@ def product_detail(request, pk):
     has_paid = False
     if request.user.is_authenticated:
         has_paid = Payment.objects.filter(
-            product=product,
+            order__items__product=product,
             user=request.user,
             verified=True
         ).exists()
@@ -106,15 +106,37 @@ def checkout(request, product_id):
     amount_kobo = int(product.price * 100)
 
     #Prevent duplicate payment
-    existing_payment = Payment.objects.filter(
-        product=product,
-        email=customer_email,
-        verified=True
-    ).first()
+    if request.user.is_authenticated:
+        existing_payment = Order.objects.filter(
+            user=request.user,
+            status="paid",
+            items__product=product
+        ).exists()
+    else:
+        existing_payment = Order.objects.filter(
+            email=customer_email,
+            status="paid",
+            items__product=product
+        ).exists()
 
     if existing_payment:
         messages.warning(request, "You have already purchased this product.")
         return redirect('product_detail', pk=product.id)
+
+    # Create Order
+    order = Order.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        email=customer_email,
+        amount=product.price,
+    )
+
+    # Create OrderItem
+    OrderItem.objects.create(
+        order=order,
+        product=product,
+        quantity=1,
+        unit_price=product.price
+    )
 
     # Initialize Paystack transaction
     response = Transaction.initialize(
@@ -122,8 +144,7 @@ def checkout(request, product_id):
         amount=amount_kobo,
         callback_url=settings.PAYSTACK_CALLBACK_URL,
         metadata={
-            "product_id": str(product.id),
-            "product_name": product.name
+            "order_id": order.id
         }
     )
 
@@ -136,33 +157,82 @@ def checkout(request, product_id):
 
 
 def success(request):
-    reference = request.GET.get('reference')  # Paystack sends ?reference=xxxx
+    reference = request.GET.get('reference')
+
     if not reference:
         messages.error(request, "No payment reference provided.")
         return redirect('home')
 
-    response = Transaction.verify(reference=reference)
+    try:
+        response = Transaction.verify(reference=reference)
 
-    if response['status'] and response['data']['status'] == 'success': # Payment successful
+        print("FULL PAYSTACK RESPONSE:", response)
 
-        metadata = response['data']['metadata']
-        email = response['data']['customer']['email']
-        amount = response['data']['amount'] / 100
+        if not response:
+            messages.error(request, "Empty response from Paystack.")
+            return redirect('home')
 
-        Payment.objects.get_or_create(
+        if not response.get('status'):
+            messages.error(request, "Payment verification failed.")
+            return redirect('home')
+
+        data = response.get('data', {})
+
+        print("PAYSTACK DATA:", data)
+
+        if data.get('status') != 'success':
+            messages.error(request, "Payment not successful.")
+            return redirect('home')
+
+        # SAFE metadata handling
+        metadata = data.get('metadata') or {}
+
+        print("METADATA:", metadata)
+
+        order_id = metadata.get("order_id")
+
+        print("ORDER ID:", order_id)
+
+        if not order_id:
+            messages.error(request, "Order ID missing from payment.")
+            return redirect('home')
+
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            messages.error(request, "Order not found.")
+            return redirect('home')
+
+        # Mark order paid
+        order.status = "paid"
+        order.amount = order.get_total()
+        order.save()
+
+        # SAFE amount conversion
+        amount = Decimal(str(data.get("amount", 0))) / Decimal("100")
+
+        # Create or update payment
+        payment, created = Payment.objects.update_or_create(
             reference=reference,
             defaults={
-                "user": request.user if request.user.is_authenticated else None,
-                "email": email,
+                "user": order.user,
+                "email": order.email,
                 "amount": amount,
-                "product_id": metadata.get("product_id"),
+                "order": order,
                 "verified": True
             }
         )
 
-        return render(request, 'shop/success.html')
-    else:
-        messages.error(request, "Payment could not be verified. Please contact support.")
+        print("PAYMENT SAVED:", payment.id)
+
+        return render(request, 'shop/success.html', {
+            "payment": payment,
+            "order": order
+        })
+
+    except Exception as e:
+        print("SUCCESS VIEW ERROR:", str(e))
+        messages.error(request, f"An error occurred: {str(e)}")
         return redirect('home')
     
 # -------------------------------
@@ -192,14 +262,23 @@ def paystack_webhook(request):
             amount = data['amount'] / 100
 
             metadata = data.get("metadata", {})
-            product_id = metadata.get("product_id")
+            order_id = metadata.get("order_id")
+
+            try:
+                order = Order.objects.get(id=order_id)
+            except Order.DoesNotExist:
+                return JsonResponse({'status': 'order not found'}, status=400)
+
+            order.status = "paid"
+            order.amount = order.get_total()
+            order.save()
 
             Payment.objects.update_or_create(
                 reference=reference,
                 defaults={
+                    "order": order,
                     "email": email,
                     "amount": amount,
-                    "product_id": product_id,
                     "verified": True
                 }
             )

@@ -19,11 +19,23 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("paid", "Paid"),
+        ("failed", "Failed"),
+    ]
+
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    status = models.CharField(max_length=20, default="pending")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_total(self):
+        return sum(
+            item.quantity * item.unit_price
+            for item in self.items.all()
+        ) or 0
 
     def __str__(self):
         return f"Order {self.id} - {self.email} - {self.amount}"
@@ -32,14 +44,14 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
-    unit_price = models.PositiveIntegerField(help_text="In kobo/ngn cents (integer)", default=0)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
 
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="payments", null=True, blank=True)
     email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     reference = models.CharField(max_length=100, unique=True)
@@ -47,7 +59,8 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'product')  # 🚨 prevents duplicate purchase
+        pass
 
     def __str__(self):
-        return f"{self.email} - {self.product.name}"
+        order_id = self.order.id if self.order else "No Order"
+        return f"{self.email} - {self.order.id}"
