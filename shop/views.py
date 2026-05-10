@@ -7,6 +7,7 @@ from paystackapi.paystack import Paystack
 from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -50,7 +51,13 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 def product(request):
-    products = Product.objects.all()
+    product_list = Product.objects.all().order_by('-id')
+
+    paginator = Paginator(product_list, 12)  # Show 12 products per page
+
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
     return render(request, 'shop/products.html', {'products': products})
 
 def product_detail(request, pk):
