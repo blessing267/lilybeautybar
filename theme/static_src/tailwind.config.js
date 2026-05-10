@@ -8,12 +8,17 @@ module.exports = {
   ],
   theme: {
     extend: {
-        colors: {
-            gold: "#C9A227",
-            nude: "#F5EFE7",
-            blush: "#E8D8D1",
-            charcoal: "#1A1A1A",
-        }
+      colors: {
+        gold: "#C9A227",
+        nude: "#F5EFE7",
+        blush: "#E8D8D1",
+        charcoal: "#1A1A1A",
+      },
+
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+      },
     },
   },
   plugins: [

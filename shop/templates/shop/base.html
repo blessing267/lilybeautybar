@@ -15,7 +15,7 @@
 
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-nude text-charcoal font-sans">
 
   <!-- Floating WhatsApp Button -->
   <a
@@ -27,12 +27,54 @@
     <img
       src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
       alt="WhatsApp"
-      class="w-14 h-14 rounded-full shadow-xl animate-pulse"
+      class="w-14 h-14 rounded-full animate-pulse"
     >
   </a>
 
   <!-- Navbar -->
-  {% include "shop/includes/navbar.html" %}
+  <nav x-data="{ open:false }" class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-blush">
+
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="text-2xl font-bold text-charcoal">
+        Lily Beauty Bar
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex space-x-8">
+        <a href="{% url 'home' %}" class="text-gray-700 hover:text-pink-500">Home</a>
+        <a href="{% url 'products' %}" class="text-gray-700 hover:text-pink-500">Shop</a>
+        <a href="{% url 'contact' %}" class="text-gray-700 hover:text-pink-500">Contact</a>
+        <a href="{% url 'orders' %}" class="text-gray-700 hover:text-pink-500">Orders</a>
+        <a href="/dashboard/login/" class="text-gray-700 hover:text-pink-500">Dashboard</a>
+          
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button @click="open = !open" class="text-gray-700 hover:text-pink-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div x-show="open" @click.away="open=false" class="md:hidden px-6 pb-4">
+    <a href="{% url 'home' %}" class="block py-2 text-gray-700 hover:text-pink-500">Home</a>
+    <a href="{% url 'products' %}" class="block py-2 text-gray-700 hover:text-pink-500">Shop</a>
+    <a href="{% url 'contact' %}" class="block py-2 text-gray-700 hover:text-pink-500">Contact</a>
+    <a href="{% url 'orders' %}" class="block py-2 text-gray-700 hover:text-pink-500">Orders</a>
+    <a href="/dashboard/login/" class="block py-2 text-gray-700 hover:text-pink-500">Dashboard</a>
+    
+  </div>
+
+</nav>
 
   <!-- Main Content -->
   <main class="min-h-screen">
@@ -41,7 +83,96 @@
   </main>
 
   <!-- Footer -->
-  {% include "shop/includes/footer.html" %}
+<footer class="border-t-1 border-black bg-gradient-to-br from-pink-300 via-black to-fuchsia-300 text-white">
+  
+
+  <!-- Top Footer Section -->
+  <div class="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
+
+    <!-- Brand -->
+    <div class="text-center md:text-left">
+      <h2 class="text-2xl font-bold text-gold mb-4">
+        Lily Beauty Bar
+      </h2>
+
+      <p class="text-gray-300 leading-7">
+        Luxury beauty products carefully selected to make you glow with confidence and elegance.
+      </p>
+    </div>
+
+    <!-- Address -->
+    <div class="text-center md:text-left">
+      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
+        Address
+      </h3>
+
+      <p class="text-gray-300 leading-7">
+        122 Ujoelen Road,<br>
+        Ekpoma,<br>
+        Edo State, Nigeria.
+      </p>
+    </div>
+
+    <!-- Information -->
+    <div class="text-center md:text-left">
+      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
+        Information
+      </h3>
+
+      <ul class="space-y-3">
+        <li>
+          <a href="#" class="hover:text-blush transition">
+            About
+          </a>
+        </li>
+
+        <li>
+          <a href="{% url 'contact' %}" class="hover:text-blush transition">
+            Contact
+          </a>
+        </li>
+
+        <li>
+          <a href="#" class="hover:text-blush transition">
+            Privacy Policy
+          </a>
+        </li>
+
+        <li>
+          <a href="#" class="hover:text-blush transition">
+            Terms & Conditions
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Working Hours -->
+    <div class="text-center md:text-left">
+      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
+        Working Hours
+      </h3>
+
+      <ul class="space-y-2 text-gray-300">
+        <li>Monday — 9am - 6pm</li>
+        <li>Tuesday — 9am - 6pm</li>
+        <li>Wednesday — 9am - 6pm</li>
+        <li>Thursday — 9am - 6pm</li>
+        <li>Friday — 9am - 6pm</li>
+        <li>Saturday — 9am - 6pm</li>
+        <li>Sunday — Closed</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Bottom Footer -->
+  <div class="border-t border-gray-700">
+    <div class="max-w-7xl mx-auto px-6 py-5 text-center text-sm text-gray-400">
+      © {% now "Y" %} Lily Beauty Bar. All rights reserved.
+    </div>
+  </div>
+
+</footer>
 
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
