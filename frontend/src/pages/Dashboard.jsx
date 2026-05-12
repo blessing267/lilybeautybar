@@ -28,6 +28,16 @@ export default function Dashboard({ onLogout }) {
     price: "",
     image: null,
     image_url: "",
+
+    variants: [
+    {
+      colour: "",
+      product_type: "",
+      price: "",
+      stock: "",
+      sku: "",
+    }
+  ]
   });
   const [saving, setSaving] = useState(false);
 
