@@ -40,6 +40,15 @@ export default function Dashboard({ onLogout }) {
         price: "",
         image: null,
         image_url: "",
+        variants: [
+          {
+            colour: "",
+            product_type: "",
+            price: "",
+            stock: "",
+            sku: "",
+          }
+        ]
       });
     }
   }, [showModal, editingProduct]);
@@ -115,10 +124,23 @@ export default function Dashboard({ onLogout }) {
       price: String(product.price),
       image: null,
       image_url: product.image_url,
+
+      variants:
+        product.variants?.length
+          ? product.variants
+          : [
+              {
+                colour: "",
+                product_type: "",
+                price: "",
+                stock: "",
+                sku: "",
+              }
+            ]
     });
 
     setShowModal(true);
-  };
+};
 
   // Submit form
   const handleFormSubmit = async (formData) => {

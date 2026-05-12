@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order
+from .models import Order, Product, ProductVariant
 
 # Register your models here.
 @admin.register(Order)
@@ -11,3 +11,14 @@ class OrderAdmin(admin.ModelAdmin):
     def formatted_amount(self, obj):
         return f"₦{int(obj.amount):,}"
     formatted_amount.short_description = "Amount (NGN)"
+
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
+    extra = 1
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price')
+    inlines = [ProductVariantInline]
+

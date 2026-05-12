@@ -15,7 +15,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
-from .models import Product, Payment, Order, OrderItem
+from .models import Product, ProductVariant, Payment, Order, OrderItem
 from .forms import ProductForm
 from .serializers import ProductSerializer
 
@@ -57,22 +57,29 @@ def product(request):
 
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
-    
+
     return render(request, 'shop/products.html', {'products': products})
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
+    variant_id = request.GET.get("variant")
+    selected_variant = None
+
+    if variant_id:
+        selected_variant = product.variants.filter(id=variant_id).first()
+
     has_paid = False
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and selected_variant:
         has_paid = Payment.objects.filter(
-            order__items__product=product,
+            order__items__variant=selected_variant,
             user=request.user,
             verified=True
         ).exists()
 
     return render(request, 'shop/product_detail.html', { 
         'product': product,
+        'selected_variant': selected_variant,
         'has_paid': has_paid
      })
 
@@ -96,6 +103,9 @@ def checkout(request, product_id):
 
     product = get_object_or_404(Product, pk=product_id)
 
+    variant_id = request.POST.get("variant_id")
+    variant = get_object_or_404(ProductVariant, id=variant_id)
+
     # Email (required for Paystack)
     customer_email = request.user.email if request.user.is_authenticated else request.POST.get('email')
     if not customer_email:
@@ -116,13 +126,13 @@ def checkout(request, product_id):
         existing_payment = Order.objects.filter(
             user=request.user,
             status="paid",
-            items__product=product
+            items__variant=variant
         ).exists()
     else:
         existing_payment = Order.objects.filter(
             email=customer_email,
             status="paid",
-            items__product=product
+            items__variant=variant
         ).exists()
 
     if existing_payment:
@@ -140,8 +150,9 @@ def checkout(request, product_id):
     OrderItem.objects.create(
         order=order,
         product=product,
+        variant=variant,
         quantity=1,
-        unit_price=product.price
+        unit_price=variant.price or product.price
     )
 
     # Initialize Paystack transaction

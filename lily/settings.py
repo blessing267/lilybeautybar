@@ -35,11 +35,15 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
     "https://www.lilybeautybar.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://lilybeautybar.onrender.com",
     "https://www.lilybeautybar.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [

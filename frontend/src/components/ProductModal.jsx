@@ -36,6 +36,7 @@ export default function ProductModal({
     e.preventDefault();
 
     const formData = new FormData();
+
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
@@ -47,6 +48,12 @@ export default function ProductModal({
       alert("Please select an image");
       return;
     }
+
+    // variants
+    formData.append(
+      "variants",
+      JSON.stringify(form.variants)
+    );
 
     try {
       await onSubmit(formData);
@@ -95,6 +102,120 @@ export default function ProductModal({
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
           />
+
+          <h3 className="font-semibold mt-3">
+  Product Options
+</h3>
+
+{form.variants?.map((variant, index) => (
+  <div
+    key={index}
+    className="border rounded p-3 flex flex-col gap-2"
+  >
+    <input
+      type="text"
+      placeholder="Colour"
+      value={variant.colour}
+      onChange={(e) => {
+        const updated = [...form.variants];
+        updated[index].colour = e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+
+    <input
+      type="text"
+      placeholder="Product Type"
+      value={variant.product_type}
+      onChange={(e) => {
+        const updated = [...form.variants];
+        updated[index].product_type =
+          e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+
+    <input
+      type="number"
+      placeholder="Variant Price"
+      value={variant.price}
+      onChange={(e) => {
+        const updated = [...form.variants];
+        updated[index].price = e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+
+    <input
+      type="number"
+      placeholder="Stock"
+      value={variant.stock}
+      onChange={(e) => {
+        const updated = [...form.variants];
+        updated[index].stock = e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+
+    <input
+      type="text"
+      placeholder="SKU"
+      value={variant.sku}
+      onChange={(e) => {
+        const updated = [...form.variants];
+        updated[index].sku = e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+  </div>
+))}
+
+<button
+  type="button"
+  onClick={() => {
+    setForm((prev) => ({
+      ...prev,
+      variants: [
+        ...(prev.variants || []),
+        {
+          colour: "",
+          product_type: "",
+          price: "",
+          stock: "",
+          sku: "",
+        }
+      ]
+    }));
+  }}
+  className="bg-green-500 text-white px-3 py-2 rounded"
+>
+  + Add Option
+</button>
 
           {/* Image Upload */}
           <input

@@ -2,7 +2,17 @@
 <!-- If guest, they must provide email. If logged in, we skip email input (use user’s email) -->
     <form method="POST">
         {% csrf_token %}
-        
+        <!-- Variant selection -->
+        <label>Select Option:</label>
+        <select name="variant_id" required>
+            {% for variant in product.variants.all %}
+                <option value="{{ variant.id }}">
+                    {{ variant.colour }} - {{ variant.product_type }} (₦{{ variant.price }})
+                option>
+            {% endfor %}
+        </select>
+
+        <!-- Email only for guests -->
         {% if not request.user.is_authenticated %}
             <label for="email">Enter your email for receipt:</label>
             <input type="email" name="email" required>
