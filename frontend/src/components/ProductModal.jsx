@@ -41,7 +41,7 @@ export default function ProductModal({
     formData.append("description", form.description);
     formData.append("price", form.price);
 
-  // Only append file if user selected a new one
+  // Only append form if........
     if (form.image) {
       formData.append("image", form.image);
     } else if (!isEditing) {
@@ -50,10 +50,39 @@ export default function ProductModal({
     }
 
     // variants
-    formData.append(
-      "variants",
-      JSON.stringify(form.variants)
-    );
+    form.variants.forEach((variant, index) => {
+      formData.append(
+        `variants[${index}][colour]`,
+        variant.colour
+      );
+
+      formData.append(
+        `variants[${index}][product_type]`,
+        variant.product_type
+      );
+
+      formData.append(
+       `variants[${index}][price]`,
+       variant.price
+      );
+
+      formData.append(
+       `variants[${index}][stock]`,
+        variant.stock
+      );
+
+      formData.append(
+        `variants[${index}][sku]`,
+        variant.sku
+     );
+
+      if (variant.image) {
+        formData.append(
+          `variants[${index}][image]`,
+          variant.image
+        );
+      }
+    });
 
     try {
       await onSubmit(formData);
@@ -63,8 +92,9 @@ export default function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         <h2 className="text-xl font-bold mb-4">
           {isEditing ? "Edit Product" : "Add Product"}
         </h2>
@@ -104,14 +134,14 @@ export default function ProductModal({
           />
 
           <h3 className="font-semibold mt-3">
-  Product Options
-</h3>
+            Product Options
+          </h3>
 
-{form.variants?.map((variant, index) => (
-  <div
-    key={index}
-    className="border rounded p-3 flex flex-col gap-2"
-  >
+    {form.variants?.map((variant, index) => (
+      <div
+        key={index}
+        className="border rounded p-3 flex flex-col gap-2"
+      >
     <input
       type="text"
       placeholder="Colour"
@@ -184,6 +214,23 @@ export default function ProductModal({
       onChange={(e) => {
         const updated = [...form.variants];
         updated[index].sku = e.target.value;
+
+        setForm((prev) => ({
+          ...prev,
+          variants: updated,
+        }));
+      }}
+      className="border px-3 py-2 rounded"
+    />
+
+    <input
+      type="file"
+      accept="image/*"
+      onChange={(e) => {
+        const updated = [...form.variants];
+
+        updated[index].image =
+          e.target.files?.[0] || null;
 
         setForm((prev) => ({
           ...prev,

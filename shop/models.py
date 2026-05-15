@@ -43,7 +43,7 @@ class ProductVariant(models.Model):
         null=True
     )
 
-    sku = models.CharField(max_length=100, unique=True)
+    sku = models.CharField(max_length=100, unique=True, blank=True)
 
     def __str__(self):
         return f"{self.product.name} - {self.colour} - {self.product_type}"
