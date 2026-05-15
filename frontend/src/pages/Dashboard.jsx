@@ -35,7 +35,6 @@ export default function Dashboard({ onLogout }) {
       product_type: "",
       price: "",
       stock: "",
-      sku: "",
     }
   ]
   });
@@ -56,7 +55,6 @@ export default function Dashboard({ onLogout }) {
             product_type: "",
             price: "",
             stock: "",
-            sku: "",
           }
         ]
       });
@@ -144,7 +142,6 @@ export default function Dashboard({ onLogout }) {
                 product_type: "",
                 price: "",
                 stock: "",
-                sku: "",
               }
             ]
     });

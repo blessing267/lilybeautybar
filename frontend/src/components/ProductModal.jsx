@@ -71,11 +71,6 @@ export default function ProductModal({
         variant.stock
       );
 
-      formData.append(
-        `variants[${index}][sku]`,
-        variant.sku
-     );
-
       if (variant.image) {
         formData.append(
           `variants[${index}][image]`,
@@ -208,22 +203,6 @@ export default function ProductModal({
     />
 
     <input
-      type="text"
-      placeholder="SKU"
-      value={variant.sku}
-      onChange={(e) => {
-        const updated = [...form.variants];
-        updated[index].sku = e.target.value;
-
-        setForm((prev) => ({
-          ...prev,
-          variants: updated,
-        }));
-      }}
-      className="border px-3 py-2 rounded"
-    />
-
-    <input
       type="file"
       accept="image/*"
       onChange={(e) => {
@@ -254,7 +233,6 @@ export default function ProductModal({
           product_type: "",
           price: "",
           stock: "",
-          sku: "",
         }
       ]
     }));

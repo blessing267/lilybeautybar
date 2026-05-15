@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Product, ProductVariant
-import uuid
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,8 +26,9 @@ class ProductSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        variants_data = []
+        validated_data.pop("variants", None)
 
+        variants_data = []
         index = 0
 
         while f"variants[{index}][colour]" in self.initial_data:
@@ -53,11 +53,6 @@ class ProductSerializer(serializers.ModelSerializer):
                         f"variants[{index}][stock]"
                     ),
 
-                "sku":
-                    self.initial_data.get(
-                        f"variants[{index}][sku]"
-                    )or f"SKU-{uuid.uuid4().hex[:8].upper()}",
-
                 "image":
                     self.initial_data.get(
                         f"variants[{index}][image]"
@@ -77,8 +72,9 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def update(self, instance, validated_data):
-            variants_data = []
+            validated_data.pop("variants", None)
 
+            variants_data = []
             index = 0
 
             while f"variants[{index}][colour]" in self.initial_data:
@@ -101,11 +97,6 @@ class ProductSerializer(serializers.ModelSerializer):
                     "stock":
                         self.initial_data.get(
                             f"variants[{index}][stock]"
-                        ),
-
-                    "sku":
-                        self.initial_data.get(
-                            f"variants[{index}][sku]"
                         ),
 
                     "image":

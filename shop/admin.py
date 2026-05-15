@@ -16,9 +16,31 @@ class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
 
+    readonly_fields = ('sku',)
+
+    fields = (
+        'sku',
+        'colour',
+        'product_type',
+        'price',
+        'stock',
+        'image'
+    )
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
     inlines = [ProductVariantInline]
 
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    list_display = (
+        'product',
+        'sku',
+        'colour',
+        'product_type',
+        'price',
+        'stock'
+    )
+
+    readonly_fields = ('sku',)

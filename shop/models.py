@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth import get_user_model
 from cloudinary.models import CloudinaryField
@@ -20,13 +21,22 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(
-        Product,
+        'Product',
         on_delete=models.CASCADE,
         related_name='variants'
     )
 
-    colour = models.CharField(max_length=100, blank=True, null=True)
-    product_type = models.CharField(max_length=100, blank=True, null=True)
+    colour = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True
+    )
+
+    product_type = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True
+    )
 
     price = models.DecimalField(
         max_digits=10,
@@ -43,10 +53,18 @@ class ProductVariant(models.Model):
         null=True
     )
 
-    sku = models.CharField(max_length=100, unique=True, blank=True)
+    sku = models.CharField(max_length=100, unique=True, blank=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.sku:
+            self.sku = (
+                f"SKU-{uuid.uuid4().hex[:8].upper()}"
+            )
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.product.name} - {self.colour} - {self.product_type}"
+        return f"{self.product.name} - {self.sku}"
     
 class Order(models.Model):
     STATUS_CHOICES = [
