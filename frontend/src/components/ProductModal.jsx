@@ -51,6 +51,13 @@ export default function ProductModal({
 
     // variants
     form.variants.forEach((variant, index) => {
+      if (variant.id) {
+        formData.append(
+          `variants[${index}][id]`,
+          variant.id
+        );
+      }
+
       formData.append(
         `variants[${index}][colour]`,
         variant.colour

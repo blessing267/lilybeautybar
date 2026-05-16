@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Product, ProductVariant
 
 class ProductVariantSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
+
     class Meta:
         model = ProductVariant
         fields = ['id', 'colour', 'product_type', 'price', 'stock', 'sku', 'image']
@@ -10,7 +12,10 @@ class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
     image_url = serializers.SerializerMethodField(read_only=True)
 
-    variants = serializers.ListField(required=False, write_only=True)
+    variants = ProductVariantSerializer(
+        many=True,
+        read_only=True
+    )
 
     class Meta:
         model = Product
@@ -25,45 +30,54 @@ class ProductSerializer(serializers.ModelSerializer):
             return obj.image.url
         return None
 
-    def create(self, validated_data):
-        validated_data.pop("variants", None)
-
+    def _extract_variants(self):
         variants_data = []
         index = 0
 
-        while f"variants[{index}][colour]" in self.initial_data:
+        while (
+            f"variants[{index}][colour]"
+            in self.initial_data
+        ):
             variants_data.append({
-                "colour":
-                    self.initial_data.get(
-                        f"variants[{index}][colour]"
-                    ),
+                "id": self.initial_data.get(
+                    f"variants[{index}][id]"
+                ),
 
-                "product_type":
-                    self.initial_data.get(
-                        f"variants[{index}][product_type]"
-                    ),
+                "colour": self.initial_data.get(
+                    f"variants[{index}][colour]"
+                ),
 
-                "price":
-                    self.initial_data.get(
-                        f"variants[{index}][price]"
-                    ),
+                "product_type": self.initial_data.get(
+                    f"variants[{index}][product_type]"
+                ),
 
-                "stock":
-                    self.initial_data.get(
-                        f"variants[{index}][stock]"
-                    ),
+                "price": self.initial_data.get(
+                    f"variants[{index}][price]"
+                ),
 
-                "image":
-                    self.initial_data.get(
-                        f"variants[{index}][image]"
-                    )
+                "stock": self.initial_data.get(
+                    f"variants[{index}][stock]"
+                ),
+
+                "image": self.initial_data.get(
+                    f"variants[{index}][image]"
+                )
             })
 
             index += 1
 
-        product = Product.objects.create(**validated_data)
+        return variants_data
+
+    def create(self, validated_data):
+        variants_data = self._extract_variants()
+
+        product = Product.objects.create(
+            **validated_data
+        )
 
         for variant_data in variants_data:
+            variant_data.pop("id", None)
+
             ProductVariant.objects.create(
                 product=product,
                 **variant_data
@@ -72,72 +86,88 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
 
     def update(self, instance, validated_data):
-            validated_data.pop("variants", None)
+        variants_data = self._extract_variants()
 
-            variants_data = []
-            index = 0
+        # update product
+        instance.name = validated_data.get(
+            "name",
+            instance.name
+        )
 
-            while f"variants[{index}][colour]" in self.initial_data:
-                variants_data.append({
-                    "colour":
-                        self.initial_data.get(
-                            f"variants[{index}][colour]"
-                        ),
+        instance.description = validated_data.get(
+            "description",
+            instance.description
+        )
 
-                    "product_type":
-                        self.initial_data.get(
-                            f"variants[{index}][product_type]"
-                        ),
+        instance.price = validated_data.get(
+            "price",
+            instance.price
+        )
 
-                    "price":
-                        self.initial_data.get(
-                            f"variants[{index}][price]"
-                        ),
+        if validated_data.get("image"):
+            instance.image = validated_data.get(
+                "image"
+            )
 
-                    "stock":
-                        self.initial_data.get(
-                            f"variants[{index}][stock]"
-                        ),
+        instance.save()
 
-                    "image":
-                        self.initial_data.get(
-                            f"variants[{index}][image]"
+        existing_ids = []
+
+        for variant_data in variants_data:
+            variant_id = variant_data.pop(
+                "id",
+                None
+            )
+
+            image = variant_data.pop(
+                "image",
+                None
+            )
+
+            # EDIT EXISTING VARIANT
+            if variant_id:
+                try:
+                    variant = ProductVariant.objects.get(
+                        id=variant_id,
+                        product=instance
+                    )
+
+                    for key, value in (
+                        variant_data.items()
+                    ):
+                        setattr(
+                            variant,
+                            key,
+                            value
                         )
-                })
 
-                index += 1
+                    if image:
+                        variant.image = image
 
-            # update product fields
-            instance.name = validated_data.get(
-                "name",
-                instance.name
-            )
+                    variant.save()
 
-            instance.description = validated_data.get(
-                "description",
-                instance.description
-            )
+                    existing_ids.append(
+                        variant.id
+                    )
 
-            instance.price = validated_data.get(
-                "price",
-                instance.price
-            )
+                except ProductVariant.DoesNotExist:
+                    pass
 
-            if validated_data.get("image"):
-                instance.image = validated_data.get(
-                    "image"
-                )
-
-            instance.save()
-
-            # remove old variants
-            instance.variants.all().delete()
-
-            # recreate variants
-            for variant_data in variants_data:
-                ProductVariant.objects.create(
+            # CREATE NEW VARIANT
+            else:
+                variant = ProductVariant.objects.create(
                     product=instance,
-                 **variant_data
+                    image=image,
+                    **variant_data
                 )
 
-            return instance
+                existing_ids.append(
+                    variant.id
+                )
+
+        # delete removed variants
+        instance.variants.exclude(
+            id__in=existing_ids
+        ).delete()
+
+        return instance
