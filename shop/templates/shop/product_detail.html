@@ -7,14 +7,16 @@
 
     <!-- PRODUCT IMAGE -->
     <div>
-      {% if product.image %}
-        <img src="{{ product.image.url }}" 
-             alt="{{ product.name }}" 
-             class="w-full rounded-2xl border shadow" />
-      {% else %}
-        <div class="w-full aspect-square bg-slate-100 rounded-2xl flex items-center justify-center">
-          <span class="text-slate-400">No Image</span>
-        </div>
+      {% if selected_variant and selected_variant.image %}
+        <img id="product-image"
+          src="{{ selected_variant.image.url }}"
+          alt="{{ product.name }}"
+          class="w-full rounded-2xl border shadow" />
+      {% elif product.image %}
+        <img id="product-image"
+          src="{{ product.image.url }}"
+          alt="{{ product.name }}"
+          class="w-full rounded-2xl border shadow" />
       {% endif %}
     </div>
 
@@ -28,8 +30,15 @@
       </p>
 
       <!-- base price (optional display only) -->
-      <div class="mt-4 text-2xl font-bold">
-        ₦{{ product.price }}
+      <div
+        id="product-price"
+        class="mt-4 text-2xl font-bold"
+      >
+        ₦{% if selected_variant and selected_variant.price %}
+          {{ selected_variant.price }}
+        {% else %}
+          {{ product.price }}
+        {% endif %}
       </div>
 
       <!-- PAYMENT SECTION -->
@@ -61,22 +70,26 @@
               Choose option
             </label>
 
-            <select name="variant_id" class="border rounded-lg p-2 w-full mb-4">
+            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
               {% for variant in product.variants.all %}
-                <option value="{{ variant.id }}">
-                  {{ variant.colour }} - {{ variant.product_type }}
-                  {% if variant.price %}
-                    (₦{{ variant.price }})
-                  {% else %}
-                    (₦{{ product.price }})
-                  {% endif %}
-                </option>
+              <option
+                value="{{ variant.id }}"
+                data-price="{{ variant.price|default:product.price }}"
+                data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+              >
+                {{ variant.colour }} - {{ variant.product_type }}
+                {% if variant.price %}
+                  (₦{{ variant.price }})
+                {% else %}
+                  (₦{{ product.price }})
+                {% endif %}
+              </option>
               {% endfor %}
             </select>
 
             <!-- BUY BUTTON -->
             <button type="submit"
-              class="w-full px-6 py-3 rounded-xl bg-[var(--brand)] text-white hover:opacity-90">
+              class="w-full px-6 py-3 rounded-xl bg-[var(--brand)] text-black hover:opacity-90">
               Buy now
             </button>
 
@@ -100,4 +113,37 @@
 
   </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const variantSelect =
+        document.getElementById("variant-select");
+
+    const productPrice =
+        document.getElementById("product-price");
+
+    const productImage =
+        document.getElementById("product-image");
+
+    variantSelect.addEventListener("change", function () {
+        const selected =
+            this.options[this.selectedIndex];
+
+        const price =
+            selected.dataset.price;
+
+        const image =
+            selected.dataset.image;
+
+        // Update price
+        productPrice.innerHTML = `₦${price}`;
+
+        // Update image
+        if (image) {
+            productImage.src = image;
+        }
+    });
+});
+</script>
+
 {% endblock %}

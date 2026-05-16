@@ -10,6 +10,28 @@
     {% csrf_token %}
     {{ form.as_p }}
 
+    <h2 class="text-lg font-semibold mt-6 mb-4">
+      Product Variants
+    </h2>
+
+    {{ formset.management_form }}
+
+    {% for variant_form in formset %}
+      <div class="border rounded-lg p-4 mb-4 bg-slate-50">
+
+        {{ variant_form.id }}
+
+        {{ variant_form.as_p }}
+
+        {% if variant_form.instance.pk %}
+          <div class="mt-2">
+            {{ variant_form.DELETE }}
+            <label>Delete this variant</label>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
     <!-- Image preview -->
     <div class="mt-4">
       <p class="text-sm text-slate-600 mb-1">Image Preview:</p>

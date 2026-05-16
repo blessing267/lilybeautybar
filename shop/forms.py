@@ -1,5 +1,6 @@
 from django import forms
-from .models import Product
+from django.forms import inlineformset_factory
+from .models import Product, ProductVariant
 
 class CheckoutForm(forms.Form):
     email = forms.EmailField(required=True)
@@ -28,3 +29,23 @@ class ProductForm(forms.ModelForm):
                 "paystack requires a minimum charge of ₦100."
             )
         return price
+    
+class ProductVariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = [
+            'colour',
+            'product_type',
+            'price',
+            'stock',
+            'image',
+        ]
+
+
+ProductVariantFormSet = inlineformset_factory(
+    Product,
+    ProductVariant,
+    form=ProductVariantForm,
+    extra=1,
+    can_delete=True
+)

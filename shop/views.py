@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 
 from .models import Product, ProductVariant, Payment, Order, OrderItem
-from .forms import ProductForm
+from .forms import ProductForm, ProductVariantFormSet
 from .serializers import ProductSerializer
 
 from django.views.decorators.csrf import csrf_exempt
@@ -297,22 +297,49 @@ def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            product = form.save()
+
+            formset = ProductVariantFormSet(
+                request.POST,
+                request.FILES,
+                instance=product
+            )
+
+            if formset.is_valid():
+                formset.save()
+
             return redirect('dashboard')
     else:
         form = ProductForm()
-    return render(request, 'shop/dashboard/product_form.html', {'form': form, 'product': None})
+        formset = ProductVariantFormSet()
+
+    return render(request, 'shop/dashboard/product_form.html', {'form': form, 'formset': formset, 'product': None})
 
 def edit_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
+        
+        formset = ProductVariantFormSet(
+            request.POST,
+            request.FILES,
+            instance=product
+        )
+
+        if (
+            form.is_valid()
+            and formset.is_valid()
+        ):
             form.save()
+            formset.save()
+
             return redirect('dashboard')
     else:
         form = ProductForm(instance=product)
-    return render(request, 'shop/dashboard/product_form.html', {'form': form, 'product': product})
+        formset = ProductVariantFormSet(
+            instance=product
+        )
+    return render(request, 'shop/dashboard/product_form.html', {'form': form, 'formset': formset, 'product': product})
 
 # -------------------------------
 # DRF API for React Dashboard
