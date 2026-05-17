@@ -70,12 +70,16 @@
               Choose option
             </label>
 
-            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
+            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4" required>
+              <option value="" selected disabled>
+                Select a product option
+              </option>
+
               {% for variant in product.variants.all %}
               <option
                 value="{{ variant.id }}"
                 data-price="{{ variant.price|default:product.price }}"
-                data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+                data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
               >
                 {{ variant.colour }} - {{ variant.product_type }}
                 {% if variant.price %}
