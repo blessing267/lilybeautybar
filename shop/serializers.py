@@ -3,11 +3,25 @@ from .models import Product, ProductVariant
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductVariant
-        fields = ['id', 'colour', 'product_type', 'price', 'stock', 'sku', 'image']
+        fields = ['id', 'colour', 'product_type', 'price', 'stock', 'sku', 'image', 'image_url']
 
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+
+            if request:
+                return request.build_absolute_uri(
+                    obj.image.url
+                )
+
+            return obj.image.url
+
+        return None
+    
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False)
     image_url = serializers.SerializerMethodField(read_only=True)

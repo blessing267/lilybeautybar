@@ -47,8 +47,8 @@ class ProductVariant(models.Model):
 
     stock = models.PositiveIntegerField(default=0)
 
-    image = models.ImageField(
-        upload_to='product_variants/',
+    image = CloudinaryField(
+        'image',
         blank=True,
         null=True
     )
