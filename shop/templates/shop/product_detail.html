@@ -65,31 +65,35 @@
               >
             {% endif %}
 
-            <!-- VARIANT SELECTION -->
-            <label class="block text-sm font-medium mb-2">
-              Choose option
-            </label>
+            {% if product.variants.exists %}
 
-            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
-              <option value="" selected data-price="{{ product.price }}" data-image="{{ product.image.url }}">
-                Select a product option
-              </option>
+              <!-- VARIANT SELECTION -->
+              <label class="block text-sm font-medium mb-2">
+                Choose option
+              </label>
 
-              {% for variant in product.variants.all %}
-              <option
-                value="{{ variant.id }}"
-                data-price="{{ variant.price|default:product.price }}"
-                data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
-              >
-                {{ variant.colour }} - {{ variant.product_type }}
-                {% if variant.price %}
-                  (₦{{ variant.price }})
-                {% else %}
-                  (₦{{ product.price }})
-                {% endif %}
-              </option>
-              {% endfor %}
-            </select>
+              <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
+                <option value="" selected data-price="{{ product.price }}" data-image="{{ product.image.url }}">
+                  Select a product option
+                </option>
+
+                {% for variant in product.variants.all %}
+                <option
+                  value="{{ variant.id }}"
+                  data-price="{{ variant.price|default:product.price }}"
+                  data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+                >
+                  {{ variant.colour }} - {{ variant.product_type }}
+                  {% if variant.price %}
+                    (₦{{ variant.price }})
+                  {% else %}
+                    (₦{{ product.price }})
+                  {% endif %}
+                </option>
+                {% endfor %}
+              </select>
+
+            {% endif %}
 
             <!-- BUY BUTTON -->
             <button type="submit"
@@ -120,6 +124,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
     const variantSelect =
         document.getElementById("variant-select");
 
@@ -129,7 +134,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const productImage =
         document.getElementById("product-image");
 
+    // stop script if no variants exist
+    if (!variantSelect) return;
+
     variantSelect.addEventListener("change", function () {
+
         const selected =
             this.options[this.selectedIndex];
 
@@ -139,10 +148,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const image =
             selected.dataset.image;
 
-        // Update price
+        // update price
         productPrice.innerHTML = `₦${price}`;
 
-        // Update image
+        // update image
         if (image) {
             productImage.src = image;
         }
