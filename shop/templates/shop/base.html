@@ -13,30 +13,36 @@
 
 {% tailwind_css %}
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
 </head>
 
-<body class="bg-nude text-charcoal font-sans">
+<body class="bg-[#fff7f8] text-gray-800 font-sans">
 
-  <!-- Floating WhatsApp Button -->
-  <a
-    href="https://wa.me/2349012180451"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="fixed bottom-15 right-8 z-50 hover:scale-110 transition-transform duration-300"
-  >
-    <img
-      src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-      alt="WhatsApp"
-      class="w-14 h-14 rounded-full animate-pulse"
+  <!-- FLOATING ACTION BUTTONS -->
+  <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+
+    <!-- WhatsApp -->
+    <a
+      href="https://wa.me/2349012180451"
+      target="_blank"
+      class="hover:scale-110 transition"
     >
-  </a>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+        class="w-18 h-14 rounded-full animate-pulse"
+        alt="WhatsApp"
+      >
+    </a>
 
-  <!-- FLOATING SHOP BUTTON -->
-  <div class="fixed bottom-5 right-5 z-50">
-      <a href="{% url 'products' %}"
-          class="bg-pink-500 text-white px-6 py-4 rounded-full shadow-2xl hover:bg-pink-600 transition">
-          Shop
-      </a>
+    <!-- Shop Button -->
+    <a
+      href="{% url 'products' %}"
+      class="bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600 transition text-sm text-center"
+    >
+      Shop
+    </a>
+
   </div>
 
 

@@ -1093,6 +1093,9 @@
   .bottom-15 {
     bottom: calc(var(--spacing) * 15);
   }
+  .bottom-16 {
+    bottom: calc(var(--spacing) * 16);
+  }
   @layer daisyui.l1.l2.l3 {
     .textarea {
       border: var(--border) solid #0000;
@@ -1523,8 +1526,17 @@
   .w-14 {
     width: calc(var(--spacing) * 14);
   }
+  .w-15 {
+    width: calc(var(--spacing) * 15);
+  }
   .w-16 {
     width: calc(var(--spacing) * 16);
+  }
+  .w-17 {
+    width: calc(var(--spacing) * 17);
+  }
+  .w-18 {
+    width: calc(var(--spacing) * 18);
   }
   .w-64 {
     width: calc(var(--spacing) * 64);
@@ -1711,6 +1723,9 @@
   }
   .bg-\[\#f1eaff\] {
     background-color: #f1eaff;
+  }
+  .bg-\[\#fff7f8\] {
+    background-color: #fff7f8;
   }
   .bg-\[var\(--brand\)\] {
     background-color: var(--brand);
