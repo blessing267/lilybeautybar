@@ -70,8 +70,8 @@
               Choose option
             </label>
 
-            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4" required>
-              <option value="" selected disabled>
+            <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
+              <option value="" selected data-price="{{ product.price }}" data-image="{{ product.image.url }}">
                 Select a product option
               </option>
 
