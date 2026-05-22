@@ -1,21 +1,208 @@
-<h1>Lily Beauty Bar Checkout</h1>
-<!-- If guest, they must provide email. If logged in, we skip email input (use user’s email) -->
-    <form method="POST">
-        {% csrf_token %}
-        <!-- Variant selection -->
-        <label>Select Option:</label>
-        <select name="variant_id" required>
-            {% for variant in product.variants.all %}
-                <option value="{{ variant.id }}">
-                    {{ variant.colour }} - {{ variant.product_type }} (₦{{ variant.price }})
-                option>
-            {% endfor %}
-        </select>
+{% extends 'shop/base.html' %}
 
-        <!-- Email only for guests -->
-        {% if not request.user.is_authenticated %}
-            <label for="email">Enter your email for receipt:</label>
-            <input type="email" name="email" required>
-        {% endif %}
-        <button type="submit">Proceed to Payment</button>
-    </form>
+{% block title %}
+Checkout • Lily Beauty Bar
+{% endblock %}
+
+{% block content %}
+
+<section class="bg-gradient-to-b from-[#fff7f8] to-white py-20 min-h-screen">
+
+    <div class="max-w-6xl mx-auto px-6">
+
+        <!-- Heading -->
+        <div class="text-center mb-12">
+
+            <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
+                💳 Review Items
+            </span>
+
+            <h1 class="mt-5 text-4xl md:text-5xl font-bold text-gray-900">
+                Complete Your Order
+            </h1>
+
+            <p class="mt-4 text-gray-600 text-lg">
+                Review your items and proceed to payment.
+            </p>
+
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-10">
+
+            <!-- LEFT: ORDER ITEMS -->
+            <div class="lg:col-span-2">
+
+                <div class="bg-white rounded-[35px] shadow-lg border border-pink-100 p-8">
+
+                    <h2 class="text-2xl font-bold mb-8">
+                        Order Summary
+                    </h2>
+
+                    <div class="space-y-6">
+
+                        {% for item in cart_items %}
+
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-5">
+
+                            <div class="flex items-center gap-4">
+
+                                {% if item.product.image %}
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                    class="w-24 h-24 object-cover rounded-2xl shadow"
+                                >
+                                {% endif %}
+
+                                <div>
+
+                                    <h3 class="font-semibold text-lg">
+                                        {{ item.product.name }}
+                                    </h3>
+
+                                    {% if item.variant %}
+                                    <p class="text-sm text-gray-500">
+                                        {{ item.variant.colour }}
+                                        -
+                                        {{ item.variant.product_type }}
+                                    </p>
+                                    {% endif %}
+
+                                    <p class="text-sm text-gray-500">
+                                        Qty:
+                                        {{ item.quantity }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="text-right">
+
+                                <p class="font-bold text-lg text-pink-500">
+                                    ₦{{ item.subtotal }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT: PAYMENT CARD -->
+            <div>
+
+                <div class="bg-white rounded-[35px] shadow-xl border border-pink-100 p-8 sticky top-28">
+
+                    <h2 class="text-2xl font-bold mb-6">
+                        Payment Summary
+                    </h2>
+
+                    <div class="space-y-4 border-b border-gray-200 pb-6">
+
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span>₦{{ total }}</span>
+                        </div>
+
+                        <div class="flex justify-between text-gray-600">
+                            <span>Delivery</span>
+                            <span>Calculated later</span>
+                        </div>
+
+                    </div>
+
+                    <div class="flex justify-between items-center mt-6">
+
+                        <span class="text-xl font-bold">
+                            Total
+                        </span>
+
+                        <span class="text-3xl font-bold text-pink-500">
+                            ₦{{ total }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- PAYMENT FORM -->
+                    <form method="POST" class="mt-8">
+
+                        {% csrf_token %}
+
+                        <!-- EMAIL FOR GUEST -->
+                        {% if not request.user.is_authenticated %}
+
+                        <div class="mb-5">
+
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                placeholder="Enter your email"
+                                class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                            >
+
+                            <p class="text-xs text-gray-500 mt-2">
+                                Receipt will be sent to your email.
+                            </p>
+
+                        </div>
+
+                        {% else %}
+
+                        <div class="mb-5 bg-pink-50 rounded-2xl p-4">
+
+                            <p class="text-sm text-gray-600">
+                                Paying as:
+                            </p>
+
+                            <p class="font-semibold text-gray-900">
+                                {{ request.user.email }}
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+                        <!-- PAY BUTTON -->
+                        <button
+                            type="submit"
+                            class="w-full py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg transition duration-300 shadow-lg hover:scale-[1.02]"
+                        >
+                            Proceed to Payment 💳
+                        </button>
+
+                    </form>
+
+                    <!-- SECURITY -->
+                    <div class="mt-6 text-center">
+
+                        <p class="text-sm text-gray-500">
+                            🔒 Secure payment powered by Paystack
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

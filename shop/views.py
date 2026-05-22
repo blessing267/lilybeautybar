@@ -5,6 +5,7 @@ from paystackapi.transaction import Transaction
 from paystackapi.paystack import Paystack
 
 from decimal import Decimal
+from django.db.models import F
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -83,6 +84,216 @@ def product_detail(request, pk):
         'has_paid': has_paid
      })
 
+# -------------------------------
+# Cart
+# -------------------------------
+def add_to_cart(request, product_id):
+    if request.method == "POST":
+
+        product = get_object_or_404(
+            Product,
+            id=product_id
+        )
+
+        variant_id = request.POST.get(
+            "variant_id"
+        )
+
+        quantity = int(
+            request.POST.get(
+                "quantity",
+                1
+            )
+        )
+
+        # Variant is OPTIONAL
+        variant = None
+
+        if variant_id:
+            variant = get_object_or_404(
+                ProductVariant,
+                id=variant_id
+            )
+
+        cart = request.session.get(
+            "cart",
+            {}
+        )
+
+        # Create unique cart key
+        cart_key = (
+            f"{product.id}-{variant.id}"
+            if variant
+            else str(product.id)
+        )
+
+        if cart_key in cart:
+            cart[cart_key][
+                "quantity"
+            ] += quantity
+        else:
+            cart[cart_key] = {
+                "product_id":
+                    product.id,
+                "variant_id":
+                    variant.id
+                    if variant
+                    else None,
+                "quantity":
+                    quantity
+            }
+
+        request.session["cart"] = cart
+        request.session.modified = True
+
+        messages.success(
+            request,
+            "Added to cart!"
+        )
+
+        return redirect("cart")
+
+    return redirect("home")
+
+def cart(request):
+
+    cart = request.session.get(
+        "cart",
+        {}
+    )
+
+    cart_items = []
+
+    total = Decimal(
+        "0.00"
+    )
+
+    for key, item in cart.items():
+
+        product = Product.objects.filter(
+            id=item[
+                "product_id"
+            ]
+        ).first()
+
+        if not product:
+            continue
+
+        variant = None
+
+        if item[
+            "variant_id"
+        ]:
+            variant = (
+                ProductVariant.objects
+                .filter(
+                    id=item[
+                        "variant_id"
+                    ]
+                )
+                .first()
+            )
+
+        quantity = item[
+            "quantity"
+        ]
+
+        price = (
+            variant.price
+            if (
+                variant
+                and variant.price
+            )
+            else product.price
+        )
+
+        subtotal = (
+            price *
+            quantity
+        )
+
+        total += subtotal
+
+        cart_items.append({
+            "key": key,
+            "product": product,
+            "variant": variant,
+            "quantity": quantity,
+            "price": price,
+            "subtotal": subtotal
+        })
+
+    return render(
+        request,
+        "shop/cart.html",
+        {
+            "cart_items":
+                cart_items,
+            "total":
+                total
+        }
+    )
+
+def remove_from_cart(
+    request,
+    cart_key
+):
+    cart = request.session.get(
+        "cart",
+        {}
+    )
+
+    if cart_key in cart:
+        del cart[cart_key]
+
+    request.session[
+        "cart"
+    ] = cart
+
+    request.session.modified = True
+
+    messages.success(
+        request,
+        "Item removed."
+    )
+
+    return redirect("cart")
+
+def update_cart(
+    request,
+    cart_key
+):
+    if request.method == "POST":
+
+        quantity = int(
+            request.POST.get(
+                "quantity",
+                1
+            )
+        )
+
+        cart = request.session.get(
+            "cart",
+            {}
+        )
+
+        if cart_key in cart:
+
+            if quantity > 0:
+                cart[cart_key][
+                    "quantity"
+                ] = quantity
+            else:
+                del cart[cart_key]
+
+        request.session[
+            "cart"
+        ] = cart
+
+        request.session.modified = True
+
+    return redirect("cart")
+
 @login_required
 def orders(request):
     payments = Payment.objects.filter(
@@ -97,81 +308,217 @@ def orders(request):
 # -------------------------------
 paystack = Paystack(secret_key=settings.PAYSTACK_SECRET_KEY)
 
-def checkout(request, product_id):
-    if request.method != "POST":
-        return redirect('product_detail', pk=product_id)
+def checkout(request):
 
-    product = get_object_or_404(Product, pk=product_id)
-
-    variant_id = request.POST.get("variant_id")
-    variant = get_object_or_404(ProductVariant, id=variant_id)
-
-    # Email (required for Paystack)
-    customer_email = request.user.email if request.user.is_authenticated else request.POST.get('email')
-    if not customer_email:
-        messages.error(request, "Email is required for payment.")
-        return redirect('product_detail', pk=product_id)
-
-    # 🔒 Paystack minimum for NGN (≈ ₦200)
-    MIN_NGN_AMOUNT = Decimal('100')
-    if product.price < MIN_NGN_AMOUNT:
-        messages.error(request, "This product price is too low to process payment. Minimum is ₦100.")
-        return redirect('product_detail', pk=product.id)
-
-    # Convert to kobo
-    amount_kobo = int(product.price * 100)
-
-    #Prevent duplicate payment
-    if request.user.is_authenticated:
-        existing_payment = Order.objects.filter(
-            user=request.user,
-            status="paid",
-            items__variant=variant
-        ).exists()
-    else:
-        existing_payment = Order.objects.filter(
-            email=customer_email,
-            status="paid",
-            items__variant=variant
-        ).exists()
-
-    if existing_payment:
-        messages.warning(request, "You have already purchased this product.")
-        return redirect('product_detail', pk=product.id)
-
-    # Create Order
-    order = Order.objects.create(
-        user=request.user if request.user.is_authenticated else None,
-        email=customer_email,
-        amount=product.price,
+    cart = request.session.get(
+        "cart",
+        {}
     )
 
-    # Create OrderItem
-    OrderItem.objects.create(
-        order=order,
-        product=product,
-        variant=variant,
-        quantity=1,
-        unit_price=variant.price or product.price
+    if not cart:
+        messages.error(
+            request,
+            "Your cart is empty."
+        )
+
+        return redirect(
+            "products"
+        )
+
+    # -------------------------
+    # Build cart summary
+    # -------------------------
+    cart_items = []
+
+    total_amount = Decimal(
+        "0.00"
     )
 
-    # Initialize Paystack transaction
-    response = Transaction.initialize(
-        email=customer_email,
-        amount=amount_kobo,
-        callback_url=settings.PAYSTACK_CALLBACK_URL,
-        metadata={
-            "order_id": order.id
+    for key, item in cart.items():
+
+        product = Product.objects.filter(
+            id=item[
+                "product_id"
+            ]
+        ).first()
+
+        if not product:
+            continue
+
+        variant = None
+
+        if item[
+            "variant_id"
+        ]:
+
+            variant = (
+                ProductVariant.objects
+                .filter(
+                    id=item[
+                        "variant_id"
+                    ]
+                )
+                .first()
+            )
+
+        quantity = item[
+            "quantity"
+        ]
+
+        price = (
+            variant.price
+            if (
+                variant
+                and variant.price
+            )
+            else product.price
+        )
+
+        subtotal = (
+            price *
+            quantity
+        )
+
+        total_amount += subtotal
+
+        cart_items.append({
+            "product":
+                product,
+
+            "variant":
+                variant,
+
+            "quantity":
+                quantity,
+
+            "price":
+                price,
+
+            "subtotal":
+                subtotal
+        })
+
+    # -------------------------
+    # Payment processing
+    # -------------------------
+    if request.method == "POST":
+
+        customer_email = (
+            request.user.email
+            if request.user.is_authenticated
+            else request.POST.get(
+                "email"
+            )
+        )
+
+        if not customer_email:
+
+            messages.error(
+                request,
+                "Email is required."
+            )
+
+            return redirect(
+                "checkout"
+            )
+
+        # Create Order
+        order = Order.objects.create(
+            user=(
+                request.user
+                if request.user.is_authenticated
+                else None
+            ),
+
+            email=
+                customer_email,
+
+            status=
+                "pending",
+
+            amount=
+                total_amount
+        )
+
+        # Save OrderItems
+        for item in cart_items:
+
+            OrderItem.objects.create(
+                order=order,
+
+                product=
+                    item[
+                        "product"
+                    ],
+
+                variant=
+                    item[
+                        "variant"
+                    ],
+
+                quantity=
+                    item[
+                        "quantity"
+                    ],
+
+                unit_price=
+                    item[
+                        "price"
+                    ]
+            )
+
+        amount_kobo = int(
+            total_amount * 100
+        )
+
+        response = (
+            Transaction.initialize(
+                email=
+                    customer_email,
+
+                amount=
+                    amount_kobo,
+
+                callback_url=(
+                    settings
+                    .PAYSTACK_CALLBACK_URL
+                ),
+
+                metadata={
+                    "order_id":
+                        order.id
+                }
+            )
+        )
+
+        if response[
+            "status"
+        ]:
+
+            return redirect(
+                response[
+                    "data"
+                ][
+                    "authorization_url"
+                ]
+            )
+
+        messages.error(
+            request,
+            "Payment failed."
+        )
+
+    return render(
+        request,
+        "shop/checkout.html",
+        {
+            "cart_items":
+                cart_items,
+
+            "total":
+                total_amount
         }
     )
-
-    if response['status']:
-        # Redirect to Paystack payment page
-        return redirect(response['data']['authorization_url'])
-    else:
-        messages.error(request, "Error initializing payment. Please try again.")
-        return redirect('product_detail', pk=product.id)
-
 
 def success(request):
     reference = request.GET.get('reference')
@@ -211,13 +558,13 @@ def success(request):
             messages.error(request, "Order not found.")
             return redirect('home')
 
+        # SAFE amount conversion
+        amount = Decimal(str(data.get("amount", 0))) / Decimal("100")
+
         # Mark order paid
         order.status = "paid"
         order.amount = amount
         order.save()
-
-        # SAFE amount conversion
-        amount = Decimal(str(data.get("amount", 0))) / Decimal("100")
 
         # Create or update payment
         payment, created = Payment.objects.update_or_create(

@@ -2,125 +2,204 @@
 {% block title %}{{ product.name }} • Lily Beauty Bar{% endblock %}
 
 {% block content %}
-<section class="max-w-6xl mx-auto px-4 py-10">
-  <div class="grid md:grid-cols-2 gap-8">
 
-    <!-- PRODUCT IMAGE -->
-    <div>
-      {% if selected_variant and selected_variant.image %}
-        <img id="product-image"
-          src="{{ selected_variant.image.url }}"
-          alt="{{ product.name }}"
-          class="w-full rounded-2xl border shadow" />
-      {% elif product.image %}
-        <img id="product-image"
-          src="{{ product.image.url }}"
-          alt="{{ product.name }}"
-          class="w-full rounded-2xl border shadow" />
-      {% endif %}
-    </div>
+<section class="bg-gradient-to-b from-[#fff7f8] to-white py-20">
 
-    <!-- PRODUCT INFO -->
-    <div>
+    <div class="max-w-7xl mx-auto px-6">
 
-      <h1 class="text-2xl font-semibold">{{ product.name }}</h1>
+        <div class="grid lg:grid-cols-2 gap-14 items-start">
 
-      <p class="mt-2 text-slate-600">
-        {{ product.description }}
-      </p>
+            <!-- PRODUCT IMAGE -->
+            <div>
 
-      <!-- base price (optional display only) -->
-      <div
-        id="product-price"
-        class="mt-4 text-2xl font-bold"
-      >
-        ₦{% if selected_variant and selected_variant.price %}
-          {{ selected_variant.price }}
-        {% else %}
-          {{ product.price }}
-        {% endif %}
-      </div>
+                <div class="bg-pink-50 p-5 rounded-[35px] shadow-lg">
 
-      <!-- PAYMENT SECTION -->
-      <div class="mt-6">
+                    {% if selected_variant and selected_variant.image %}
+                    <img
+                        id="product-image"
+                        src="{{ selected_variant.image.url }}"
+                        alt="{{ product.name }}"
+                        class="w-full h-[500px] md:h-[650px] object-cover rounded-[30px] shadow-xl"
+                    >
 
-        {% if has_paid %}
-          <button class="w-full px-6 py-3 rounded-xl bg-green-600 text-white cursor-not-allowed">
-            Purchased ✅
-          </button>
+                    {% elif product.image %}
+                    <img
+                        id="product-image"
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        class="w-full h-[500px] md:h-[650px] object-cover rounded-[30px] shadow-xl"
+                    >
+                    {% endif %}
 
-        {% else %}
+                </div>
 
-          <form method="post" action="{% url 'checkout' product.id %}">
-            {% csrf_token %}
+            </div>
 
-            <!-- EMAIL (for guest users) -->
-            {% if not user.is_authenticated %}
-              <input 
-                type="email" 
-                name="email" 
-                placeholder="Enter your email"
-                required
-                class="w-full mb-4 px-4 py-2 border rounded-lg"
-              >
-            {% endif %}
 
-            {% if product.variants.exists %}
+            <!-- PRODUCT DETAILS -->
+            <div class="lg:sticky lg:top-28">
 
-              <!-- VARIANT SELECTION -->
-              <label class="block text-sm font-medium mb-2">
-                Choose option
-              </label>
+                <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
+                    ✨ Premium Beauty Product
+                </span>
 
-              <select id="variant-select" name="variant_id" class="border rounded-lg p-2 w-full mb-4">
-                <option value="" selected data-price="{{ product.price }}" data-image="{{ product.image.url }}">
-                  Select a product option
-                </option>
+                <!-- PRODUCT NAME -->
+                <h1 class="mt-5 text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                    {{ product.name }}
+                </h1>
 
-                {% for variant in product.variants.all %}
-                <option
-                  value="{{ variant.id }}"
-                  data-price="{{ variant.price|default:product.price }}"
-                  data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+                <!-- DESCRIPTION -->
+                <p class="mt-6 text-lg text-gray-600 leading-8">
+                    {{ product.description }}
+                </p>
+
+                <!-- PRICE -->
+                <div
+                    id="product-price"
+                    class="mt-8 text-4xl font-bold text-pink-500"
                 >
-                  {{ variant.colour }} - {{ variant.product_type }}
-                  {% if variant.price %}
-                    (₦{{ variant.price }})
-                  {% else %}
-                    (₦{{ product.price }})
-                  {% endif %}
-                </option>
-                {% endfor %}
-              </select>
+                    ₦{% if selected_variant and selected_variant.price %}
+                        {{ selected_variant.price }}
+                    {% else %}
+                        {{ product.price }}
+                    {% endif %}
+                </div>
 
-            {% endif %}
+                <!-- PAYMENT / BUY SECTION -->
+                <div class="mt-10 bg-white rounded-[30px] p-8 shadow-xl border border-pink-100">
 
-            <!-- BUY BUTTON -->
-            <button type="submit"
-              class="w-full px-6 py-3 rounded-xl bg-[var(--brand)] text-black hover:opacity-90">
-              Buy now
-            </button>
+                    {% if has_paid %}
 
-          </form>
+                    <button class="w-full py-4 rounded-2xl bg-green-600 text-white text-lg font-semibold cursor-not-allowed">
+                        Purchased ✅
+                    </button>
 
-          <p class="mt-2 text-xs text-slate-500">
-            Secure payment powered by Paystack
-          </p>
+                    {% else %}
 
-        {% endif %}
+                    <form method="POST"
+                        action="{% url 'add_to_cart' product.id %}">
 
-      </div>
+                      {% csrf_token %}
 
-      <!-- BACK LINK -->
-      <a href="{% url 'home' %}" 
-         class="inline-block mt-6 text-[var(--brand)]">
-        ← Continue shopping
-      </a>
+                      {% if product.variants.exists %}
+
+                      <label class="block mb-2 font-medium">
+                        Choose option
+                      </label>
+
+                      <select
+                        id="variant-select"
+                        name="variant_id"
+                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4"
+                      >
+
+                        <option value="">
+                          Select an option
+                        </option>
+
+                        {% for variant in product.variants.all %}
+                        <option
+                          value="{{ variant.id }}"
+                          data-price="{{ variant.price|default:product.price }}"
+                          data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
+                        >
+                          {{ variant.colour }} - {{ variant.product_type }}
+                        </option>
+                        {% endfor %}
+
+                      </select>
+
+                      {% endif %}
+
+                      <!-- QUANTITY -->
+
+                      <div class="mt-5">
+
+                        <label class="block mb-2 font-medium">
+                          Quantity
+                        </label>
+
+                        <input
+                          type="number"
+                          name="quantity"
+                          min="1"
+                          value="1"
+                          class="w-28 rounded-xl border border-pink-200 p-3"
+                        >
+
+                      </div>
+
+                      <button
+                        type="submit"
+                        class="w-full mt-6 py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold"
+                      >
+                        Add To Cart 🛒
+                      </button>
+
+                    </form>
+
+
+                    <p class="mt-4 text-sm text-center text-gray-500">
+                        🔒 Secure payment powered by Paystack
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- TRUST BADGES -->
+                <div class="mt-8 grid grid-cols-3 gap-4">
+
+                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
+                        <div class="text-2xl">
+                            🚚
+                        </div>
+
+                        <p class="mt-2 text-sm text-gray-600">
+                            Fast Delivery
+                        </p>
+                    </div>
+
+                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
+                        <div class="text-2xl">
+                            💕
+                        </div>
+
+                        <p class="mt-2 text-sm text-gray-600">
+                            Beauty Lovers
+                        </p>
+                    </div>
+
+                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
+                        <div class="text-2xl">
+                            💎
+                        </div>
+
+                        <p class="mt-2 text-sm text-gray-600">
+                            Premium Quality
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- BACK BUTTON -->
+                <a
+                    href="{% url 'products' %}"
+                    class="inline-flex items-center mt-8 text-pink-500 hover:text-pink-600 font-medium"
+                >
+                    ← Continue Shopping
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
-  </div>
 </section>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -134,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const productImage =
         document.getElementById("product-image");
 
-    // stop script if no variants exist
     if (!variantSelect) return;
 
     variantSelect.addEventListener("change", function () {
@@ -156,6 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
             productImage.src = image;
         }
     });
+
 });
 </script>
 
