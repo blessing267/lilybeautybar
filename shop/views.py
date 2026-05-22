@@ -297,8 +297,8 @@ def update_cart(
 @login_required
 def orders(request):
     payments = Payment.objects.filter(
-        user=request.user,
-        verified=True
+        verified=True,
+        email=request.user.email
     ).order_by('-created_at')
 
     return render(request, 'shop/orders.html', {'payments': payments})

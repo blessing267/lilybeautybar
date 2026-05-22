@@ -1,34 +1,132 @@
 {% extends "shop/base.html" %}
+{% block title %}Contact Us • Lily Beauty Bar{% endblock %}
+
 {% block content %}
 
-<section class="py-10 px-6 max-w-3xl mx-auto">
+<section class="bg-gradient-to-b from-pink-50 via-white to-pink-100 min-h-screen py-20">
 
-  <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
+    <div class="max-w-6xl mx-auto px-6">
 
-  <p class="mb-6 text-gray-600">
-    Welcome to Lily Beauty Bar — your go-to destination for luxury beauty services.
-    We specialise in enhancing natural beauty with high-quality treatments tailored
-    to each client. Our mission is to provide a relaxing, premium experience that
-    leaves you feeling confident and refreshed.
-  </p>
+        <!-- Header -->
+        <div class="text-center mb-14">
 
-  <form method="POST" class="space-y-4">
-    {% csrf_token %}
+            <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
+                💕 Get In Touch
+            </span>
 
-    <input type="text" name="name" placeholder="Your Name"
-      class="w-full p-3 border rounded-lg">
+            <h1 class="mt-5 text-5xl font-bold text-gray-900">
+                Contact Lily Beauty Bar
+            </h1>
 
-    <input type="email" name="email" placeholder="Your Email"
-      class="w-full p-3 border rounded-lg">
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto leading-8">
+                We’re here to help with bookings, orders, beauty enquiries,
+                and product support. Our team is always happy to assist you.
+            </p>
 
-    <textarea name="message" placeholder="Your Message"
-      class="w-full p-3 border rounded-lg"></textarea>
+        </div>
 
-    <button class="bg-black text-white px-6 py-2 rounded-lg">
-      Send Message
-    </button>
-  </form>
-  
+        <div class="grid lg:grid-cols-2 gap-12 items-start">
+
+            <!-- LEFT SIDE -->
+            <div class="bg-white rounded-[35px] shadow-xl p-10 border border-pink-100">
+
+                <h2 class="text-3xl font-bold text-gray-900">
+                    Let's Talk Beauty ✨
+                </h2>
+
+                <p class="mt-4 text-gray-600 leading-8">
+                    Welcome to Lily Beauty Bar — your go-to destination
+                    for luxury beauty services and premium beauty products.
+                    We specialise in enhancing natural beauty while
+                    delivering a relaxing, premium experience.
+                </p>
+
+                <!-- Contact Info -->
+                <div class="mt-8 space-y-6">
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+                            📧
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-lg">
+                                Email
+                            </h4>
+                            <p class="text-gray-500">
+                                lilybeautybar11@gmail.com
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+                            📞
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-lg">
+                                Phone
+                            </h4>
+                            <p class="text-gray-500">
+                                +234 901 218 0451
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CONTACT FORM -->
+            <div class="bg-white rounded-[35px] shadow-xl p-10 border border-pink-100">
+
+                <h2 class="text-3xl font-bold mb-8">
+                    Send Us A Message
+                </h2>
+
+                <form method="POST" class="space-y-5">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Your Name"
+                        required
+                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    >
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Your Email"
+                        required
+                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    >
+
+                    <textarea
+                        name="message"
+                        rows="6"
+                        placeholder="Your Message"
+                        required
+                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                    ></textarea>
+
+                    <button
+                        class="w-full py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg shadow-lg transition duration-300"
+                    >
+                        Send Message
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
 
 {% endblock %}
