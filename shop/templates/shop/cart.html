@@ -2,96 +2,210 @@
 
 {% block content %}
 
-<section class="max-w-6xl mx-auto px-6 py-20">
+<section class="bg-pink-100 min-h-screen">
 
-    <h1 class="text-4xl font-bold mb-10">
-        Shopping Cart
-    </h1>
+    <!-- TOP HEADER -->
+    <div class=" bg-pink-300 border-b border-gray-100 py-6 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-3xl font-bold tracking-wide">
+                YOUR BAG 💕
+            </h1>
+            <p class="text-white/80 text-sm mt-1">
+                Review your beauty picks before checkout
+            </p>
+        </div>
+    </div>
 
-    {% if cart_items %}
+    <div class="max-w-7xl mx-auto px-6 py-12">
 
-    <div class="space-y-5">
+        {% if cart_items %}
 
-        {% for item in cart_items %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-        <div class="bg-white rounded-3xl p-6 shadow-md flex flex-col md:flex-row justify-between items-center">
+            <!-- LEFT: CART ITEMS -->
+            <div class="lg:col-span-2 space-y-6">
 
-            <div>
+                {% for item in cart_items %}
 
-                <h3 class="font-bold text-xl">
-                    {{ item.product.name }}
-                </h3>
+                <div class="bg-white rounded-2xl shadow-sm border border-pink-100 p-6 hover:shadow-md transition">
 
-                {% if item.variant %}
-                <p>
-                    {{ item.variant.colour }}
-                    -
-                    {{ item.variant.product_type }}
-                </p>
-                {% endif %}
+                    <div class="flex gap-6">
 
-                <p>
-                    ₦{{ item.price }}
-                </p>
+                        <!-- IMAGE -->
+                        <div class="w-32 h-32 rounded-xl overflow-hidden bg-pink-50">
+
+                            {% if item.variant and item.variant.image %}
+                            <img src="{{ item.variant.image.url }}"
+                                 class="w-full h-full object-cover">
+                            {% elif item.product.image %}
+                            <img src="{{ item.product.image.url }}"
+                                 class="w-full h-full object-cover">
+                            {% endif %}
+
+                        </div>
+
+                        <!-- DETAILS -->
+                        <div class="flex-1">
+
+                            <div class="flex justify-between">
+
+                                <div>
+
+                                    <h2 class="text-lg font-semibold text-gray-900">
+                                        {{ item.product.name }}
+                                    </h2>
+
+                                    {% if item.variant %}
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        💖 {{ item.variant.colour }}
+                                        {% if item.variant.product_type %}
+                                        • {{ item.variant.product_type }}
+                                        {% endif %}
+                                    </p>
+                                    {% endif %}
+
+                                    <p class="text-rose-500 font-bold text-lg mt-2">
+                                        ₦{{ item.price }}
+                                    </p>
+
+                                </div>
+
+                                <a href="{% url 'remove_from_cart' item.key %}"
+                                   class="text-xs text-pink-400 hover:text-pink-600 uppercase tracking-widest">
+                                    Remove
+                                </a>
+
+                            </div>
+
+                            <!-- QTY + SUBTOTAL -->
+                            <div class="flex justify-between items-center mt-6">
+                                
+                                <form method="POST"
+                                      action="{% url 'update_cart' item.key %}"
+                                      class="flex items-center border border-pink-100 rounded-full overflow-hidden bg-pink-50">
+
+                                    {% csrf_token %}
+
+                                    <!-- QTY BLOCK -->
+
+                                        <input type="number"
+                                           name="quantity"
+                                           value="{{ item.quantity }}"
+                                           min="1"
+                                           class="w-20 border border-gray-200 rounded-2xl p-2 text-center focus:outline-none focus:ring-2 focus:ring-pink-300">
+                                    
+                                    <!-- UPDATE BUTTON -->
+                                    <button
+                                        type="submit"
+                                        class="bg-pink-100 text-pink-700 px-5 py-2 rounded-2xl hover:bg-pink-200 transition"
+                                    >
+                                        Update
+                                    </button>
+
+                                </form>
+
+                                <div class="text-right">
+
+                                    <p class="text-xs text-gray-400 uppercase">
+                                        Subtotal
+                                    </p>
+
+                                    <p class="font-bold text-gray-900 text-lg">
+                                        ₦{{ item.subtotal }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+                <!-- CONTINUE SHOPPING -->
+                <div class="pt-6">
+
+                    <a href="{% url 'products' %}"
+                       class="text-pink-500 hover:text-pink-600 font-medium">
+                        << Continue Shopping
+                    </a>
+
+                </div>
 
             </div>
 
-            <form
-                method="POST"
-                action="{% url 'update_cart' item.key %}"
-            >
-                {% csrf_token %}
+            <!-- RIGHT: SUMMARY -->
+            <div class="h-fit sticky top-24">
 
-                <input
-                    type="number"
-                    name="quantity"
-                    min="1"
-                    value="{{ item.quantity }}"
-                    class="border rounded-xl p-2 w-20"
-                >
+                <div class="bg-white rounded-3xl shadow-md border border-pink-100 p-8">
 
-                <button class="ml-2 text-pink-500">
-                    Update
-                </button>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">
+                        Order Summary 💕
+                    </h2>
 
-            </form>
+                    <div class="space-y-4 text-sm">
 
-            <a
-                href="{% url 'remove_from_cart' item.key %}"
-                class="text-red-500"
-            >
-                Remove
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal</span>
+                            <span>₦{{ total }}</span>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Delivery</span>
+                            <span>Calculated at checkout</span>
+                        </div>
+
+                        <div class="border-t pt-4 flex justify-between font-bold text-lg">
+                            <span>Total</span>
+                            <span class="text-rose-500">₦{{ total }}</span>
+                        </div>
+
+                    </div>
+
+                    <a href="{% url 'checkout' %}"
+                       class="block mt-8 bg-gradient-to-r from-pink-500 via-rose-400 to-purple-400 text-white text-center py-4 rounded-2xl font-semibold shadow-lg hover:scale-[1.02] transition">
+                        Proceed to Checkout 💳
+                    </a>
+
+                    <p class="text-xs text-gray-400 text-center mt-4">
+                        Secure payment powered by Paystack 🔒
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY CART -->
+        <div class="text-center py-32">
+
+            <div class="text-6xl mb-4">🛍️</div>
+
+            <h2 class="text-3xl font-bold text-gray-900">
+                Your bag is empty
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                Add your favourite beauty products to continue
+            </p>
+
+            <a href="{% url 'products' %}"
+               class="inline-block mt-8 bg-gradient-to-r from-pink-500 to-purple-400 text-white px-10 py-4 rounded-2xl">
+                Start Shopping 💕
             </a>
 
         </div>
 
-        {% endfor %}
+        {% endif %}
 
     </div>
-
-    <div class="mt-10 text-right">
-
-        <h2 class="text-3xl font-bold">
-            Total:
-            ₦{{ total }}
-        </h2>
-
-        <a
-            href="{% url 'checkout' %}"
-            class="inline-block mt-5 bg-pink-500 text-white px-8 py-4 rounded-2xl"
-        >
-            Proceed to Checkout
-        </a>
-
-    </div>
-
-    {% else %}
-
-    <p>
-        Your cart is empty.
-    </p>
-
-    {% endif %}
 
 </section>
 
