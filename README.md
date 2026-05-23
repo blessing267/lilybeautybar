@@ -42,8 +42,13 @@ I developed the entire application.
 ---
 
 ## 📸 Screenshots  
+<<<<<<< HEAD
 ![Homepage](/static/img/Homepage.PNG)
 ![Product Page](/static/img/shop.PNG)
+=======
+![Homepage Screenshot](/static/img/Homepage.PNG)
+![Product Page Screenshot](/static/img/shop.PNG)
+>>>>>>> c8808c6a3c9611180378a7b09bc1ffa77b705199
 
 ---
 
