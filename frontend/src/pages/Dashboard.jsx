@@ -211,9 +211,6 @@ export default function Dashboard({ onLogout }) {
   const safeProducts = Array.isArray(products)
   ? products
   : [];
-
-  console.log("Products state:", products);
-  console.log("Is array:", Array.isArray(products));
   
 const filteredProducts = safeProducts
   .filter(
@@ -274,74 +271,199 @@ const filteredProducts = safeProducts
   }
 
   return (
-    <DashboardLayout onLogout={onLogout}>
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        Admin Dashboard
-      </h1>
+  <DashboardLayout onLogout={onLogout}>
+    <div className="min-h-screen bg-pink-50/30 p-4 md:p-8">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900">
+            Dashboard Overview
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Manage your beauty products and inventory
+          </p>
+        </div>
 
-      {/* ✅ ADD BUTTON */}
-      <button
-        onClick={() => {
-          setEditingProduct(null);
-          setShowModal(true);
-        }}
-        className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
-      >
-        + Add Product
-      </button>
-
-      {/* ✅ PRODUCT LIST */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {paginatedProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 rounded shadow">
-
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-full h-40 object-cover rounded"
-            />
-
-            <h2 className="text-lg font-bold mt-2">{product.name}</h2>
-            <p className="text-gray-600">{product.description}</p>
-            <p className="font-semibold mt-1">₦{product.price}</p>
-
-            <div className="flex gap-2 mt-3">
-              <button
-                onClick={() => handleEdit(product)}
-                className="bg-blue-500 text-white px-3 py-1 rounded"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => handleDelete(product.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+        <button
+          onClick={() => {
+            setEditingProduct(null);
+            setShowModal(true);
+          }}
+          className="bg-black hover:scale-105 transition duration-300 text-white px-6 py-3 rounded-2xl shadow-lg"
+        >
+          + Add Product
+        </button>
       </div>
 
-      {/* ✅ ADD PAGINATION HERE */}
-      <div className="flex justify-center mt-6 gap-2">
-        {Array.from({ length: totalPages }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`px-3 py-1 rounded ${
-              currentPage === i + 1
-                ? "bg-black text-white"
-                : "bg-gray-200"
-            }`}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100">
+          <h3 className="text-gray-500 text-sm">Total Products</h3>
+          <p className="text-3xl font-bold mt-2">
+            {products.length}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100">
+          <h3 className="text-gray-500 text-sm">
+            Visible Products
+          </h3>
+          <p className="text-3xl font-bold mt-2">
+            {filteredProducts.length}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100">
+          <h3 className="text-gray-500 text-sm">
+            Average Price
+          </h3>
+          <p className="text-3xl font-bold mt-2">
+            ₦
+            {products.length
+              ? Math.round(
+                  products.reduce(
+                    (acc, item) =>
+                      acc + Number(item.price || 0),
+                    0
+                  ) / products.length
+                )
+              : 0}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100">
+          <h3 className="text-gray-500 text-sm">
+            Current Page
+          </h3>
+          <p className="text-3xl font-bold mt-2">
+            {currentPage}
+          </p>
+        </div>
+      </div>
+
+      {/* Search + Sort */}
+      <div className="bg-white rounded-3xl p-5 shadow-sm mb-8 border border-pink-100">
+        <div className="flex flex-col md:flex-row gap-4">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border border-gray-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-pink-300"
+          />
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="border border-gray-200 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-pink-300"
           >
-            {i + 1}
-          </button>
-        ))}
+            <option value="latest">
+              Latest Products
+            </option>
+            <option value="price_asc">
+              Price: Low to High
+            </option>
+            <option value="price_desc">
+              Price: High to Low
+            </option>
+          </select>
+        </div>
       </div>
 
-      {/* ✅ MODAL */}
+      {/* Empty State */}
+      {paginatedProducts.length === 0 ? (
+        <div className="bg-white rounded-3xl p-12 text-center shadow-sm">
+          <h2 className="text-2xl font-semibold text-gray-700">
+            No Products Found
+          </h2>
+          <p className="text-gray-500 mt-2">
+            Add products or try another search
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {paginatedProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-white rounded-[30px] overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-pink-100 hover:-translate-y-1"
+            >
+              <div className="relative">
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-full h-64 object-cover"
+                />
+
+                <span className="absolute top-4 right-4 bg-pink-500 text-white text-xs px-3 py-1 rounded-full">
+                  Beauty
+                </span>
+              </div>
+
+              <div className="p-5">
+                <h2 className="font-bold text-lg text-gray-800 line-clamp-1">
+                  {product.name}
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                  {product.description}
+                </p>
+
+                <div className="mt-4 flex justify-between items-center">
+                  <h3 className="text-2xl font-bold text-pink-600">
+                    ₦{product.price}
+                  </h3>
+
+                  <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
+                    Available
+                  </span>
+                </div>
+
+                <div className="flex gap-3 mt-5">
+                  <button
+                    onClick={() => handleEdit(product)}
+                    className="flex-1 bg-black text-white py-2 rounded-xl hover:opacity-90 transition"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleDelete(product.id)
+                    }
+                    className="flex-1 bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-3 mt-10 flex-wrap">
+          {Array.from({ length: totalPages }).map(
+            (_, i) => (
+              <button
+                key={i}
+                onClick={() =>
+                  setCurrentPage(i + 1)
+                }
+                className={`w-12 h-12 rounded-full font-medium transition ${
+                  currentPage === i + 1
+                    ? "bg-black text-white shadow-lg"
+                    : "bg-white border border-gray-300 hover:bg-pink-100"
+                }`}
+              >
+                {i + 1}
+              </button>
+            )
+          )}
+        </div>
+      )}
+
       <ProductModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
@@ -350,6 +472,7 @@ const filteredProducts = safeProducts
         setForm={setForm}
         isEditing={!!editingProduct}
       />
-    </DashboardLayout>
-  );
+    </div>
+  </DashboardLayout>
+);
 }
