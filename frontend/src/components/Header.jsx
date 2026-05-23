@@ -1,17 +1,37 @@
-export default function Header({ onLogout }) {
-  return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-6">
-      <h2 className="text-lg font-semibold">Dashboard</h2>
+import { Menu } from "lucide-react";
 
-      <div className="flex items-center gap-3">
-        <span className="text-gray-600">Admin</span>
+export default function Header({
+  onLogout,
+  onMenuClick,
+}) {
+  return (
+    <header className="bg-white border-b border-rose-100 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex items-center gap-4">
+        {/* Mobile Menu */}
         <button
-          onClick={onLogout}
-          className="text-sm text-red-600 hover:underline"
+          onClick={onMenuClick}
+          className="lg:hidden p-2 rounded-xl hover:bg-rose-100"
         >
-          Logout
+          <Menu size={24} />
         </button>
+
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-rose-700">
+            ✨ Lily Beauty Bar
+          </h1>
+
+          <p className="text-sm text-gray-500">
+            Beauty Business Dashboard
+          </p>
+        </div>
       </div>
+
+      <button
+        onClick={onLogout}
+        className="bg-rose-600 hover:bg-rose-700 transition text-white px-5 py-2 rounded-2xl shadow-sm"
+      >
+        Logout
+      </button>
     </header>
   );
 }
