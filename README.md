@@ -45,6 +45,8 @@ I developed the entire application.
 ![Homepage](/static/img/Homepage.PNG)
 ![Product Page](/static/img/shop.PNG)
 ![Product Page](/static/img/lbb.jpeg)
+![Product Page](/static/img/Homepage.PNG)
+![Product Page](/static/img/shop.PNG)
 ---
 
 ## 📚 Learnings  
