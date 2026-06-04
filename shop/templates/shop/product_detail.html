@@ -93,7 +93,11 @@
                         class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4"
                       >
 
-                        <option value="">
+                        <option 
+                            value=""
+                            data-price="{{ product.price }}"
+                            data-image="{{ product.image.url }}"
+                        >
                           Select an option
                         </option>
 
