@@ -5,7 +5,7 @@ from paystackapi.transaction import Transaction
 from paystackapi.paystack import Paystack
 
 from decimal import Decimal
-from django.db.models import F
+from django.db.models import F, Count
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -16,7 +16,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
-from .models import Product, ProductVariant, Payment, Order, OrderItem
+from .models import Product, ProductVariant, Category, Payment, Order, OrderItem
 from .forms import ProductForm, ProductVariantFormSet
 from .serializers import ProductSerializer
 
@@ -52,14 +52,16 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 def product(request):
-    product_list = Product.objects.all().order_by('-id')
+    product_list = Product.objects.select_related("category", "subcategory").all().order_by('-id')
 
-    paginator = Paginator(product_list, 12)  # Show 12 products per page
+    paginator = Paginator(product_list, 28)  # Show 28 products per page
 
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
-    return render(request, 'shop/products.html', {'products': products})
+    categories = Category.objects.annotate(product_count=Count("products"))
+
+    return render(request, 'shop/products.html', {'products': products, "categories": categories})
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)

@@ -27,7 +27,55 @@
         </div>
 
         <!-- Product Grid -->
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid lg:grid-cols-4 gap-10">
+
+    <!-- SIDEBAR -->
+    <div class="lg:col-span-1">
+
+        <div class="bg-white rounded-3xl shadow-md p-6 sticky top-10">
+
+            <h3 class="text-2xl font-bold mb-6 border-b pb-3">
+                Categories
+            </h3>
+
+            {% for category in categories %}
+
+            <details class="mb-4">
+
+                <summary class="font-semibold cursor-pointer text-gray-800">
+
+                    {{ category.name }}
+                    ({{ category.product_count }})
+
+                </summary>
+
+                <div class="mt-2 ml-4">
+
+                    {% for subcategory in category.subcategories.all %}
+
+                        <div class="py-1 text-sm text-gray-600">
+
+                            {{ subcategory.name }}
+                            ({{ subcategory.products.count }})
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </details>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="lg:col-span-3">
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
             {% for product in products %}
 
@@ -42,7 +90,7 @@
                         <img
                             src="{{ product.image.url }}"
                             alt="{{ product.name }}"
-                            class="w-full h-80 object-cover group-hover:scale-110 transition duration-700"
+                            class="w-full h-60 object-cover group-hover:scale-110 transition duration-700"
                         >
 
                     </div>
@@ -58,7 +106,7 @@
                 </a>
 
                 <!-- Product Details -->
-                <div class="p-6 text-center">
+                <div class="p-4 text-center">
 
                     <h2 class="text-2xl font-semibold text-gray-900 group-hover:text-pink-500 transition duration-300">
 
@@ -113,7 +161,11 @@
             {% endfor %}
 
         </div>
+        </div>
 
+    </div>
+
+</div>
         <!-- Pagination -->
         {% if products.paginator.num_pages > 1 %}
         <div class="mt-12 flex justify-center items-center gap-3 flex-wrap">
