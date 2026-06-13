@@ -54,7 +54,7 @@ def contact(request):
 def product(request):
     product_list = Product.objects.select_related("category", "subcategory").all().order_by('-id')
 
-    paginator = Paginator(product_list, 28)  # Show 28 products per page
+    paginator = Paginator(product_list, 16)  # Show 16 products per page
 
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
