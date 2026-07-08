@@ -789,6 +789,14 @@ def categories_api(request, pk=None):
         return Response({
             "id": category.id,
             "name": category.name,
+            "subcategories": [
+                {
+                    "id": sub.id,
+                    "name": sub.name,
+                    "category": category.id,
+                }
+                for sub in category.subcategories.all().order_by("name")
+            ],
         })
 
     if request.method == "DELETE":
