@@ -53,12 +53,13 @@
 
                     {% for subcategory in category.subcategories.all %}
 
-                        <div class="py-1 text-sm text-gray-600">
-
+                        <a
+                            href="{% url 'products' %}?subcategory={{ subcategory.id }}"
+                            class="block py-1 text-sm text-gray-600 hover:text-pink-500"
+                        >
                             {{ subcategory.name }}
                             ({{ subcategory.products.count }})
-
-                        </div>
+                        </a>
 
                     {% endfor %}
 

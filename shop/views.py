@@ -54,6 +54,13 @@ def contact(request):
 def product(request):
     product_list = Product.objects.select_related("category", "subcategory").all().order_by('-id')
 
+    subcategory_id = request.GET.get("subcategory")
+
+    if subcategory_id:
+        product_list = product_list.filter(
+            subcategory_id=subcategory_id
+        )
+        
     paginator = Paginator(product_list, 16)  # Show 16 products per page
 
     page_number = request.GET.get('page')
