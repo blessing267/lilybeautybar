@@ -60,7 +60,7 @@ def product(request):
         product_list = product_list.filter(
             subcategory_id=subcategory_id
         )
-        
+
     paginator = Paginator(product_list, 16)  # Show 16 products per page
 
     page_number = request.GET.get('page')
@@ -748,9 +748,9 @@ def dashboard_api_detail(request, pk):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "POST", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
-def categories_api(request):
+def categories_api(request, pk=None):
     if request.method == "GET":
         categories = Category.objects.all().order_by("name")
         data = [
@@ -768,39 +768,76 @@ def categories_api(request):
             for category in categories
         ]
         return Response(data)
+    if request.method == "POST":
+        name = request.data.get("name")
 
-    name = request.data.get("name")
+        if not name:
+            return Response({"name": "Category name is required"}, status=400)
 
-    if not name:
-        return Response({"name": "Category name is required"}, status=400)
+        category = Category.objects.create(name=name)
+        return Response(
+            {"id": category.id, "name": category.name, "subcategories": []}, 
+            status=201
+        )
 
-    category = Category.objects.create(name=name)
-    return Response({"id": category.id, "name": category.name}, status=201)
+    category = get_object_or_404(Category, pk=pk)
 
+    if request.method == "PUT":
+        category.name = request.data.get("name", category.name)
+        category.save()
 
-@api_view(["POST"])
+        return Response({
+            "id": category.id,
+            "name": category.name,
+        })
+
+    if request.method == "DELETE":
+        category.delete()
+        return Response(status=204)
+    
+@api_view(["POST", "PUT", "DELETE"])
 @permission_classes([IsAuthenticated])
-def subcategories_api(request):
-    name = request.data.get("name")
-    category_id = request.data.get("category")
+def subcategories_api(request, pk=None):
 
-    if not name or not category_id:
-        return Response({"error": "Name and category are required"}, status=400)
+    if request.method == "POST":
+        name = request.data.get("name")
+        category_id = request.data.get("category")
 
-    subcategory = SubCategory.objects.create(
-        name=name,
-        category_id=category_id
-    )
+        if not name or not category_id:
+            return Response({"error": "Name and category are required"}, status=400)
 
-    return Response(
-        {
+        subcategory = SubCategory.objects.create(
+            name=name,
+            category_id=category_id
+        )
+
+        return Response(
+            {
+                "id": subcategory.id,
+                "name": subcategory.name,
+                "category": subcategory.category_id,
+            },
+            status=201
+        )
+
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+
+    if request.method == "PUT":
+        subcategory.name = request.data.get("name", subcategory.name)
+
+        if request.data.get("category"):
+            subcategory.category_id = request.data.get("category")
+
+        subcategory.save()
+
+        return Response({
             "id": subcategory.id,
             "name": subcategory.name,
             "category": subcategory.category_id,
-        },
-        status=201
-    )
+        })
 
-
+    if request.method == "DELETE":
+        subcategory.delete()
+        return Response(status=204)
 
 

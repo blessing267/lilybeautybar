@@ -19,7 +19,9 @@ urlpatterns = [
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
     path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),
     path("categories/", views.categories_api, name="categories_api"),
+    path("categories/<int:pk>/", views.categories_api, name="category_detail_api"),
     path("subcategories/", views.subcategories_api, name="subcategories_api"),
+    path("subcategories/<int:pk>/", views.subcategories_api, name="subcategory_detail_api"),
 
     # Dashboard (HTML)
     path('dashboard/', views.dashboard, name='dashboard'),
