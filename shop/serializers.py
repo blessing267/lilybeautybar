@@ -103,20 +103,11 @@ class ProductSerializer(serializers.ModelSerializer):
         variants_data = self._extract_variants()
 
         # update product
-        instance.name = validated_data.get(
-            "name",
-            instance.name
-        )
-
-        instance.description = validated_data.get(
-            "description",
-            instance.description
-        )
-
-        instance.price = validated_data.get(
-            "price",
-            instance.price
-        )
+        instance.name = validated_data.get("name", instance.name)
+        instance.description = validated_data.get("description", instance.description)
+        instance.price = validated_data.get("price", instance.price)
+        instance.category = validated_data.get("category", instance.category)
+        instance.subcategory = validated_data.get("subcategory", instance.subcategory)
 
         if validated_data.get("image"):
             instance.image = validated_data.get(

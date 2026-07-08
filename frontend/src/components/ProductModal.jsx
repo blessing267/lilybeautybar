@@ -47,8 +47,14 @@ export default function ProductModal({
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
-    formData.append("category", form.category || "");
-    formData.append("subcategory", form.subcategory || "");
+    
+    if (form.category) {
+      formData.append("category", form.category);
+    }
+
+    if (form.subcategory) {
+      formData.append("subcategory", form.subcategory);
+    }
 
   // Only append form if........
     if (form.image) {
