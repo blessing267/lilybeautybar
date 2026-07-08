@@ -18,6 +18,8 @@ urlpatterns = [
     # Dashboard (API)
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
     path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),
+    path("categories/", views.categories_api, name="categories_api"),
+    path("subcategories/", views.subcategories_api, name="subcategories_api"),
 
     # Dashboard (HTML)
     path('dashboard/', views.dashboard, name='dashboard'),

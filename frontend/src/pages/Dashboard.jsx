@@ -4,10 +4,12 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getCategories,
 } from "../api/productsApi";
 import ProductModal from "../components/ProductModal";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProductSkeleton from "../components/ProductSkeleton";
+import CategoryManager from "../components/CategoryManager";
 import toast from "react-hot-toast";
 
 export default function Dashboard({ onLogout }) {
@@ -17,6 +19,7 @@ export default function Dashboard({ onLogout }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [categories, setCategories] = useState([]);
 
   const perPage = 8;
 
@@ -31,6 +34,8 @@ export default function Dashboard({ onLogout }) {
     name: "",
     description: "",
     price: "",
+    category: "",
+    subcategory: "",
     image: null,
     image_url: "",
     variants: [
@@ -56,6 +61,8 @@ export default function Dashboard({ onLogout }) {
         name: "",
         description: "",
         price: "",
+        category: "",
+        subcategory: "",
         image: null,
         image_url: "",
         variants: [
@@ -69,6 +76,12 @@ export default function Dashboard({ onLogout }) {
       });
     }
   }, [showModal, editingProduct]);
+
+  useEffect(() => {
+    getCategories()
+      .then((res) => setCategories(res.data))
+      .catch(() => toast.error("Failed to load categories"));
+  }, []);
 
   // Reset pagination
   useEffect(() => {
@@ -160,33 +173,25 @@ export default function Dashboard({ onLogout }) {
   };
 
   // Edit
-  const handleEdit = (
-    product
-  ) => {
-    setEditingProduct(
-      product
-    );
+  const handleEdit = (product) => {
+    setEditingProduct(product);
 
     setForm({
       name: product.name,
-      description:
-        product.description,
-      price: String(
-        product.price
-      ),
+      description: product.description,
+      price: String(product.price),
+      category: product.category || "",
+      subcategory: product.subcategory || "",
       image: null,
-      image_url:
-        product.image_url,
+      image_url: product.image_url,
 
       variants:
-        product.variants
-          ?.length
+        product.variants?.length
           ? product.variants
           : [
               {
                 colour: "",
-                product_type:
-                  "",
+                product_type: "",
                 price: "",
                 stock: "",
               },
@@ -489,6 +494,11 @@ export default function Dashboard({ onLogout }) {
           </h2>
         </div>
       </div>
+
+      <CategoryManager
+        categories={categories}
+        setCategories={setCategories}
+      />
 
       {/* Search + Sort */}
       <div className="bg-white rounded-[28px] border border-rose-100 p-5 shadow-sm">
@@ -796,17 +806,12 @@ export default function Dashboard({ onLogout }) {
 
       <ProductModal
         isOpen={showModal}
-        onClose={() =>
-          setShowModal(false)
-        }
-        onSubmit={
-          handleFormSubmit
-        }
+        onClose={() => setShowModal(false)}
+        onSubmit={handleFormSubmit}
         form={form}
         setForm={setForm}
-        isEditing={
-          !!editingProduct
-        }
+        isEditing={!!editingProduct}
+        categories={categories}
       />
     </div>
   </DashboardLayout>

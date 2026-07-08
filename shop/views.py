@@ -16,7 +16,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 
-from .models import Product, ProductVariant, Category, Payment, Order, OrderItem
+from .models import Product, ProductVariant, Category, SubCategory, Payment, Order, OrderItem
 from .forms import ProductForm, ProductVariantFormSet
 from .serializers import ProductSerializer
 
@@ -741,7 +741,58 @@ def dashboard_api_detail(request, pk):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def categories_api(request):
+    if request.method == "GET":
+        categories = Category.objects.all().order_by("name")
+        data = [
+            {
+                "id": category.id,
+                "name": category.name,
+                "subcategories": [
+                    {
+                        "id": sub.id,
+                        "name": sub.name,
+                    }
+                    for sub in category.subcategories.all().order_by("name")
+                ],
+            }
+            for category in categories
+        ]
+        return Response(data)
 
+    name = request.data.get("name")
+
+    if not name:
+        return Response({"name": "Category name is required"}, status=400)
+
+    category = Category.objects.create(name=name)
+    return Response({"id": category.id, "name": category.name}, status=201)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def subcategories_api(request):
+    name = request.data.get("name")
+    category_id = request.data.get("category")
+
+    if not name or not category_id:
+        return Response({"error": "Name and category are required"}, status=400)
+
+    subcategory = SubCategory.objects.create(
+        name=name,
+        category_id=category_id
+    )
+
+    return Response(
+        {
+            "id": subcategory.id,
+            "name": subcategory.name,
+            "category": subcategory.category_id,
+        },
+        status=201
+    )
 
 
 

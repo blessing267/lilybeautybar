@@ -5,8 +5,15 @@ export default function ProductModal({
   form,
   setForm,
   isEditing,
+  categories,
 }) {
   if (!isOpen) return null;
+
+  const selectedCategory = categories?.find(
+    (category) => String(category.id) === String(form.category)
+  );
+
+  const subcategories = selectedCategory?.subcategories || [];
 
   const handleChange = (e) => {
     if (!e || !e.target) return;
@@ -40,6 +47,8 @@ export default function ProductModal({
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
+    formData.append("category", form.category || "");
+    formData.append("subcategory", form.subcategory || "");
 
   // Only append form if........
     if (form.image) {
@@ -134,6 +143,45 @@ export default function ProductModal({
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
           />
+
+          {/* Category */}
+          <select
+            name="category"
+            value={form.category || ""}
+            onChange={(e) => {
+              setForm((prev) => ({
+                ...prev,
+                category: e.target.value,
+                subcategory: "",
+              }));
+            }}
+            className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="">Select Category</option>
+
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Subcategory */}
+          <select
+            name="subcategory"
+            value={form.subcategory || ""}
+            onChange={handleChange}
+            disabled={!form.category}
+            className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
+          >
+            <option value="">Select Subcategory</option>
+
+            {subcategories.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.id}>
+                {subcategory.name}
+              </option>
+            ))}
+          </select>
 
           <h3 className="font-semibold mt-3">
             Product Options
