@@ -1,6 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import Categories from "./pages/Categories";
+import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import { isLoggedIn, logout } from "./auth/auth";
@@ -13,24 +16,34 @@ export default function App() {
     setLoggedIn(false);
   };
 
+  const protect = (component) =>
+    loggedIn ? component : <Navigate to="/login" replace />;
+
   return (
     <>
       <Toaster position="top-right" />
+
       <Routes>
-        
-        {/* Dashboard page */}
         <Route
           path="/"
-          element={
-            loggedIn ? (
-              <Dashboard onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+          element={protect(<Dashboard onLogout={handleLogout} />)}
         />
 
-        {/* Login page */}
+        <Route
+          path="/products"
+          element={protect(<Products onLogout={handleLogout} />)}
+        />
+
+        <Route
+          path="/categories"
+          element={protect(<Categories onLogout={handleLogout} />)}
+        />
+
+        <Route
+          path="/orders"
+          element={protect(<Orders onLogout={handleLogout} />)}
+        />
+
         <Route
           path="/login"
           element={
@@ -42,8 +55,10 @@ export default function App() {
           }
         />
 
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
+        <Route
+          path="*"
+          element={<Navigate to={loggedIn ? "/" : "/login"} replace />}
+        />
       </Routes>
     </>
   );

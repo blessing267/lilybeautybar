@@ -2,11 +2,12 @@ import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
   ShoppingBag,
+  FolderTree,
+  ReceiptText,
+  Settings,
 } from "lucide-react";
 
-export default function Sidebar({
-  onClose,
-}) {
+export default function Sidebar({ onClose }) {
   const navStyle = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-2xl transition font-medium ${
       isActive
@@ -44,6 +45,31 @@ export default function Sidebar({
           <ShoppingBag size={20} />
           Products
         </NavLink>
+
+        <NavLink
+          to="/categories"
+          className={navStyle}
+          onClick={onClose}
+        >
+          <FolderTree size={20} />
+          Categories
+        </NavLink>
+
+        <NavLink
+          to="/orders"
+          className={navStyle}
+          onClick={onClose}
+        >
+          <ReceiptText size={20} />
+          Orders
+        </NavLink>
+
+        <div className="pt-6 mt-6 border-t border-rose-100">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-400">
+            <Settings size={20} />
+            Settings
+          </div>
+        </div>
       </nav>
     </aside>
   );
