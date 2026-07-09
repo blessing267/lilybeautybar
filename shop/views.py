@@ -5,6 +5,7 @@ from paystackapi.transaction import Transaction
 from paystackapi.paystack import Paystack
 
 from decimal import Decimal
+from django.db import transaction
 from django.db.models import F, Count
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -92,6 +93,17 @@ def product_detail(request, pk):
         'selected_variant': selected_variant,
         'has_paid': has_paid
      })
+
+def reduce_order_stock(order):
+    for item in order.items.all():
+        if item.variant:
+            if item.variant.stock >= item.quantity:
+                item.variant.stock -= item.quantity
+                item.variant.save()
+        else:
+            if item.product.stock >= item.quantity:
+                item.product.stock -= item.quantity
+                item.product.save()
 
 # -------------------------------
 # Cart
@@ -571,9 +583,12 @@ def success(request):
         amount = Decimal(str(data.get("amount", 0))) / Decimal("100")
 
         # Mark order paid
-        order.status = "paid"
-        order.amount = amount
-        order.save()
+        if order.status != "paid":
+            order.status = "paid"
+            order.amount = amount
+            order.save()
+
+            reduce_order_stock(order) 
 
         # Create or update payment
         payment, created = Payment.objects.update_or_create(
@@ -631,9 +646,12 @@ def paystack_webhook(request):
             except Order.DoesNotExist:
                 return JsonResponse({'status': 'order not found'}, status=400)
 
-            order.status = "paid"
-            order.amount = amount
-            order.save()
+            if order.status != "paid":
+                order.status = "paid"
+                order.amount = amount
+                order.save()
+
+                reduce_order_stock(order)
 
             Payment.objects.update_or_create(
                 reference=reference,

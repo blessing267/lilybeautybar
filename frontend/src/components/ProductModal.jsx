@@ -47,6 +47,7 @@ export default function ProductModal({
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
+    formData.append("stock", form.stock || 0);
     
     if (form.category) {
       formData.append("category", form.category);
@@ -148,6 +149,16 @@ export default function ProductModal({
             onChange={handleChange}
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
+          />
+
+          {/* Stock */}
+          <input
+            name="stock"
+            type="number"
+            placeholder="Product Stock"
+            value={form.stock || ""}
+            onChange={handleChange}
+            className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
           />
 
           {/* Category */}
