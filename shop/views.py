@@ -1,3 +1,4 @@
+from urllib.parse import quote
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -582,6 +583,30 @@ def success(request):
         # SAFE amount conversion
         amount = Decimal(str(data.get("amount", 0))) / Decimal("100")
 
+        expected_amount = order.get_total()
+
+        if amount != expected_amount:
+            messages.error(
+                request,
+                "The payment amount does not match the order total."
+            )
+            return redirect("home")
+        
+
+        paystack_email = (
+            data.get("customer", {}).get("email", "")
+        )
+
+        if (
+            paystack_email
+            and paystack_email.lower() != order.email.lower()
+        ):
+            messages.error(
+                request,
+                "The payment email does not match this order."
+            )
+            return redirect("home")
+
         # Mark order paid
         if order.status != "paid":
             order.status = "paid"
@@ -602,10 +627,85 @@ def success(request):
             }
         )
 
-        return render(request, 'shop/success.html', {
-            "payment": payment,
-            "order": order
-        })
+        customer_name = (
+            order.user.get_full_name()
+            if order.user and order.user.get_full_name()
+            else order.email
+        )
+
+        items_summary = []
+
+        for item in order.items.select_related(
+            "product",
+            "variant"
+        ).all():
+            variant_details = []
+
+            if item.variant:
+                if item.variant.colour:
+                    variant_details.append(
+                        f"Colour: {item.variant.colour}"
+                    )
+
+                if item.variant.product_type:
+                    variant_details.append(
+                        f"Type: {item.variant.product_type}"
+                    )
+
+            item_description = (
+                f"{item.product.name} x {item.quantity}"
+            )
+
+            if variant_details:
+                item_description += (
+                    f" ({', '.join(variant_details)})"
+                )
+
+            items_summary.append(item_description)
+
+        items_text = "\n".join(
+            f"• {item}"
+            for item in items_summary
+        )
+
+        whatsapp_message = f"""
+        Hello Lily Beauty Bar,
+
+        I have successfully paid for my order.
+
+        Order number: #{order.id}
+        Customer: {customer_name}
+        Email: {order.email}
+        Amount paid: ₦{payment.amount:,.2f}
+        Payment reference: {payment.reference}
+
+        Items:
+        {items_text}
+
+        Please confirm my order. Thank you.
+        """.strip()
+
+        whatsapp_number = (
+            settings.BUSINESS_WHATSAPP_NUMBER
+        )
+
+        whatsapp_url = ""
+
+        if whatsapp_number:
+            whatsapp_url = (
+                f"https://wa.me/{whatsapp_number}"
+                f"?text={quote(whatsapp_message)}"
+            )
+
+        return render(
+            request,
+            "shop/success.html",
+            {
+                "payment": payment,
+                "order": order,
+                "whatsapp_url": whatsapp_url,
+            }
+        )
 
     except Exception as e:
         messages.error(request, "Something went wrong while verifying payment.")

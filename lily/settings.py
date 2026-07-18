@@ -17,6 +17,7 @@ import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -214,3 +215,7 @@ TAILWIND_APP_NAME = "theme"
 LOGIN_URL = 'login'   # where to send unauthenticated users
 LOGIN_REDIRECT_URL = 'orders'   # where to go AFTER login
 
+BUSINESS_WHATSAPP_NUMBER = os.getenv(
+    "BUSINESS_WHATSAPP_NUMBER",
+    ""
+)
