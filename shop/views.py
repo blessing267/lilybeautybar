@@ -27,6 +27,7 @@ from django.http import JsonResponse
 import hmac
 import hashlib
 import json
+import uuid
 
 # -------------------------------
 # Dashboard
@@ -69,8 +70,9 @@ def product(request):
     products = paginator.get_page(page_number)
 
     categories = Category.objects.annotate(product_count=Count("products"))
+    selected_subcategory = SubCategory.objects.select_related("category").filter(id=subcategory_id).first() if subcategory_id else None
 
-    return render(request, 'shop/products.html', {'products': products, "categories": categories})
+    return render(request, 'shop/products.html', {'products': products, "categories": categories, "selected_subcategory_id": selected_subcategory.id if selected_subcategory else None, "selected_category_id": selected_subcategory.category_id if selected_subcategory else None,})
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -226,7 +228,7 @@ def cart(request):
                 variant
                 and variant.price
             )
-            else product.price
+            else product.current_price
         )
 
         subtotal = (
@@ -393,7 +395,7 @@ def checkout(request):
                 variant
                 and variant.price
             )
-            else product.price
+            else product.current_price
         )
 
         subtotal = (
@@ -425,19 +427,18 @@ def checkout(request):
     # -------------------------
     if request.method == "POST":
 
-        customer_email = (
-            request.user.email
-            if request.user.is_authenticated
-            else request.POST.get(
-                "email"
-            )
-        )
+        customer_email = (request.user.email if request.user.is_authenticated else request.POST.get("email"))
+        customer_name = request.POST.get("full_name", "").strip()
+        customer_phone = request.POST.get("phone", "").strip()
 
-        if not customer_email:
+        if request.user.is_authenticated and not customer_name:
+            customer_name = request.user.get_full_name().strip()
+
+        if not customer_email or not customer_name or not customer_phone:
 
             messages.error(
                 request,
-                "Email is required."
+                "Name, phone number and email is required."
             )
 
             return redirect(
@@ -452,8 +453,9 @@ def checkout(request):
                 else None
             ),
 
-            email=
-                customer_email,
+            email=customer_email,
+            full_name=customer_name,
+            phone=customer_phone,
 
             status=
                 "pending",
@@ -501,15 +503,14 @@ def checkout(request):
                 amount=
                     amount_kobo,
 
+                reference=f"LBB-{order.id}-{uuid.uuid4().hex[:10].upper()}",
+
                 callback_url=(
                     settings
                     .PAYSTACK_CALLBACK_URL
                 ),
 
-                metadata={
-                    "order_id":
-                        order.id
-                }
+                metadata={"order_id": order.id, "customer_name": customer_name, "customer_phone": customer_phone}
             )
         )
 
@@ -627,11 +628,7 @@ def success(request):
             }
         )
 
-        customer_name = (
-            order.user.get_full_name()
-            if order.user and order.user.get_full_name()
-            else order.email
-        )
+        customer_name = order.full_name or (order.user.get_full_name() if order.user else "") or order.email
 
         items_summary = []
 
@@ -674,7 +671,8 @@ def success(request):
         I have successfully paid for my order.
 
         Order number: #{order.id}
-        Customer: {customer_name}
+        Name: {customer_name}
+        Phone: {order.phone}
         Email: {order.email}
         Amount paid: ₦{payment.amount:,.2f}
         Payment reference: {payment.reference}

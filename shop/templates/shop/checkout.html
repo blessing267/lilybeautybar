@@ -137,6 +137,15 @@ Checkout • Lily Beauty Bar
 
                         {% csrf_token %}
 
+                        <div class="mb-5">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" name="full_name" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" placeholder="Enter your full name" class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="tel" name="phone" required placeholder="e.g. 08012345678" class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                        </div>
+
                         <!-- EMAIL FOR GUEST -->
                         {% if not request.user.is_authenticated %}
 

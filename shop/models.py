@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from cloudinary.models import CloudinaryField
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 from decimal import Decimal
 
 # Create your models here.
@@ -33,8 +34,26 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('100'))])
+    sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(Decimal('100'))])
+    sale_starts_at = models.DateTimeField(null=True, blank=True)
+    sale_ends_at = models.DateTimeField(null=True, blank=True)
     image = CloudinaryField('image', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_on_sale(self):
+        if self.sale_price is None or self.sale_price >= self.price:
+            return False
+        now = timezone.now()
+        if self.sale_starts_at and now < self.sale_starts_at:
+            return False
+        if self.sale_ends_at and now > self.sale_ends_at:
+            return False
+        return True
+
+    @property
+    def current_price(self):
+        return self.sale_price if self.is_on_sale else self.price
 
     def __str__(self):
         return self.name
@@ -95,6 +114,8 @@ class Order(models.Model):
 
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     email = models.EmailField()
+    full_name = models.CharField(max_length=255, blank=True)
+    phone = models.CharField(max_length=40, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)

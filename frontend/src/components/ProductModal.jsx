@@ -47,6 +47,9 @@ export default function ProductModal({
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("price", form.price);
+    formData.append("sale_price", form.sale_price || "");
+    formData.append("sale_starts_at", form.sale_starts_at || "");
+    formData.append("sale_ends_at", form.sale_ends_at || "");
     formData.append("stock", form.stock || 0);
     
     if (form.category) {
@@ -150,6 +153,13 @@ export default function ProductModal({
             className="border px-3 py-2 rounded focus:ring-2 focus:ring-purple-500"
             required
           />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input name="sale_price" type="number" placeholder="Sale Price (optional)" value={form.sale_price || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
+            <input name="sale_starts_at" type="datetime-local" value={form.sale_starts_at || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
+            <input name="sale_ends_at" type="datetime-local" value={form.sale_ends_at || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
+          </div>
+          <p className="text-xs text-gray-500">Leave sale price blank to restore the original price immediately.</p>
 
           {/* Stock */}
           <input

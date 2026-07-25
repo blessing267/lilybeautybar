@@ -53,8 +53,8 @@
     <div class="flex items-center justify-between h-16">
 
       <!-- Logo -->
-      <a href="{% url 'home' %}" class="text-2xl font-bold text-charcoal">
-        Lily Beauty Bar
+      <a href="{% url 'home' %}" class="flex items-center gap-3">
+        <img src="{% static 'img/lily-logo.png' %}" alt="Lily Beauty Bar" class="h-12 w-auto object-contain">
       </a>
 
       <!-- Desktop Menu -->
@@ -180,12 +180,12 @@
       </h3>
 
       <ul class="space-y-2 text-gray-300">
-        <li>Monday — 9am - 6pm</li>
-        <li>Tuesday — 9am - 6pm</li>
-        <li>Wednesday — 9am - 6pm</li>
-        <li>Thursday — 9am - 6pm</li>
-        <li>Friday — 9am - 6pm</li>
-        <li>Saturday — 9am - 6pm</li>
+        <li>Monday — 8am - 8pm</li>
+        <li>Tuesday — 8am - 8pm</li>
+        <li>Wednesday — 8am - 8pm</li>
+        <li>Thursday — 8am - 8pm</li>
+        <li>Friday — 8am - 8pm</li>
+        <li>Saturday — 9am - 7pm</li>
         <li>Sunday — Closed</li>
       </ul>
     </div>
@@ -200,6 +200,24 @@
   </div>
 
 </footer>
+
+  <div class="fixed bottom-6 left-6 z-50">
+    <button id="music-toggle" type="button" class="rounded-full bg-white px-4 py-3 text-sm font-semibold text-pink-600 shadow-lg border border-pink-100" aria-label="Play or pause background music">▶ Play music</button>
+    <audio id="site-music" loop preload="metadata"><source src="{% static 'audio/lily-theme.mp3' %}" type="audio/mpeg"></audio>
+  </div>
+  <script>
+    (() => {
+      const audio = document.getElementById('site-music');
+      const button = document.getElementById('music-toggle');
+      if (!audio || !button) return;
+      audio.volume = 0.25;
+      const update = () => button.textContent = audio.paused ? '▶ Play music' : '⏸ Pause music';
+      button.addEventListener('click', async () => { audio.paused ? await audio.play() : audio.pause(); update(); });
+      const tryAutoplay = async () => { try { await audio.play(); update(); } catch (_) { update(); } };
+      window.addEventListener('load', tryAutoplay, { once: true });
+      update();
+    })();
+  </script>
 
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>

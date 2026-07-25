@@ -19,7 +19,7 @@
                         id="product-image"
                         src="{{ selected_variant.image.url }}"
                         alt="{{ product.name }}"
-                        class="w-full h-[500px] md:h-[650px] object-cover rounded-[30px] shadow-xl"
+                        class="w-full h-[360px] md:h-[520px] object-contain bg-white rounded-[30px] shadow-xl"
                     >
 
                     {% elif product.image %}
@@ -27,7 +27,7 @@
                         id="product-image"
                         src="{{ product.image.url }}"
                         alt="{{ product.name }}"
-                        class="w-full h-[500px] md:h-[650px] object-cover rounded-[30px] shadow-xl"
+                        class="w-full h-[360px] md:h-[520px] object-contain bg-white rounded-[30px] shadow-xl"
                     >
                     {% endif %}
 
@@ -54,14 +54,15 @@
                 </p>
 
                 <!-- PRICE -->
-                <div
-                    id="product-price"
-                    class="mt-8 text-4xl font-bold text-pink-500"
-                >
-                    ₦{% if selected_variant and selected_variant.price %}
-                        {{ selected_variant.price }}
+                <div id="product-price" class="mt-8">
+                    {% if selected_variant and selected_variant.price %}
+                        <span class="text-4xl font-bold text-pink-500">₦{{ selected_variant.price }}</span>
+                    {% elif product.is_on_sale %}
+                        <span class="text-xl text-gray-400 line-through mr-3">₦{{ product.price }}</span>
+                        <span class="text-4xl font-bold text-pink-500">₦{{ product.current_price }}</span>
+                        <span class="ml-2 rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">SALE</span>
                     {% else %}
-                        {{ product.price }}
+                        <span class="text-4xl font-bold text-pink-500">₦{{ product.price }}</span>
                     {% endif %}
                 </div>
 
