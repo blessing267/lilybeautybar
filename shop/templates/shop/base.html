@@ -1,227 +1,439 @@
 {% load static %}
 {% load tailwind_tags %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>{% block title %}Lily Beauty Bar{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lily Beauty Bar — premium beauty essentials for confident, effortless beauty.">
+  <title>{% block title %}Lily Beauty Bar{% endblock %}</title>
 
 {% tailwind_css %}
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --lily-pink:#ec2b86; --lily-dark:#171217; --lily-blush:#fff1f6; }
+    body { font-family:'DM Sans',sans-serif; }
+    .font-display { font-family:'Playfair Display',serif; }
+    [x-cloak] { display:none!important; }
+  </style>
+  {% block extra_css %}{% endblock %}
 </head>
 
-<body class="bg-[#fff7f8] text-gray-800 font-sans">
+<body class="bg-white text-gray-900 antialiased">
+  <header class="sticky top-0 z-[100]">
+  <!-- TOP ANNOUNCEMENT BAR -->
+  <div class="bg-black text-white">
+    <div class="mx-auto flex min-h-10 max-w-7xl items-center justify-between gap-3 px-4 py-2 text-[11px] sm:px-6 sm:text-sm lg:px-8">
+
+      <p class="flex shrink-0 items-center gap-2">
+        <span class="text-pink-400">🌸</span>
+        <span class="hidden sm:inline">Welcome to Lily Beauty Bar</span>
+        <span class="sm:hidden">Lily Beauty Bar</span>
+      </p>
+
+      <!-- Remove hidden md:block so it can display -->
+      <p class="flex-1 text-center sm:block">
+        Premium Beauty Experience ✨
+      </p>
+
+      <div class="flex shrink-0 items-center gap-4 text-base text-pink-400 sm:text-lg">
+        <a
+          href="https://wa.me/2349012180451"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp"
+          class="transition hover:text-white"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
+        <a
+          href="https://www.tiktok.com/@_lilybeautybar1"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="TikTok"
+          class="transition hover:text-white"
+        >
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+          class="transition hover:text-white"
+        >
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+          class="transition hover:text-white"
+        >
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN NAVBAR -->
+  <nav
+    x-data="{ open: false }"
+    class="border-b border-gray-100 bg-white shadow-sm"
+  >
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex min-h-[88px] items-center justify-between gap-6">
+
+        <!-- LOGO -->
+        <a
+          href="{% url 'home' %}"
+          class="flex shrink-0 items-center"
+          aria-label="Lily Beauty Bar home"
+        >
+          <img
+            src="{% static 'img/lbb-logo.jpeg' %}"
+            alt="Lily Beauty Bar"
+            class="h-16 w-auto max-w-[190px] object-contain object-left"
+          >
+        </a>
+
+        <!-- DESKTOP NAVIGATION -->
+        <div class="hidden items-center gap-7 text-sm font-semibold tracking-wide lg:flex">
+          <a
+            href="{% url 'home' %}"
+            class="py-8 transition
+            {% if request.resolver_match.url_name == 'home' %}
+              border-b-2 border-pink-500 text-pink-600
+            {% else %}
+              hover:text-pink-600
+            {% endif %}"
+          >
+            HOME
+          </a>
+
+          <a
+            href="{% url 'products' %}"
+            class="py-8 transition
+            {% if request.resolver_match.url_name == 'products' %}
+              border-b-2 border-pink-500 text-pink-600
+            {% else %}
+              hover:text-pink-600
+            {% endif %}"
+          >
+            SHOP
+          </a>
+
+          <a
+            href="{% url 'products' %}#categories"
+            class="py-8 transition hover:text-pink-600"
+          >
+            CATEGORIES
+          </a>
+
+          <a
+            href="{% url 'home' %}#about"
+            class="py-8 transition hover:text-pink-600"
+          >
+            ABOUT
+          </a>
+
+          <a
+            href="{% url 'contact' %}"
+            class="py-8 transition
+            {% if request.resolver_match.url_name == 'contact' %}
+              border-b-2 border-pink-500 text-pink-600
+            {% else %}
+              hover:text-pink-600
+            {% endif %}"
+          >
+            CONTACT
+          </a>
+        </div>
+
+        <!-- DESKTOP ACTION ICONS -->
+        <div class="hidden shrink-0 items-center gap-5 md:flex">
+          <!-- SEARCH -->
+          <a
+            href="{% url 'products' %}"
+            aria-label="Search products"
+            class="transition hover:text-pink-600"
+          >
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+          </a>
+
+          <!-- ACCOUNT / ORDERS -->
+          <a
+            href="{% url 'orders' %}"
+            aria-label="My orders"
+            class="transition hover:text-pink-600"
+          >
+            <i class="fa-regular fa-user text-xl"></i>
+          </a>
+
+          <!-- CART -->
+          <a
+            href="{% url 'cart' %}"
+            aria-label="Shopping cart"
+            class="relative transition hover:text-pink-600"
+          >
+            <i class="fa-solid fa-bag-shopping text-2xl"></i>
+
+            {% if request.session.cart %}
+              <span class="absolute -right-3 -top-3 grid h-5 min-w-5 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
+                {{ request.session.cart|length }}
+              </span>
+            {% endif %}
+          </a>
+        </div>
+
+        <!-- MOBILE QUICK NAVIGATION -->
+    <div class="w-full border-t border-gray-100 bg-white lg:hidden">
+      <div class="mx-auto grid w-full max-w-lg grid-cols-4 px-2">
+
+        <a
+          href="{% url 'home' %}"
+          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
+          {% if request.resolver_match.url_name == 'home' %}
+             text-pink-600
+          {% else %}
+           text-gray-700 hover:text-pink-600
+          {% endif %}">
+          <i class="fa-solid fa-house text-base"></i><span class="whitespace-nowrap">Home</span>
+        </a>
+
+        <a
+          href="{% url 'products' %}"
+          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
+          {% if request.resolver_match.url_name == 'products' %}
+           text-pink-600
+          {% else %}
+           text-gray-700 hover:text-pink-600
+          {% endif %}">
+          <i class="fa-solid fa-store text-base"></i><span class="whitespace-nowrap">Shop</span>
+        </a>
+
+        <a
+          href="{% url 'orders' %}"
+          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs">
+          <i class="fa-regular fa-clipboard text-base"></i><span class="whitespace-nowrap">Orders</span>
+        </a>
+
+        <a
+          href="{% url 'cart' %}"
+          class="relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs"
+        >
+          <span class="relative">
+          <i class="fa-solid fa-bag-shopping text-base"></i>
+            {% if request.session.cart %}
+              <span class="absolute -right-3 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[9px] font-bold text-white">
+                {{ request.session.cart|length }}
+              </span>
+            {% endif %}
+          </span>
+
+          <span class="whitespace-nowrap">Cart</span>
+        </a>
+
+      </div>
+    </div>
+
+
+        <!-- MOBILE BUTTON -->
+        <button
+          type="button"
+          @click="open = !open"
+          class="rounded-lg p-2 transition hover:bg-pink-50 hover:text-pink-600 lg:hidden"
+          aria-label="Open navigation menu"
+          :aria-expanded="open.toString()"
+        >
+          <i
+            class="fa-solid text-2xl"
+            :class="open ? 'fa-xmark' : 'fa-bars'"
+          ></i>
+        </button>
+      </div>
+    </div>
+
+    
+
+    <!-- MOBILE MENU -->
+    <div
+      x-cloak
+      x-show="open"
+      x-transition
+      @click.outside="open = false"
+      class="border-t border-gray-100 bg-white px-5 py-5 shadow-lg lg:hidden"
+    >
+      <div class="flex flex-col gap-4 font-semibold">
+        <a
+          href="{% url 'home' %}"
+          class="text-pink-600"
+          @click="open = false"
+        >
+          Home
+        </a>
+
+        <a
+          href="{% url 'products' %}"
+          class="hover:text-pink-600"
+          @click="open = false"
+        >
+          Shop
+        </a>
+
+        <a
+          href="{% url 'products' %}#categories"
+          class="hover:text-pink-600"
+          @click="open = false"
+        >
+          Categories
+        </a>
+
+        <a
+          href="{% url 'home' %}#about"
+          class="hover:text-pink-600"
+          @click="open = false"
+        >
+          About us
+        </a>
+
+        <a
+          href="{% url 'contact' %}"
+          class="hover:text-pink-600"
+          @click="open = false"
+        >
+          Contact us
+        </a>
+
+        <div class="mt-2 flex items-center gap-6 border-t border-gray-100 pt-4">
+          <a
+            href="{% url 'products' %}"
+            aria-label="Search products"
+            class="hover:text-pink-600"
+          >
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+          </a>
+
+          <a
+            href="{% url 'orders' %}"
+            aria-label="Orders"
+            class="hover:text-pink-600"
+          >
+            <i class="fa-regular fa-user text-xl"></i>
+          </a>
+
+          <a
+            href="{% url 'cart' %}"
+            aria-label="Cart"
+            class="relative hover:text-pink-600"
+          >
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+
+            {% if request.session.cart %}
+              <span class="absolute -right-3 -top-3 grid h-5 min-w-5 place-items-center rounded-full bg-pink-500 px-1 text-[10px] font-bold text-white">
+                {{ request.session.cart|length }}
+              </span>
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
 
   <!-- FLOATING ACTION BUTTONS -->
   <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-
     <!-- WhatsApp -->
-    <a
-      href="https://wa.me/2349012180451"
-      target="_blank"
-      class="hover:scale-110 transition"
-    >
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-        class="w-18 h-14 rounded-full animate-pulse"
-        alt="WhatsApp"
-      >
+    <a href="https://wa.me/2349012180451" target="_blank" class="hover:scale-110 transition">
+      <img src="{% static 'img/whatsapp-logo-png.webp' %}" class="max-w-16 h-16 rounded-full" alt="WhatsApp">
     </a>
-
+    
     <!-- Shop Button -->
-    <a
-      href="{% url 'products' %}"
-      class="bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600 transition text-sm text-center"
-    >
-      Shop
-    </a>
-
+    <a href="{% url 'products' %}" class="bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600 transition text-sm text-center">Shop</a>
   </div>
-
-
-  <!-- Navbar -->
-  <nav x-data="{ open:false }" class="bg-white/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-blush">
-
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="flex items-center justify-between h-16">
-
-      <!-- Logo -->
-      <a href="{% url 'home' %}" class="flex items-center gap-3">
-        <img src="{% static 'img/lily-logo.png' %}" alt="Lily Beauty Bar" class="h-12 w-auto object-contain">
-      </a>
-
-      <!-- Desktop Menu -->
-      <div class="hidden md:flex space-x-8">
-        <a href="{% url 'home' %}" class="text-gray-700 hover:text-pink-500">Home</a>
-        <a href="{% url 'products' %}" class="text-gray-700 hover:text-pink-500">Shop</a>
-        <a href="{% url 'contact' %}" class="text-gray-700 hover:text-pink-500">Contact</a>
-        <a href="{% url 'orders' %}" class="text-gray-700 hover:text-pink-500">Orders</a>
-        <a href="/dashboard/login/" class="text-gray-700 hover:text-pink-500">Dashboard</a>
-        <a href="{% url 'cart' %}" class="relative text-gray-700 hover:text-pink-500"> 🛒
-            {% if request.session.cart %}
-            <span class="absolute -top-2 -right-3 bg-pink-500 text-white text-xs rounded-full px-2 py-0.5">
-              {{ request.session.cart|length }}
-            </span>
-            {% endif %}
-        </a>
-      </div>
-
-      <!-- Mobile Menu Button -->
-      <div class="md:hidden">
-        <button @click="open = !open" class="text-gray-700 hover:text-pink-500">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div x-show="open" @click.away="open=false" class="md:hidden px-6 pb-4">
-    <a href="{% url 'home' %}" class="block py-2 text-gray-700 hover:text-pink-500">Home</a>
-    <a href="{% url 'products' %}" class="block py-2 text-gray-700 hover:text-pink-500">Shop</a>
-    <a href="{% url 'contact' %}" class="block py-2 text-gray-700 hover:text-pink-500">Contact</a>
-    <a href="{% url 'orders' %}" class="block py-2 text-gray-700 hover:text-pink-500">Orders</a>
-    <a href="/dashboard/login/" class="block py-2 text-gray-700 hover:text-pink-500">Dashboard</a>
-    <a href="{% url 'cart' %}" class="flex items-center gap-2 py-2 text-gray-700 hover:text-pink-500"> 🛒
-      {% if request.session.cart %}
-      <span class="bg-pink-500 text-white text-xs rounded-full px-2 py-0.5">
-        {{ request.session.cart|length }}
-      </span>
-      {% endif %}
-    </a>
-  </div>
-
-</nav>
 
   <!-- Main Content -->
-  <main class="min-h-screen">
-    {% block content %}
-    {% endblock %}
-  </main>
+  <main class="min-h-screen">{% block content %}{% endblock %}</main>
 
   <!-- Footer -->
-<footer class="border-t-1 border-black bg-gray-700 text-white">
-  
-
-  <!-- Top Footer Section -->
-  <div class="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
-
-    <!-- Brand -->
-    <div class="text-center md:text-left">
-      <h2 class="text-2xl font-bold text-gold mb-4">
-        Lily Beauty Bar
-      </h2>
-
-      <p class="text-gray-300 leading-7">
-        Luxury beauty products carefully selected to make you glow with confidence and elegance.
-      </p>
+  <footer class="bg-[#050305] text-white">
+    <div class="mx-auto grid max-w-7xl gap-10 px-6 py-16 text-center sm:grid-cols-2 lg:grid-cols-4 lg:text-left">
+      <div class="flex flex-col items-center lg:items-start"><img src="{% static 'img/lbblogo.jpeg' %}" alt="Lily Beauty Bar" class="h-24 w-56 object-contain p-2"><p class="mt-5 max-w-xs text-sm leading-7 text-gray-400">Premium beauty products selected to help you look polished, feel confident and elegant.</p></div>
+      <div><h3 class="font-bold">QUICK LINKS</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="{% url 'products' %}" class="hover:text-pink-400">Shop</a><a href="#about" class="hover:text-pink-400">About Us</a><a href="{% url 'contact' %}" class="hover:text-pink-400">Contact</a><a href="{% url 'orders' %}" class="hover:text-pink-400">Track Orders</a></div></div>
+      <div><h3 class="font-bold">CUSTOMER SERVICE</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="#faqs" class="hover:text-pink-400">FAQs</a><a href="#ship" class="hover:text-pink-400">Shipping & Delivery</a><a href="#terms" class="hover:text-pink-400">Terms & Conditions</a><a href="#privacy" class="hover:text-pink-400">Privacy Policy</a></div></div>
+      <div><h3 class="font-bold">VISIT US</h3><p class="mt-5 text-sm leading-7 text-gray-400">122 Ujoelen Road<br>Ekpoma, Edo State<br>Nigeria</p><p class="mt-3 text-sm text-gray-400">Mon–Sun:</p><p class="mt-3 text-sm text-gray-400">9am–6pm</p></div>
     </div>
-
-    <!-- Address -->
-    <div class="text-center md:text-left">
-      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
-        Address
-      </h3>
-
-      <p class="text-gray-300 leading-7">
-        122 Ujoelen Road,<br>
-        Ekpoma,<br>
-        Edo State, Nigeria.
-      </p>
-    </div>
-
-    <!-- Information -->
-    <div class="text-center md:text-left">
-      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
-        Information
-      </h3>
-
-      <ul class="space-y-3">
-        <li>
-          <a href="#" class="hover:text-blush transition">
-            About
-          </a>
-        </li>
-
-        <li>
-          <a href="{% url 'contact' %}" class="hover:text-blush transition">
-            Contact
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="hover:text-blush transition">
-            Privacy Policy
-          </a>
-        </li>
-
-        <li>
-          <a href="#" class="hover:text-blush transition">
-            Terms & Conditions
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Working Hours -->
-    <div class="text-center md:text-left">
-      <h3 class="text-lg font-semibold text-gold tracking-wide uppercase mb-4">
-        Working Hours
-      </h3>
-
-      <ul class="space-y-2 text-gray-300">
-        <li>Monday — 8am - 8pm</li>
-        <li>Tuesday — 8am - 8pm</li>
-        <li>Wednesday — 8am - 8pm</li>
-        <li>Thursday — 8am - 8pm</li>
-        <li>Friday — 8am - 8pm</li>
-        <li>Saturday — 9am - 7pm</li>
-        <li>Sunday — Closed</li>
-      </ul>
-    </div>
-
-  </div>
-
-  <!-- Bottom Footer -->
-  <div class="border-t border-gray-800">
-    <div class="max-w-7xl mx-auto px-6 py-5 text-center text-sm text-gray-400">
-      © {% now "Y" %} Lily Beauty Bar. All rights reserved.
-    </div>
-  </div>
-
-</footer>
+    <div class="border-t border-white/10 px-6 py-5 text-center text-xs text-gray-500">© {% now "Y" %} Lily Beauty Bar. All rights reserved.</div>
+  </footer>
 
   <div class="fixed bottom-6 left-6 z-50">
     <button id="music-toggle" type="button" class="rounded-full bg-white px-4 py-3 text-sm font-semibold text-pink-600 shadow-lg border border-pink-100" aria-label="Play or pause background music">▶ Play music</button>
     <audio id="site-music" loop preload="metadata"><source src="{% static 'audio/lily-theme.mp3' %}" type="audio/mpeg"></audio>
   </div>
+
   <script>
     (() => {
-      const audio = document.getElementById('site-music');
-      const button = document.getElementById('music-toggle');
+      const audio = document.getElementById("site-music");
+      const button = document.getElementById("music-toggle");
+
       if (!audio || !button) return;
+
       audio.volume = 0.25;
-      const update = () => button.textContent = audio.paused ? '▶ Play music' : '⏸ Pause music';
-      button.addEventListener('click', async () => { audio.paused ? await audio.play() : audio.pause(); update(); });
-      const tryAutoplay = async () => { try { await audio.play(); update(); } catch (_) { update(); } };
-      window.addEventListener('load', tryAutoplay, { once: true });
-      update();
+
+      const updateButton = () => {
+        button.textContent = audio.paused
+          ? "▶ Play music"
+          : "⏸ Pause music";
+      };
+
+      const playMusic = async () => {
+        try {
+          await audio.play();
+          localStorage.setItem("lilyMusicPlaying", "true");
+        } catch (error) {
+          localStorage.setItem("lilyMusicPlaying", "false");
+        }
+
+        updateButton();
+      };
+
+      const pauseMusic = () => {
+        audio.pause();
+        localStorage.setItem("lilyMusicPlaying", "false");
+        updateButton();
+      };
+
+      button.addEventListener("click", async () => {
+        if (audio.paused) {
+          await playMusic();
+        } else {
+          pauseMusic();
+        }
+      });
+
+      window.addEventListener("load", () => {
+        const shouldPlay =
+          localStorage.getItem("lilyMusicPlaying") === "true";
+
+        if (shouldPlay) {
+          playMusic();
+        } else {
+          updateButton();
+        }
+      });
     })();
   </script>
 
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </body>
 </html>

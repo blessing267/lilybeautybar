@@ -47,13 +47,16 @@ class Product(models.Model):
         now = timezone.now()
         if self.sale_starts_at and now < self.sale_starts_at:
             return False
-        if self.sale_ends_at and now > self.sale_ends_at:
+        if self.sale_ends_at and now >= self.sale_ends_at:
             return False
         return True
 
     @property
     def current_price(self):
-        return self.sale_price if self.is_on_sale else self.price
+        if self.is_on_sale:
+            return self.sale_price
+
+        return self.price
 
     def __str__(self):
         return self.name

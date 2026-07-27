@@ -25,21 +25,9 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
     image_url = serializers.SerializerMethodField(read_only=True)
-
-    variants = ProductVariantSerializer(
-        many=True,
-        read_only=True
-    )
-
-    is_on_sale = serializers.BooleanField(
-        read_only=True
-    )
-
-    current_price = serializers.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        read_only=True
-    )
+    variants = ProductVariantSerializer(many=True, read_only=True)
+    is_on_sale = serializers.BooleanField(read_only=True)
+    current_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Product
@@ -64,11 +52,7 @@ class ProductSerializer(serializers.ModelSerializer):
         """
         data = data.copy()
 
-        nullable_sale_fields = [
-            "sale_price",
-            "sale_starts_at",
-            "sale_ends_at",
-        ]
+        nullable_sale_fields = ["sale_price", "sale_starts_at", "sale_ends_at",]
 
         for field_name in nullable_sale_fields:
             value = data.get(field_name)
@@ -152,9 +136,12 @@ class ProductSerializer(serializers.ModelSerializer):
         This prevents existing variants from being deleted when an update
         request changes only the sale price or another product field.
         """
-        return any(
-            str(key).startswith("variants[")
-            for key in self.initial_data.keys()
+        return (
+            self.initial_data.get("variants_submitted") == "true"
+            or any(
+                str(key).startswith("variants[")
+                for key in self.initial_data.keys()
+            )
         )
 
     def _extract_variants(self): 

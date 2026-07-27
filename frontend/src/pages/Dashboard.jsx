@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getProducts, getCategories } from "../api/productsApi";
-import {
-  ShoppingBag,
-  FolderTree,
-  Layers,
-  PackageCheck,
-} from "lucide-react";
+import {ShoppingBag, FolderTree, Layers, PackageCheck,} from "lucide-react";
 
 export default function Dashboard({ onLogout }) {
   const [products, setProducts] = useState([]);
