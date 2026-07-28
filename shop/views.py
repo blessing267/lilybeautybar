@@ -53,7 +53,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 # -------------------------------
 def home(request):
     products = Product.objects.all().order_by('-id')
-    review_images = ReviewGallery.objects.filter(is_active=True).order_by("display_order", "id")
+    review_images = ReviewGallery.objects.filter(is_active=True).order_by("display_order", "-created_at")
     return render(request, 'shop/home.html', {'products': products, "review_images": review_images,})
 
 def contact(request):
@@ -124,7 +124,7 @@ def review_gallery_api(request):
     if request.method == "GET":
         review_images = ReviewGallery.objects.all().order_by(
             "display_order",
-            "id",
+            "-created_at",
         )
 
         serializer = ReviewGallerySerializer(
