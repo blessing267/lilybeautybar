@@ -1,7 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { login } from "../api/authApi";
-import { setTokens } from "../auth/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login({ onLogin }) {
@@ -19,8 +18,7 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const data = await login(form);
-      setTokens(data.access, data.refresh);
+      await login(form);
 
       toast.success("Logged in successfully!");
       onLogin();

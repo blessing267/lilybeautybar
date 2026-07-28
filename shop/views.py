@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -20,7 +20,7 @@ from rest_framework import status, viewsets
 
 from .models import Product, ProductVariant, Category, SubCategory, ReviewGallery, Payment, Order, OrderItem
 from .forms import ProductForm, ProductVariantFormSet
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ReviewGallerySerializer
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -112,6 +112,88 @@ def reduce_order_stock(order):
             if item.product.stock >= item.quantity:
                 item.product.stock -= item.quantity
                 item.product.save()
+                
+# -------------------------------
+# Review Gallery API
+# -------------------------------
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def review_gallery_api(request):
+    if request.method == "GET":
+        review_images = ReviewGallery.objects.all().order_by(
+            "display_order",
+            "-created_at",
+        )
+
+        serializer = ReviewGallerySerializer(
+            review_images,
+            many=True,
+            context={"request": request},
+        )
+
+        return Response(serializer.data)
+
+    serializer = ReviewGallerySerializer(
+        data=request.data,
+        context={"request": request},
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
+@api_view(["GET", "PUT", "PATCH", "DELETE"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def review_gallery_api_detail(request, pk):
+    review_image = get_object_or_404(
+        ReviewGallery,
+        pk=pk,
+    )
+
+    if request.method == "GET":
+        serializer = ReviewGallerySerializer(
+            review_image,
+            context={"request": request},
+        )
+
+        return Response(serializer.data)
+
+    if request.method in ["PUT", "PATCH"]:
+        serializer = ReviewGallerySerializer(
+            review_image,
+            data=request.data,
+            partial=request.method == "PATCH",
+            context={"request": request},
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    review_image.delete()
+
+    return Response(
+        status=status.HTTP_204_NO_CONTENT,
+    )
 
 # -------------------------------
 # Cart

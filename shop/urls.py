@@ -14,6 +14,7 @@ urlpatterns = [
     path('remove-from-cart/<str:cart_key>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<str:cart_key>/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
+    
 
     # Dashboard (API)
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
@@ -22,6 +23,8 @@ urlpatterns = [
     path("categories/<int:pk>/", views.categories_api, name="category_detail_api"),
     path("subcategories/", views.subcategories_api, name="subcategories_api"),
     path("subcategories/<int:pk>/", views.subcategories_api, name="subcategory_detail_api"),
+    path("review-gallery/", views.review_gallery_api, name="review_gallery_api"),
+    path("review-gallery/<int:pk>/", views.review_gallery_api_detail, name="review_gallery_api_detail"),
 
     # Dashboard (HTML)
     path('dashboard/', views.dashboard, name='dashboard'),

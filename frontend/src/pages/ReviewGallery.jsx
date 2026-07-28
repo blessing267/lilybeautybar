@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api/axios";
 
 const initialForm = {
   image: null,
@@ -15,13 +15,6 @@ export default function ReviewGallery() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
-  const api = axios.create({
-    baseURL: "/api/",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("access")}`,
-    },
-  });
 
   const fetchReviews = async () => {
     try {
