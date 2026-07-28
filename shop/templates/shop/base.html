@@ -126,12 +126,26 @@
             SHOP
           </a>
 
-          <a
-            href="{% url 'products' %}#categories"
-            class="py-8 transition hover:text-pink-600"
-          >
-            CATEGORIES
-          </a>
+          {% if request.user.is_superuser %}
+            <a
+              href="{% url 'dashboard' %}"
+              class="py-8 transition
+              {% if request.resolver_match.url_name == 'dashboard' %}
+                border-b-2 border-pink-500 text-pink-600
+              {% else %}
+                 hover:text-pink-600
+              {% endif %}"
+            >
+              DASHBOARD
+            </a>
+          {% else %}
+            <a
+              href="{% url 'products' %}#categories"
+              class="py-8 transition hover:text-pink-600"
+            >
+              CATEGORIES
+            </a>
+          {% endif %}
 
           <a
             href="{% url 'home' %}#about"
@@ -285,20 +299,30 @@
         </a>
 
         <a
-          href="{% url 'products' %}#categories"
-          class="hover:text-pink-600"
-          @click="open = false"
-        >
-          Categories
-        </a>
-
-        <a
           href="{% url 'home' %}#about"
           class="hover:text-pink-600"
           @click="open = false"
         >
           About us
         </a>
+
+        {% if request.user.is_superuser %}
+          <a
+            href="{% url 'dashboard' %}"
+            class="hover:text-pink-600"
+            @click="open = false"
+          >
+            Dashboard
+          </a>
+        {% else %}
+          <a
+            href="{% url 'products' %}#categories"
+            class="hover:text-pink-600"
+            @click="open = false"
+          >
+            Categories
+          </a>
+        {% endif %}
 
         <a
           href="{% url 'contact' %}"

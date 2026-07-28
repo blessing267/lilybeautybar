@@ -32,7 +32,11 @@ import uuid
 # -------------------------------
 # Dashboard
 # -------------------------------
+@login_required
 def dashboard(request):
+    if not request.user.is_superuser:
+        return redirect("home")
+
     return render(request, "shop/dashboard/index.html")
 
 # -------------------------------

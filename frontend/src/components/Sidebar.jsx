@@ -4,6 +4,7 @@ import {
   ShoppingBag,
   FolderTree,
   ReceiptText,
+  Images,
   Settings,
 } from "lucide-react";
 
@@ -16,7 +17,7 @@ export default function Sidebar({ onClose }) {
     }`;
 
   return (
-    <aside className="w-72 h-full bg-white border-r border-rose-100 p-6 shadow-sm">
+    <aside className="h-full w-72 border-r border-rose-100 bg-white p-6 shadow-sm">
       <div className="mb-10">
         <h2 className="text-2xl font-bold text-rose-700">
           Lily Beauty
@@ -30,6 +31,7 @@ export default function Sidebar({ onClose }) {
       <nav className="space-y-2">
         <NavLink
           to="/dashboard"
+          end
           className={navStyle}
           onClick={onClose}
         >
@@ -64,8 +66,17 @@ export default function Sidebar({ onClose }) {
           Orders
         </NavLink>
 
-        <div className="pt-6 mt-6 border-t border-rose-100">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-400">
+        <NavLink
+          to="/review-gallery"
+          className={navStyle}
+          onClick={onClose}
+        >
+          <Images size={20} />
+          Review Gallery
+        </NavLink>
+
+        <div className="mt-6 border-t border-rose-100 pt-6">
+          <div className="flex items-center gap-3 rounded-2xl px-4 py-3 text-gray-400">
             <Settings size={20} />
             Settings
           </div>

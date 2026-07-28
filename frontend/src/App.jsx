@@ -5,6 +5,7 @@ import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
+import ReviewGallery from "./pages/ReviewGallery";
 import { Toaster } from "react-hot-toast";
 import { isLoggedIn, logout } from "./auth/auth";
 
@@ -26,22 +27,37 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={protect(<Dashboard onLogout={handleLogout} />)}
+          element={protect(
+            <Dashboard onLogout={handleLogout} />
+          )}
         />
 
         <Route
           path="/products"
-          element={protect(<Products onLogout={handleLogout} />)}
+          element={protect(
+            <Products onLogout={handleLogout} />
+          )}
         />
 
         <Route
           path="/categories"
-          element={protect(<Categories onLogout={handleLogout} />)}
+          element={protect(
+            <Categories onLogout={handleLogout} />
+          )}
         />
 
         <Route
           path="/orders"
-          element={protect(<Orders onLogout={handleLogout} />)}
+          element={protect(
+            <Orders onLogout={handleLogout} />
+          )}
+        />
+
+        <Route
+          path="/review-gallery"
+          element={protect(
+            <ReviewGallery onLogout={handleLogout} />
+          )}
         />
 
         <Route
@@ -57,7 +73,12 @@ export default function App() {
 
         <Route
           path="*"
-          element={<Navigate to={loggedIn ? "/" : "/login"} replace />}
+          element={
+            <Navigate
+              to={loggedIn ? "/" : "/login"}
+              replace
+            />
+          }
         />
       </Routes>
     </>
