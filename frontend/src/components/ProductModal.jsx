@@ -69,7 +69,18 @@ export default function ProductModal({
     }
 
     // variants
-    form.variants.forEach((variant, index) => {
+    const validVariants = (form.variants || []).filter((variant) => {
+      return (
+        variant.id || // Keep existing variants
+        variant.colour?.trim() ||
+        variant.product_type?.trim() ||
+        variant.price !== "" ||
+        variant.stock !== "" ||
+        variant.image
+      );
+    });
+
+    validVariants.forEach((variant, index) => {
       if (variant.id) {
         formData.append(
           `variants[${index}][id]`,

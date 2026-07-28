@@ -159,13 +159,37 @@ class ProductSerializer(serializers.ModelSerializer):
                 f"variants[{index}][image]",
             ]
         ):
+            price = self.initial_data.get(
+                f"variants[{index}][price]"
+            )
+
+            stock = self.initial_data.get(
+                f"variants[{index}][stock]"
+            )
+
             variants_data.append({
-                "id": self.initial_data.get(f"variants[{index}][id]"),
-                "colour": self.initial_data.get(f"variants[{index}][colour]"),
-                "product_type": self.initial_data.get(f"variants[{index}][product_type]"),
-                "price": self.initial_data.get(f"variants[{index}][price]"),
-                "stock": self.initial_data.get(f"variants[{index}][stock]"),
-                "image": self.initial_data.get(f"variants[{index}][image]")
+                "id": self.initial_data.get(
+                    f"variants[{index}][id]"
+                ),
+                "colour": self.initial_data.get(
+                    f"variants[{index}][colour]"
+                ) or None,
+                "product_type": self.initial_data.get(
+                    f"variants[{index}][product_type]"
+                ) or None,
+                "price": (
+                    None
+                    if price in ("", None, "null", "undefined")
+                    else price
+                ),
+                "stock": (
+                    0
+                    if stock in ("", None, "null", "undefined")
+                    else stock
+                ),
+                "image": self.initial_data.get(
+                    f"variants[{index}][image]"
+                ),
             })
 
             index += 1
