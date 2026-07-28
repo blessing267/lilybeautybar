@@ -2900,6 +2900,9 @@
   .p-12 {
     padding: calc(var(--spacing) * 12);
   }
+  .px-0\.5 {
+    padding-inline: calc(var(--spacing) * 0.5);
+  }
   .px-1 {
     padding-inline: calc(var(--spacing) * 1);
   }
