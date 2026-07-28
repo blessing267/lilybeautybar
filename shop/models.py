@@ -157,3 +157,27 @@ class Payment(models.Model):
     def __str__(self):
         order_id = self.order.id if self.order else "No Order"
         return f"{self.email} - {order_id}"
+
+
+class ReviewGallery(models.Model):
+    image = CloudinaryField("review_image")
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    display_order = models.PositiveIntegerField(
+        default=0
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ["display_order", "-created_at"]
+        verbose_name = "Review image"
+        verbose_name_plural = "Review images"
+
+    def __str__(self):
+        return f"Review image {self.pk}"

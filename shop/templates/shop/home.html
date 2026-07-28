@@ -62,7 +62,7 @@
 <!-- HERO SECTION -->
 <section class="relative overflow-hidden bg-[#fff0f5]">
     <!-- Background -->
-  <img src="{% static 'img/lashes.jpeg' %}" class="absolute inset-0 z-0 h-full w-full object-cover object-center" alt="Lily Beauty Bar">
+  <img src="{% static 'img/lashes.jpeg' %}" class="absolute inset-0 z-0 h-full w-full object-cover object-[65%_center] sm:object-center" alt="Lily Beauty Bar">
   <div class="absolute -left-24 top-10 h-72 w-72 rounded-full bg-pink-200/50 blur-3xl"></div>
   <div class="absolute -right-28 bottom-0 h-96 w-96 rounded-full bg-rose-300/40 blur-3xl"></div>
   <div class="relative mx-auto grid min-h-[520px] max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
@@ -74,7 +74,6 @@
             <a href="{% url 'products' %}" class="px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white rounded-xl shadow-xl transition duration-300 hover:scale-105">Shop Now</a>
             <a href="#featured" class="px-8 py-4 border border-white text-white rounded-xl hover:bg-white hover:text-black transition duration-300">Explore Products</a>
         </div>
-      <!-- <div class="mt-6 -mb-7 flex flex-wrap gap-x-8 gap-y-3 text-sm text-gray-300"><span>✓ Secure checkout</span><span>✓ Fast delivery</span><span>✓ Quality assured</span></div>-->
     </div>
   </div>
 </section>
@@ -311,76 +310,216 @@
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="py-20 bg-pink-50">
+<section class="relative overflow-hidden py-24">
 
-    <div class="max-w-6xl mx-auto px-6">
+    <!-- Background image -->
+    <img
+        src="{% static 'img/lbb.jpeg' %}"
+        alt="Lily Beauty Bar testimonials background"
+        class="absolute inset-0 z-0 h-full w-full object-cover object-center"
+    >
 
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold">
-                What Our Customers Say 💕
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 z-10 bg-black/65"></div>
+
+    <!-- Testimonials content -->
+    <div class="relative z-20 mx-auto max-w-7xl px-6">
+
+        <!-- Heading -->
+        <div class="mb-14 text-center">
+
+            <h2 class="mt-3 text-4xl font-bold text-white md:text-5xl">
+                What Our Customers Say 📣
             </h2>
+
+            <div class="mt-6 -mb-7 flex flex-wrap justify-center gap-x-8 gap-y-3 text-lg text-gray-300"><span>✓ Secured checkout</span><span>✓ Fast delivery</span><span>✓ Quality assured</span></div>
         </div>
 
+        <!-- Testimonial cards -->
         <div class="grid gap-8 md:grid-cols-3">
 
-            <div class="bg-white p-8 rounded-3xl shadow-md">
-                <p class="italic text-gray-600">
-                    "Absolutely love the lashes from Lily Beauty Bar — they’re my new go-to!"
+            <!-- Testimonial 1 -->
+            <div
+                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+            >
+
+                <div class="mb-5 text-xl text-pink-400">
+                    ★★★★★
+                </div>
+
+                <p class="italic leading-8 text-white">
+                    “Absolutely love the lashes from Lily Beauty Bar.
+                    They’re lightweight, beautiful and last so long.
+                    I’ll definitely be ordering again!”
                 </p>
-                <h4 class="mt-5 font-semibold">
-                    — Sarah J.
-                </h4>
+
+                <div class="mt-8 flex items-center">
+
+                    <img
+                        src="{% static 'img/pic.webp' %}"
+                        alt="Sarah"
+                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                    >
+
+                    <div class="ml-4">
+
+                        <h4 class="font-semibold text-white">
+                            Sarah
+                        </h4>
+
+                        <p class="text-sm text-pink-200">
+                            Verified Customer
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="bg-white p-8 rounded-3xl shadow-md">
-                <p class="italic text-gray-600">
-                    "Amazing quality products and very fast delivery."
+            <!-- Testimonial 2 -->
+            <div
+                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+            >
+
+                <div class="mb-5 text-xl text-pink-400">
+                    ★★★★★
+                </div>
+
+                <p class="italic leading-8 text-white">
+                    “Amazing quality products with super-fast delivery.
+                    Everything arrived beautifully packaged.
+                    I’m so impressed!”
                 </p>
-                <h4 class="mt-5 font-semibold">
-                    — Grace M.
-                </h4>
+
+                <div class="mt-8 flex items-center">
+
+                    <img
+                        src="{% static 'img/pic.webp' %}"
+                        alt="Grace"
+                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                    >
+
+                    <div class="ml-4">
+
+                        <h4 class="font-semibold text-white">
+                            Grace M.
+                        </h4>
+
+                        <p class="text-sm text-pink-200">
+                            Verified Customer
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="bg-white p-8 rounded-3xl shadow-md">
-                <p class="italic text-gray-600">
-                    "Professional service and beautiful results every time."
+            <!-- Testimonial 3 -->
+            <div
+                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+            >
+
+                <div class="mb-5 text-xl text-pink-400">
+                    ★★★★★
+                </div>
+
+                <p class="italic leading-8 text-white">
+                    “Professional service and fantastic products.
+                    This is why I come back ordering.
+                    Highly recommended!”
                 </p>
-                <h4 class="mt-5 font-semibold">
-                    — Anita B.
-                </h4>
+
+                <div class="mt-8 flex items-center">
+
+                    <img
+                        src="{% static 'img/pic.webp' %}"
+                        alt="Anita"
+                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                    >
+
+                    <div class="ml-4">
+
+                        <h4 class="font-semibold text-white">
+                            Anita
+                        </h4>
+
+                        <p class="text-sm text-pink-200">
+                            Verified Customer
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
+
     </div>
+
 </section>
 
-<!-- NEWSLETTER -->
-<section class="py-20 bg-gradient-to-br from-pink-200 via-rose-100 to-fuchsia-300">
+<!-- FEEDBACKS & REVIEWS GALLERY -->
+<section class="bg-white py-16">
+    <div class="mx-auto max-w-7xl px-6">
 
-    <div class="max-w-3xl mx-auto px-6 text-center">
+        <div class="mb-12 text-center">
+            <h2 class="font-display mt-3 text-4xl font-bold text-gray-900 sm:text-5xl">
+                FEEDBACKS & REVIEWS GALLERY
+            </h2>
 
-        <h2 class="text-4xl font-bold text-gray-900">
-            Stay In The Glow ✨
-        </h2>
+            <p class="mt-3 text-gray-500">
+                Real feedback from our customers ✨
+            </p>
+        </div>
 
-        <p class="text-gray-700 mt-3">
-            Join our newsletter for exclusive offers, beauty tips and updates.
-        </p>
+        <div class="relative overflow-hidden px-2">
 
-        <form class="mt-8 flex flex-col gap-4 items-center">
-
-            <input
-                type="email"
-                placeholder="Enter your email"
-                class="px-5 py-4 rounded-2xl border border-pink-300 bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 w-full sm:w-[400px]">
-
+            <!-- Previous arrow -->
             <button
-                class="px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl transition duration-300 shadow-lg">
-                Subscribe
+                id="review-previous"
+                type="button"
+                aria-label="Show previous review images"
+                class="absolute left-2 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+                <i class="fa-solid fa-chevron-left"></i>
             </button>
 
-        </form>
+            <!-- Slider -->
+            <div
+                id="review-slider"
+                class="flex transition-transform duration-500 ease-in-out"
+            >
+                {% for review in review_images %}
+                    <div class="review-slide w-1/2 shrink-0 px-2 md:w-1/4">
+                        <div class="overflow-hidden rounded-3xl bg-white shadow-lg">
+                            <img
+                                src="{{ review.image.url }}"
+                                class="h-64 w-full bg-gray-50 object-contain p-2 transition duration-700 hover:scale-105"
+                                alt="Customer feedback screenshot"
+                            >
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="w-full py-12 text-center text-gray-500">
+                        Customer feedback images will appear here.
+                    </div>
+                {% endfor %}
+            </div>
 
+            <!-- Next arrow -->
+            <button
+                id="review-next"
+                type="button"
+                aria-label="Show next review images"
+                class="absolute right-2 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+        </div>
     </div>
 </section>
 
@@ -392,6 +531,89 @@ document.addEventListener("DOMContentLoaded", () => {
   const previousButton = document.getElementById("featured-previous");
   const nextButton = document.getElementById("featured-next");
   const dotsContainer = document.getElementById("featured-dots");
+  const reviewSlider = document.getElementById("review-slider");
+  const reviewPrevious = document.getElementById("review-previous");
+  const reviewNext = document.getElementById("review-next");
+
+  if (reviewSlider && reviewPrevious && reviewNext) {
+    const reviewSlides = Array.from(
+      reviewSlider.querySelectorAll(".review-slide")
+    );
+
+    let reviewIndex = 0;
+
+    const getVisibleReviews = () => {
+      return window.innerWidth >= 768 ? 4 : 2;
+    };
+
+    const updateReviewSlider = () => {
+      const visibleReviews = getVisibleReviews();
+
+      const maximumIndex = Math.max(
+        0,
+        reviewSlides.length - visibleReviews
+      );
+
+      reviewIndex = Math.min(
+        reviewIndex,
+        maximumIndex
+      );
+
+      const slidePercentage = 100 / visibleReviews;
+
+      reviewSlider.style.transform =
+        `translateX(-${reviewIndex * slidePercentage}%)`;
+
+      const needsNavigation =
+        reviewSlides.length > visibleReviews;
+
+      reviewPrevious.classList.toggle(
+        "hidden",
+        !needsNavigation
+      );
+
+      reviewNext.classList.toggle(
+        "hidden",
+        !needsNavigation
+      );
+
+      reviewPrevious.disabled =
+        reviewIndex === 0;
+
+      reviewNext.disabled =
+        reviewIndex >= maximumIndex;
+    };
+
+    reviewPrevious.addEventListener("click", () => {
+      reviewIndex = Math.max(
+        0,
+        reviewIndex - 1
+      );
+
+      updateReviewSlider();
+    });
+
+    reviewNext.addEventListener("click", () => {
+      const maximumIndex = Math.max(
+        0,
+        reviewSlides.length - getVisibleReviews()
+      );
+
+      reviewIndex = Math.min(
+        maximumIndex,
+        reviewIndex + 1
+      );
+
+      updateReviewSlider();
+    });
+
+    window.addEventListener(
+      "resize",
+      updateReviewSlider
+    );
+
+    updateReviewSlider();
+  }
 
   if (
     !carousel ||

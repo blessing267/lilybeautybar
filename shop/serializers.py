@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import Product, ProductVariant
+from .models import Product, ReviewGallery, ProductVariant
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
@@ -273,3 +273,32 @@ class ProductSerializer(serializers.ModelSerializer):
         ).delete()
 
         return instance
+
+class ReviewGallerySerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReviewGallery
+        fields = [
+            "id",
+            "image",
+            "image_url",
+            "is_active",
+            "display_order",
+            "created_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "image_url",
+            "created_at",
+        ]
+
+    def get_image_url(self, obj):
+        if not obj.image:
+            return None
+
+        try:
+            return obj.image.url
+        except (AttributeError, ValueError):
+            return None
