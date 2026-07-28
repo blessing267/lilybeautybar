@@ -61,21 +61,68 @@
 
 <!-- HERO SECTION -->
 <section class="relative overflow-hidden bg-[#fff0f5]">
-    <!-- Background -->
-  <img src="{% static 'img/lashes.jpeg' %}" class="absolute inset-0 z-0 h-full w-full object-cover object-[65%_center] sm:object-center" alt="Lily Beauty Bar">
-  <div class="absolute -left-24 top-10 h-72 w-72 rounded-full bg-pink-200/50 blur-3xl"></div>
-  <div class="absolute -right-28 bottom-0 h-96 w-96 rounded-full bg-rose-300/40 blur-3xl"></div>
-  <div class="relative mx-auto grid min-h-[520px] max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
-    <div class="relative z-10 max-w-xl pt-12">
-      <span class="inline-flex items-center px-2 py-2 rounded-full bg-pink-500/20 backdrop-blur-md text-white text-sm">🌸 Premium Beauty Experience</span>
-      <h1 class="font-display mt-7 text-4xl font-bold leading-[1.03] text-pink-600 sm:text-3xl lg:text-3xl">Enhance Your <span class="block text-pink-600">Natural Beauty✨</span></h1>
-      <p class="mt-6 text-lg md:text-xl text-gray-200 max-w-lg">Discover premium lashes, brows, nails, waxing, pedicure and other products designed to help beauty professionals deliver flawless results.</p>
-        <div class="mt-8 flex flex-wrap gap-4">
-            <a href="{% url 'products' %}" class="px-8 py-4 bg-pink-500 hover:bg-pink-600 text-white rounded-xl shadow-xl transition duration-300 hover:scale-105">Shop Now</a>
-            <a href="#featured" class="px-8 py-4 border border-white text-white rounded-xl hover:bg-white hover:text-black transition duration-300">Explore Products</a>
+
+    <!-- Background image -->
+    <img
+        src="{% static 'img/lashes.jpeg' %}"
+        alt="Lily Beauty Bar"
+        class="absolute inset-0 z-0 h-full w-full object-cover object-[65%_center] sm:object-center"
+    >
+
+    <!-- Dark overlay for readability -->
+    <div class="absolute inset-0 z-10 bg-black/35"></div>
+
+    <!-- Soft decorative glow -->
+    <div class="absolute -left-24 top-10 z-10 h-64 w-64 rounded-full bg-pink-300/30 blur-3xl"></div>
+    <div class="absolute -right-24 bottom-0 z-10 h-72 w-72 rounded-full bg-rose-300/30 blur-3xl"></div>
+
+    <!-- Hero content -->
+    <div class="relative z-20 mx-auto grid min-h-[400px] max-w-7xl items-center px-6 py-10 lg:grid-cols-2 lg:px-8 lg:py-12">
+
+        <div class="max-w-xl">
+
+            <span class="inline-flex items-center rounded-full border border-white/30 bg-white/15 px-4 py-2 text-sm font-medium tracking-wide text-white backdrop-blur-md">
+                ✨ Premium Beauty Essentials
+            </span>
+
+            <h1 class="mt-5 text-4xl leading-tight text-pink-600 lg:text-7xl">
+              <span class="font-luxury font-extrabold text-white">
+                ENHANCE
+              </span>
+
+              <span class="block font-luxury font-bold">
+                YOUR BEAUTY
+              </span>
+            </h1>
+            
+            <p class="mt-5 max-w-lg text-base leading-7 text-white/90 sm:text-lg">
+                Discover premium lashes, brows, nails, waxing, pedicure and
+                other beauty essentials created to help
+                beauty professionals achieve flawless, long-lasting results.
+            </p>
+
+            <div class="mt-7 flex flex-wrap gap-4">
+
+                <a
+                    href="{% url 'products' %}"
+                    class="inline-flex items-center justify-center rounded-xl bg-pink-500 px-7 py-3.5 font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-pink-600"
+                >
+                    Shop Now
+                </a>
+
+                <a
+                    href="#featured"
+                    class="inline-flex items-center justify-center rounded-xl border border-white px-7 py-3.5 font-semibold text-white transition duration-300 hover:bg-white hover:text-gray-900"
+                >
+                    Explore Products
+                </a>
+
+            </div>
+
         </div>
+
     </div>
-  </div>
+
 </section>
 
 <!-- FEATURED PRODUCTS -->
@@ -249,31 +296,65 @@
   </div>
 </section>
 
-<!-- OUR WORK / GALLERY -->
-<section class="py-16 bg-white">
-<!--class=" pb-10 sm:pt-16 sm:pb-12 bg-white-->
-    <div class="max-w-7xl mx-auto px-6">
+<section class="overflow-hidden bg-pink-200">
+    <div class="grid min-h-[390px] md:grid-cols-2">
 
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold">
-                Our Work
-            </h2>
-            <p class="text-gray-500 mt-3">
-                Beauty transformations we’re proud of ✨
-            </p>
+        <!-- LEFT: Shipping information -->
+        <div class="flex items-center px-6 py-10 sm:px-10 md:px-12 lg:px-16">
+            <div class="max-w-xl">
+
+                <h2 class="font-display mt-2 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
+                    Shipping &amp; Delivery
+                </h2>
+
+                <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
+
+                <p class="mt-5 text-base leading-7 text-gray-700">
+                    Orders within Edo State are delivered within
+                    <span class="font-semibold text-gray-900">
+                        2–3 working days.
+                    </span>
+                    Deliveries outside Edo State take approximately
+                    <span class="font-semibold text-gray-900">
+                        3–4 working days,
+                    </span>
+                    depending on your location.
+                </p>
+
+                <!-- Important delivery notice -->
+                <div class="mt-5 rounded-2xl border border-pink-200 bg-white/80 p-4 shadow-sm">
+                    <p class="text-sm font-semibold text-gray-900">
+                        Important delivery notice
+                    </p>
+
+                    <p class="mt-1 text-sm leading-6 text-gray-600">
+                        We do not offer urgent pickups or deliveries. Your pickup
+                        time and other delivery information will be communicated
+                        to you via WhatsApp.
+                    </p>
+                </div>
+
+                <div class="mt-5 flex items-center gap-3">
+                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pink-500 text-sm font-bold text-white">
+                        ✓
+                    </span>
+
+                    <p class="text-sm font-medium text-gray-800 sm:text-base">
+                        Nationwide delivery across Nigeria
+                    </p>
+                </div>
+
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-            {% for i in "1234" %}
-            <div class="overflow-hidden rounded-3xl shadow-lg">
-                <img
-                    src="{% static 'img/lbb.jpeg' %}"
-                    class="w-full h-64 object-cover hover:scale-110 transition duration-700"
-                    alt="Beauty work">
-            </div>
-            {% endfor %}
-
+        <!-- RIGHT: Full-width image -->
+        <div class="relative min-h-[300px] md:min-h-full">
+            <img
+                src="{% static 'img/delivery.png' %}"
+                alt="Lily Beauty Bar shipping and delivery"
+                loading="lazy"
+                class="absolute inset-0 h-full w-full object-cover object-center"
+            >
         </div>
 
     </div>
@@ -288,19 +369,19 @@
         </div>
 
         <div class="grid gap-8 md:grid-cols-3">
-            <div class="bg-pink-50 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
                 <div class="text-5xl mb-4">💎</div>
                 <h3 class="text-xl font-semibold">Premium Quality</h3>
                 <p class="text-gray-500 mt-3">Carefully selected beauty products to help professionals deliver great results always.</p>
             </div>
 
-            <div class="bg-pink-50 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
                 <div class="text-5xl mb-4">🚚</div>
                 <h3 class="text-xl font-semibold">Fast Delivery</h3>
                 <p class="text-gray-500 mt-3">Get your beauty essentials delivered quickly and safely.</p>
             </div>
 
-            <div class="bg-pink-50 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
                 <div class="text-5xl mb-4">💕</div>
                 <h3 class="text-xl font-semibold">Customer Satisfaction</h3>
                 <p class="text-gray-500 mt-3">Trusted by customers who love quality beauty experiences.</p>
