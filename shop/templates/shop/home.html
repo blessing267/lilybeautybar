@@ -65,54 +65,66 @@
     <!-- Background image -->
     <img
         src="{% static 'img/lashes.jpeg' %}"
-        alt="Lily Beauty Bar"
-        class="absolute inset-0 z-0 h-full w-full object-cover object-[65%_center] sm:object-center"
+        alt="Lily Beauty Bar lashes"
+        class="absolute inset-0 z-0 h-full w-full object-contain object-top sm:object-cover sm:object-center"
     >
 
-    <!-- Dark overlay for readability -->
-    <div class="absolute inset-0 z-10 bg-black/35"></div>
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 z-10 bg-black/30 sm:bg-black/35"></div>
 
-    <!-- Soft decorative glow -->
+    <!-- Decorative glow -->
     <div class="absolute -left-24 top-10 z-10 h-64 w-64 rounded-full bg-pink-300/30 blur-3xl"></div>
     <div class="absolute -right-24 bottom-0 z-10 h-72 w-72 rounded-full bg-rose-300/30 blur-3xl"></div>
 
     <!-- Hero content -->
-    <div class="relative z-20 mx-auto grid min-h-[400px] max-w-7xl items-center px-6 py-10 lg:grid-cols-2 lg:px-8 lg:py-12">
+    <div
+        class="relative z-20 mx-auto grid min-h-[520px] max-w-7xl items-end px-6 pb-10 pt-52
+               sm:min-h-[480px] sm:items-center sm:py-12
+               lg:min-h-[500px] lg:grid-cols-2 lg:px-8"
+    >
 
         <div class="max-w-xl">
 
-            <span class="inline-flex items-center rounded-full border border-white/30 bg-white/15 px-3 py-2 text-sm font-medium text-white backdrop-blur-md">
+            <!-- Positioned below the wording inside the image -->
+            <span
+                class="inline-flex items-center rounded-full border border-white/30 bg-white/20
+                       px-3 py-2 text-sm font-medium text-white shadow-sm backdrop-blur-md"
+            >
                 ✨ Premium Beauty Essentials
             </span>
 
-            <h1 class="mt-5 text-4xl leading-tight text-pink-600 lg:text-7xl">
-              <span class="font-luxury font-extrabold text-white">
-                ENHANCE
-              </span>
+            <h1 class="mt-4 text-4xl leading-tight text-pink-500 sm:text-5xl lg:text-7xl">
+                <span class="block font-luxury font-extrabold text-white">
+                    ENHANCE
+                </span>
 
-              <span class="block font-luxury font-bold">
-                YOUR BEAUTY
-              </span>
+                <span class="block font-luxury font-bold">
+                    YOUR BEAUTY
+                </span>
             </h1>
-            
-            <p class="mt-5 max-w-lg text-base leading-7 text-white/90 sm:text-lg">
+
+            <p class="mt-4 max-w-lg text-base leading-7 text-white/90 sm:text-lg">
                 Discover premium lashes, brows, nails, waxing, pedicure and
-                other beauty essentials created to help
-                beauty professionals achieve flawless, long-lasting results.
+                other beauty essentials created to help beauty professionals
+                achieve flawless, long-lasting results.
             </p>
 
-            <div class="mt-7 flex flex-wrap gap-4">
+            <div class="mt-6 flex flex-wrap gap-3 sm:gap-4">
 
                 <a
                     href="{% url 'products' %}"
-                    class="inline-flex items-center justify-center rounded-xl bg-pink-500 px-7 py-3.5 font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:bg-pink-600"
+                    class="inline-flex items-center justify-center rounded-xl bg-pink-500
+                           px-6 py-3 font-semibold text-white shadow-lg transition
+                           duration-300 hover:-translate-y-0.5 hover:bg-pink-600"
                 >
                     Shop Now
                 </a>
 
                 <a
                     href="#featured"
-                    class="inline-flex items-center justify-center rounded-xl border border-white px-7 py-3.5 font-semibold text-white transition duration-300 hover:bg-white hover:text-gray-900"
+                    class="inline-flex items-center justify-center rounded-xl border border-white
+                           px-6 py-3 font-semibold text-white transition duration-300
+                           hover:bg-white hover:text-gray-900"
                 >
                     Explore Products
                 </a>
@@ -122,7 +134,6 @@
         </div>
 
     </div>
-
 </section>
 
 <!-- FEATURED PRODUCTS -->
@@ -296,7 +307,7 @@
   </div>
 </section>
 
-<section class="overflow-hidden bg-pink-200">
+<section id="ship" class="overflow-hidden bg-pink-200">
     <div class="grid min-h-[390px] md:grid-cols-2">
 
         <!-- LEFT: Shipping information -->
@@ -611,6 +622,88 @@
 
     </div>
   </div>
+</section>
+
+<!-- ABOUT LILY BEAUTY BAR -->
+<section
+    id="about"
+    class="scroll-mt-24 overflow-hidden bg-[#fff5f8]"
+>
+    <div class="grid min-h-[390px] md:grid-cols-2">
+
+        <!-- MOBILE HEADING: displays before the image -->
+        <div class="px-6 pb-6 pt-10 sm:px-10 md:hidden">
+
+            <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
+                About Us
+            </span>
+
+            <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900">
+                Quality Beauty Essentials for Professionals Who Care About Results
+            </h2>
+
+            <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
+
+        </div>
+
+        <!-- IMAGE -->
+        <div class="relative min-h-[300px] overflow-hidden bg-white sm:min-h-[380px] md:min-h-[520px]">
+
+            <img
+                src="{% static 'img/wax.png' %}"
+                alt="Lily Beauty Bar professional beauty products"
+                loading="lazy"
+                class="absolute inset-0 h-full w-full object-cover object-center"
+            >
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex items-center px-6 py-10 sm:px-10 md:px-12 lg:px-16">
+
+            <div class="max-w-xl">
+
+                <!-- DESKTOP HEADING -->
+                <div class="hidden md:block">
+
+                    <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
+                        About Us
+                    </span>
+
+                    <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
+                        Quality Beauty Essentials for Professionals Who Care About Results
+                    </h2>
+
+                    <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
+
+                </div>
+
+                <p class="text-base leading-8 text-gray-600 md:mt-6">
+                    Lily Beauty Bar was created for beauty
+                    professionals and beauty lovers to enable easy access to quality products, all in one convenient place.
+                </p>
+
+                <p class="mt-4 text-base leading-8 text-gray-600">
+                    We understand that exquisite results begin with the right
+                    products. This is why our collection includes quality
+                    essentials for
+                    <span class="font-semibold text-gray-900">
+                        lashes, brows, nails, waxing, pedicure and other services you can ask for.
+                    </span>
+                </p>
+
+                <p class="mt-4 text-base leading-8 text-gray-600">
+                    Every product is selected with performance, ease of use and
+                    customer satisfaction in mind, helping professionals work
+                    confidently while giving their clients an experience they
+                    will remember.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
 </section>
 
 {% endblock content %}
