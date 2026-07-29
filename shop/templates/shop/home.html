@@ -66,7 +66,7 @@
     <img
         src="{% static 'img/lashes.jpeg' %}"
         alt="Lily Beauty Bar lashes"
-        class="absolute inset-0 z-0 h-full w-full object-cover object-center"
+        class="absolute inset-0 z-0 h-full w-full object-cover object-[35%_center] sm:object-center"
     >
 
     <!-- Dark overlay -->
@@ -356,28 +356,51 @@
                     </p>
                 </div>
 
-                <div class="mt-5 flex items-center gap-3">
-                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-pink-500 text-sm font-bold text-white">
-                        ✓
-                    </span>
+                <!-- Desktop nationwide-delivery notice -->
+                <div class="mt-5 hidden items-center gap-3 md:flex">
+                  <span
+                    class="flex h-7 w-7 shrink-0 items-center justify-center
+                     rounded-full bg-pink-500 text-sm font-bold text-white"
+                  >
+                    ✓
+                  </span>
 
-                    <p class="text-sm font-medium text-gray-800 sm:text-base">
-                        Nationwide delivery across Nigeria
-                    </p>
+                  <p class="text-sm font-medium text-gray-800 sm:text-base">
+                    Nationwide delivery across Nigeria
+                  </p>
                 </div>
 
             </div>
         </div>
 
-        <!-- RIGHT: Full-width image -->
-        <div class="flex min-h-[260px] items-center justify-center bg-white md:relative md:min-h-full">
+        <!-- RIGHT: Delivery image and mobile nationwide notice -->
+        <div class="bg-white">
+
+          <div class="flex min-h-[260px] items-center justify-center md:relative md:min-h-full">
             <img
-                src="{% static 'img/delivery.png' %}"
-                alt="Lily Beauty Bar shipping and delivery"
-                loading="lazy"
-                class="h-auto max-h-[360px] w-full object-contain md:absolute md:inset-0 md:h-full md:max-h-none md:object-cover"
+              src="{% static 'img/delivery.png' %}"
+              alt="Lily Beauty Bar shipping and delivery"
+              loading="lazy"
+              class="h-auto max-h-[360px] w-full object-contain
+                   md:absolute md:inset-0 md:h-full md:max-h-none md:object-cover"
             >
+          </div>
+
+        <!-- Mobile nationwide-delivery notice -->
+        <div class="flex items-center gap-3 bg-pink-200 px-6 py-5 md:hidden">
+          <span
+            class="flex h-7 w-7 shrink-0 items-center justify-center
+                   rounded-full bg-pink-500 text-sm font-bold text-white"
+          >
+            ✓
+          </span>
+
+          <p class="text-sm font-medium text-gray-800 sm:text-base">
+            Nationwide delivery across Nigeria
+          </p>
         </div>
+
+      </div>
 
     </div>
 </section>

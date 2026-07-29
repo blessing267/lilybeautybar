@@ -2787,6 +2787,9 @@
   .object-cover {
     object-fit: cover;
   }
+  .object-\[35\%_center\] {
+    object-position: 35% center;
+  }
   .object-\[65\%_center\] {
     object-position: 65% center;
   }
