@@ -3,8 +3,6 @@
 
 {% block title %}Lily Beauty Bar{% endblock %}
 
-{% block content %}
-
 {% block extra_css %}
 <style>
   /* Featured-products carousel */
@@ -58,6 +56,8 @@
   }
 </style>
 {% endblock %}
+
+{% block content %}
 
 <!-- HERO SECTION -->
 <section class="relative overflow-hidden bg-[#fff0f5]">
@@ -126,13 +126,13 @@
 </section>
 
 <!-- FEATURED PRODUCTS -->
-<section id="featured" class="overflow-hidden bg-white py-14 sm:py-20">
+<section id="featured" class="overflow-hidden bg-white py-10 sm:py-10">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
     <!-- Section heading -->
-    <div class="mb-10 text-center">
+    <div class="mb-7 text-center">
 
-      <h2 class="font-display mt-3 text-4xl font-bold text-gray-900 sm:text-5xl">
+      <h2 class="font-display text-4xl font-bold text-gray-900 sm:text-4xl">
         Featured Products
       </h2>
 
@@ -163,7 +163,7 @@
         <!-- Products -->
         <div
           id="featured-carousel"
-          class="featured-carousel flex gap-4 overflow-x-auto px-1 py-5"
+          class="featured-carousel flex gap-4 overflow-x-auto px-1 py-3"
           tabindex="0"
         >
           {% for product in products %}
@@ -189,11 +189,11 @@
                             src="{{ product.image.url }}"
                             alt="{{ product.name }}"
                             loading="lazy"
-                            class="h-64 w-full object-cover transition duration-500 group-hover/card:scale-105"
+                            class="h-56 w-full object-cover transition duration-500 group-hover/card:scale-105"
                         >
                     {% else %}
                         <div
-                            class="grid h-64 w-full place-items-center bg-pink-50 text-sm text-gray-400"
+                            class="grid h-56 w-full place-items-center bg-pink-50 text-sm text-gray-400"
                         >
                             No product image
                         </div>
@@ -266,14 +266,14 @@
       <!-- Navigation dots -->
       <div
         id="featured-dots"
-        class="mt-6 flex justify-center gap-2"
+        class="mt-3 flex justify-center gap-2"
         aria-label="Featured product carousel pages"
       ></div>
 
-      <div class="mt-9 text-center">
+      <div class="mt-6 text-center">
         <a
           href="{% url 'products' %}"
-          class="inline-flex items-center gap-2 rounded-xl bg-pink-500 px-8 py-4 font-semibold text-white shadow-lg transition hover:scale-105 hover:bg-pink-600"
+          class="inline-flex items-center gap-2 rounded-xl bg-pink-500 px-7 py-3 font-semibold text-white shadow-lg transition hover:scale-105 hover:bg-pink-600"
         >
           View All Products
           <i class="fa-solid text-sm"></i>
@@ -310,9 +310,9 @@
                 <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
 
                 <p class="mt-5 text-base leading-7 text-gray-700">
-                    Orders within Edo State are delivered within
+                    Deliveries within Edo State are delivered within
                     <span class="font-semibold text-gray-900">
-                        2–3 working days.
+                        2–3 working days.<br>
                     </span>
                     Deliveries outside Edo State take approximately
                     <span class="font-semibold text-gray-900">
@@ -348,12 +348,12 @@
         </div>
 
         <!-- RIGHT: Full-width image -->
-        <div class="relative min-h-[300px] md:min-h-full">
+        <div class="flex min-h-[260px] items-center justify-center bg-white md:relative md:min-h-full">
             <img
                 src="{% static 'img/delivery.png' %}"
                 alt="Lily Beauty Bar shipping and delivery"
                 loading="lazy"
-                class="absolute inset-0 h-full w-full object-cover object-center"
+                class="h-auto max-h-[360px] w-full object-contain md:absolute md:inset-0 md:h-full md:max-h-none md:object-cover"
             >
         </div>
 
@@ -391,7 +391,7 @@
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="relative overflow-hidden py-24">
+<section class="relative overflow-hidden py-14 sm:py-16">
 
     <!-- Background image -->
     <img
@@ -407,9 +407,9 @@
     <div class="relative z-20 mx-auto max-w-7xl px-6">
 
         <!-- Heading -->
-        <div class="mb-14 text-center">
+        <div class="mb-9 text-center">
 
-            <h2 class="mt-3 text-4xl font-bold text-white md:text-5xl">
+            <h2 class="text-4xl font-bold text-white md:text-5xl">
                 What Our Customers Say 📣
             </h2>
 
@@ -417,14 +417,14 @@
         </div>
 
         <!-- Testimonial cards -->
-        <div class="grid gap-8 md:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-3">
 
             <!-- Testimonial 1 -->
             <div
-                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+                class="rounded-3xl border border-white/20 bg-white/15 p-6 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
             >
 
-                <div class="mb-5 text-xl text-pink-400">
+                <div class="mb-3 text-xl text-pink-400">
                     ★★★★★
                 </div>
 
@@ -434,12 +434,12 @@
                     I’ll definitely be ordering again!”
                 </p>
 
-                <div class="mt-8 flex items-center">
+                <div class="mt-5 flex items-center">
 
                     <img
                         src="{% static 'img/pic.webp' %}"
                         alt="Sarah"
-                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                        class="h-12 w-12 rounded-full border-2 border-pink-400 object-cover"
                     >
 
                     <div class="ml-4">
@@ -460,10 +460,10 @@
 
             <!-- Testimonial 2 -->
             <div
-                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+                class="rounded-3xl border border-white/20 bg-white/15 p-6 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
             >
 
-                <div class="mb-5 text-xl text-pink-400">
+                <div class="mb-3 text-xl text-pink-400">
                     ★★★★★
                 </div>
 
@@ -473,12 +473,12 @@
                     I’m so impressed!”
                 </p>
 
-                <div class="mt-8 flex items-center">
+                <div class="mt-5 flex items-center">
 
                     <img
                         src="{% static 'img/pic.webp' %}"
                         alt="Grace"
-                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                        class="h-12 w-12 rounded-full border-2 border-pink-400 object-cover"
                     >
 
                     <div class="ml-4">
@@ -499,10 +499,10 @@
 
             <!-- Testimonial 3 -->
             <div
-                class="rounded-3xl border border-white/20 bg-white/15 p-8 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
+                class="rounded-3xl border border-white/20 bg-white/15 p-6 shadow-xl backdrop-blur-lg transition duration-300 hover:-translate-y-2"
             >
 
-                <div class="mb-5 text-xl text-pink-400">
+                <div class="mb-3 text-xl text-pink-400">
                     ★★★★★
                 </div>
 
@@ -512,12 +512,12 @@
                     Highly recommended!”
                 </p>
 
-                <div class="mt-8 flex items-center">
+                <div class="mt-5 flex items-center">
 
                     <img
                         src="{% static 'img/pic.webp' %}"
                         alt="Anita"
-                        class="h-14 w-14 rounded-full border-2 border-pink-400 object-cover"
+                        class="h-12 w-12 rounded-full border-2 border-pink-400 object-cover"
                     >
 
                     <div class="ml-4">
@@ -543,15 +543,15 @@
 </section>
 
 <!-- FEEDBACKS & REVIEWS GALLERY -->
-<section class="bg-white py-16">
+<section class="bg-white py-10 sm:py-10">
     <div class="mx-auto max-w-7xl px-6">
 
-        <div class="mb-12 text-center">
-            <h2 class="font-display mt-3 text-4xl font-bold text-gray-900 sm:text-5xl">
+        <div class="mb-7 text-center">
+            <h2 class="font-display text-3xl font-bold text-gray-900 sm:text-4xl">
                 FEEDBACKS & REVIEWS
             </h2>
 
-            <p class="mt-3 text-gray-500">
+            <p class="mt-3 -pb-5 text-gray-500">
                 Feedback from our customers ✨
             </p>
         </div>
@@ -559,61 +559,64 @@
         <div class="relative px-5 sm:px-7">
 
         <!-- Previous arrow -->
-    <button
-        id="review-previous"
-        type="button"
-        aria-label="Show previous review images"
-        class="absolute -left-6 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-        <i class="fa-solid fa-chevron-left"></i>
-    </button>
-
-    <!-- Review slider viewport -->
-    <div class="overflow-hidden py-5">
-
-        <div
-    id="review-slider"
-    class="flex transition-transform duration-500 ease-in-out"
->
-    {% for review in review_images %}
-        <article
-            class="review-slide w-full shrink-0 px-2 sm:w-1/2 lg:w-1/4"
+        <button
+          id="review-previous"
+          type="button"
+          aria-label="Show previous review images"
+          class="absolute -left-6 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
         >
-            <div
-                class="group/review h-[410px] w-full overflow-hidden rounded-3xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <!-- Review slider viewport -->
+        <div class="overflow-hidden py-3">
+
+          <div
+            id="review-slider"
+            class="flex transition-transform duration-500 ease-in-out"
+          >
+          {% for review in review_images %}
+            <article
+              class="review-slide w-full shrink-0 px-2 sm:w-1/2 lg:w-1/4"
             >
+              <div
+                class="group/review h-[320px] w-full sm:h-[350px] overflow-hidden rounded-3xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
                 <img
                     src="{{ review.image.url }}"
                     alt="Customer feedback screenshot"
                     loading="lazy"
                     class="h-full w-full object-cover transition duration-700 group-hover/review:scale-105"
                 >
+              </div>
+            </article>
+          {% empty %}
+            <div class="w-full py-12 text-center text-gray-500">
+              Customer feedback images will appear here.
             </div>
-        </article>
-    {% empty %}
-        <div class="w-full py-12 text-center text-gray-500">
-            Customer feedback images will appear here.
+          {% endfor %}
         </div>
-    {% endfor %}
-</div>
 
-    </div>
+      </div>
 
-    <!-- Next arrow -->
-    <button
+      <!-- Next arrow -->
+      <button
         id="review-next"
         type="button"
         aria-label="Show next review images"
         class="absolute -right-5 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
-    >
+      >
         <i class="fa-solid fa-chevron-right"></i>
-    </button>
+      </button>
 
-</div>
     </div>
+  </div>
 </section>
 
+{% endblock content %}
+
 {% block extra_js %}
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const carousel = document.getElementById("featured-carousel");
@@ -1047,6 +1050,5 @@ document.addEventListener("DOMContentLoaded", () => {
   startAutoplay(true);
 });
 </script>
-{% endblock %}
 
-{% endblock %}
+{% endblock extra_js %}

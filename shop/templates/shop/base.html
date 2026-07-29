@@ -206,57 +206,55 @@
         </div>
 
         <!-- MOBILE QUICK NAVIGATION -->
-    <div class="w-full border-t border-gray-100 bg-white lg:hidden">
-      <div class="mx-auto grid w-full max-w-lg grid-cols-4 px-2">
+        <div class="w-full border-t border-gray-100 bg-white lg:hidden">
+          <div class="mx-auto grid w-full max-w-lg grid-cols-4 px-2">
 
-        <a
-          href="{% url 'home' %}"
-          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
-          {% if request.resolver_match.url_name == 'home' %}
-             text-pink-600
-          {% else %}
-           text-gray-700 hover:text-pink-600
-          {% endif %}">
-          <i class="fa-solid fa-house text-base"></i><span class="whitespace-nowrap">Home</span>
-        </a>
+            <a
+              href="{% url 'home' %}"
+              class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
+              {% if request.resolver_match.url_name == 'home' %}
+                 text-pink-600
+              {% else %}
+               text-gray-700 hover:text-pink-600
+              {% endif %}">
+              <i class="fa-solid fa-house text-base"></i><span class="whitespace-nowrap">Home</span>
+            </a>
 
-        <a
-          href="{% url 'products' %}"
-          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
-          {% if request.resolver_match.url_name == 'products' %}
-           text-pink-600
-          {% else %}
-           text-gray-700 hover:text-pink-600
-          {% endif %}">
-          <i class="fa-solid fa-store text-base"></i><span class="whitespace-nowrap">Shop</span>
-        </a>
+            <a
+              href="{% url 'products' %}"
+              class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold transition sm:text-xs
+              {% if request.resolver_match.url_name == 'products' %}
+               text-pink-600
+              {% else %}
+               text-gray-700 hover:text-pink-600
+              {% endif %}">
+              <i class="fa-solid fa-store text-base"></i><span class="whitespace-nowrap">Shop</span>
+            </a>
 
-        <a
-          href="{% url 'orders' %}"
-          class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs">
-          <i class="fa-regular fa-clipboard text-base"></i><span class="whitespace-nowrap">Orders</span>
-        </a>
+            <a
+              href="{% url 'orders' %}"
+              class="flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs">
+              <i class="fa-regular fa-clipboard text-base"></i><span class="whitespace-nowrap">Orders</span>
+            </a>
 
-        <a
-          href="{% url 'cart' %}"
-          class="relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs"
-        >
-          <span class="relative">
-          <i class="fa-solid fa-bag-shopping text-base"></i>
-            {% if request.session.cart %}
-              <span class="absolute -right-3 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[9px] font-bold text-white">
-                {{ request.session.cart|length }}
+            <a
+              href="{% url 'cart' %}"
+              class="relative flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-3 text-[11px] font-semibold text-gray-700 transition hover:text-pink-600 sm:text-xs"
+            >
+              <span class="relative">
+              <i class="fa-solid fa-bag-shopping text-base"></i>
+                {% if request.session.cart %}
+                  <span class="absolute -right-3 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-pink-500 px-1 text-[9px] font-bold text-white">
+                    {{ request.session.cart|length }}
+                  </span>
+                {% endif %}
               </span>
-            {% endif %}
-          </span>
 
-          <span class="whitespace-nowrap">Cart</span>
-        </a>
+              <span class="whitespace-nowrap">Cart</span>
+            </a>
 
-      </div>
-    </div>
-
-
+          </div>
+        </div>
         <!-- MOBILE BUTTON -->
         <button
           type="button"
@@ -452,7 +450,7 @@
       });
     })();
   </script>
-
+{% block extra_js %}{% endblock extra_js %}
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
