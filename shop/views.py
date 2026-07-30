@@ -5,9 +5,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from paystackapi.transaction import Transaction
 from paystackapi.paystack import Paystack
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from django.db import transaction
-from django.db.models import F, Count
+from django.db.models import F, Count, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -60,24 +60,140 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 def product(request):
-    product_list = Product.objects.select_related("category", "subcategory").all().order_by('-id')
+    product_list = Product.objects.select_related(
+        "category",
+        "subcategory",
+    ).all()
 
-    subcategory_id = request.GET.get("subcategory")
+    search_query = request.GET.get("q", "").strip()
+    category_id = request.GET.get("category", "").strip()
+    subcategory_id = request.GET.get("subcategory", "").strip()
+    min_price = request.GET.get("min_price", "").strip()
+    max_price = request.GET.get("max_price", "").strip()
+    availability = request.GET.get("availability", "").strip()
+    sort = request.GET.get("sort", "newest").strip()
 
-    if subcategory_id:
+    # Search by product name or description
+    if search_query:
         product_list = product_list.filter(
-            subcategory_id=subcategory_id
+            Q(name__icontains=search_query)
+            | Q(description__icontains=search_query)
         )
 
-    paginator = Paginator(product_list, 16)  # Show 16 products per page
+    # Category filter
+    if category_id.isdigit():
+        product_list = product_list.filter(category_id=category_id)
 
-    page_number = request.GET.get('page')
-    products = paginator.get_page(page_number)
+    # Subcategory filter
+    if subcategory_id.isdigit():
+        product_list = product_list.filter(
+            subcategory_id=subcategory_id,
+        )
 
-    categories = Category.objects.annotate(product_count=Count("products"))
-    selected_subcategory = SubCategory.objects.select_related("category").filter(id=subcategory_id).first() if subcategory_id else None
+    # Minimum price filter
+    try:
+        if min_price:
+            product_list = product_list.filter(
+                price__gte=Decimal(min_price),
+            )
+    except (InvalidOperation, ValueError):
+        min_price = ""
 
-    return render(request, 'shop/products.html', {'products': products, "categories": categories, "selected_subcategory_id": selected_subcategory.id if selected_subcategory else None, "selected_category_id": selected_subcategory.category_id if selected_subcategory else None,})
+    # Maximum price filter
+    try:
+        if max_price:
+            product_list = product_list.filter(
+                price__lte=Decimal(max_price),
+            )
+    except (InvalidOperation, ValueError):
+        max_price = ""
+
+    # Stock filter
+    if availability == "in_stock":
+        product_list = product_list.filter(stock__gt=0)
+
+    elif availability == "out_of_stock":
+        product_list = product_list.filter(stock=0)
+
+    # Product sorting
+    sort_options = {
+        "newest": "-created_at",
+        "oldest": "created_at",
+        "price_low": "price",
+        "price_high": "-price",
+        "name": "name",
+    }
+
+    product_list = product_list.order_by(
+        sort_options.get(sort, "-created_at"),
+        "-id",
+    )
+
+    # Show 12 products on each page
+    paginator = Paginator(product_list, 12)
+    products = paginator.get_page(
+        request.GET.get("page"),
+    )
+
+    categories = (
+        Category.objects
+        .prefetch_related("subcategories")
+        .annotate(
+            product_count=Count(
+                "products",
+                distinct=True,
+            )
+        )
+        .order_by("name")
+    )
+
+    selected_subcategory = None
+
+    if subcategory_id.isdigit():
+        selected_subcategory = (
+            SubCategory.objects
+            .select_related("category")
+            .filter(id=subcategory_id)
+            .first()
+        )
+
+    if category_id.isdigit():
+        selected_category_id = int(category_id)
+
+    elif selected_subcategory:
+        selected_category_id = (
+            selected_subcategory.category_id
+        )
+
+    else:
+        selected_category_id = None
+
+    # Preserve filters when moving between pagination pages
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+
+    context = {
+        "products": products,
+        "categories": categories,
+        "selected_category_id": selected_category_id,
+        "selected_subcategory_id": (
+            selected_subcategory.id
+            if selected_subcategory
+            else None
+        ),
+        "search_query": search_query,
+        "min_price": min_price,
+        "max_price": max_price,
+        "availability": availability,
+        "sort": sort,
+        "query_string": query_params.urlencode(),
+    }
+
+    return render(
+        request,
+        "shop/products.html",
+        context,
+    )
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
