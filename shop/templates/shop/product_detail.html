@@ -1,246 +1,890 @@
-{% extends 'shop/base.html' %}
-{% block title %}{{ product.name }} • Lily Beauty Bar{% endblock %}
+{% extends "shop/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+    {{ product.name }} | Lily Beauty Bar
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-thumbnail {
+        transition:
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .product-thumbnail:hover {
+        transform: translateY(-2px);
+    }
+
+    .product-thumbnail.active {
+        border-color: #ec4899;
+        box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.12);
+    }
+
+    .product-tab-button {
+        position: relative;
+    }
+
+    .product-tab-button.active {
+        color: #ec4899;
+    }
+
+    .product-tab-button.active::after {
+        position: absolute;
+        right: 0;
+        bottom: -17px;
+        left: 0;
+        height: 2px;
+        content: "";
+        background: #ec4899;
+    }
+
+</style>
+{% endblock %}
 
 {% block content %}
 
-<section class="bg-gradient-to-b from-[#fff7f8] to-white py-20">
+<main class="bg-white text-gray-900">
 
-    <div class="max-w-7xl mx-auto px-6">
-
-        <div class="grid lg:grid-cols-2 gap-14 items-start">
-
-            <!-- PRODUCT IMAGE -->
-            <div>
-
-                <div class="bg-pink-50 p-5 rounded-[35px] shadow-lg">
-
-                    {% if selected_variant and selected_variant.image %}
-                    <img
-                        id="product-image"
-                        src="{{ selected_variant.image.url }}"
-                        alt="{{ product.name }}"
-                        class="w-full h-[360px] md:h-[520px] object-contain bg-white rounded-[30px] shadow-xl"
-                    >
-
-                    {% elif product.image %}
-                    <img
-                        id="product-image"
-                        src="{{ product.image.url }}"
-                        alt="{{ product.name }}"
-                        class="w-full h-[360px] md:h-[520px] object-contain bg-white rounded-[30px] shadow-xl"
-                    >
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-
-            <!-- PRODUCT DETAILS -->
-            <div class="lg:sticky lg:top-28">
-
-                <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
-                    ✨ Premium Beauty Product
-                </span>
-
-                <!-- PRODUCT NAME -->
-                <h1 class="mt-5 text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                    {{ product.name }}
-                </h1>
-
-                <!-- DESCRIPTION -->
-                <p class="mt-6 text-lg text-gray-600 leading-8">
-                    {{ product.description }}
-                </p>
-
-                <!-- PRICE -->
-                <div id="product-price" class="mt-8">
-                    {% if selected_variant and selected_variant.price %}
-                        <span class="text-4xl font-bold text-pink-500">₦{{ selected_variant.price }}</span>
-                    {% elif product.is_on_sale %}
-                        <span class="text-xl text-gray-400 line-through mr-3">₦{{ product.price }}</span>
-                        <span class="text-4xl font-bold text-pink-500">₦{{ product.current_price }}</span>
-                        <span class="ml-2 rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">SALE</span>
-                    {% else %}
-                        <span class="text-4xl font-bold text-pink-500">₦{{ product.price }}</span>
-                    {% endif %}
-                </div>
-
-                <!-- PAYMENT / BUY SECTION -->
-                <div class="mt-10 bg-white rounded-[30px] p-8 shadow-xl border border-pink-100">
-
-                    {% if has_paid %}
-
-                    <button class="w-full py-4 rounded-2xl bg-green-600 text-white text-lg font-semibold cursor-not-allowed">
-                        Purchased ✅
-                    </button>
-
-                    {% else %}
-
-                    <form method="POST"
-                        action="{% url 'add_to_cart' product.id %}">
-
-                      {% csrf_token %}
-
-                      {% if product.variants.exists %}
-
-                      <label class="block mb-2 font-medium">
-                        Choose option
-                      </label>
-
-                      <select
-                        id="variant-select"
-                        name="variant_id"
-                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4"
-                      >
-
-                        <option 
-                            value=""
-                            data-price="{{ product.price }}"
-                            data-image="{{ product.image.url }}"
-                        >
-                          Select an option
-                        </option>
-
-                        {% for variant in product.variants.all %}
-                        <option
-                          value="{{ variant.id }}"
-                          data-price="{{ variant.price|default:product.price }}"
-                          data-image="{% if variant.image %}{{ variant.image.url }}{% else %}{{ product.image.url }}{% endif %}"
-                        >
-                          {{ variant.colour }} - {{ variant.product_type }}
-                        </option>
-                        {% endfor %}
-
-                      </select>
-
-                      {% endif %}
-
-                      <!-- QUANTITY -->
-
-                      <div class="mt-5">
-
-                        <label class="block mb-2 font-medium">
-                          Quantity
-                        </label>
-
-                        <input
-                          type="number"
-                          name="quantity"
-                          min="1"
-                          value="1"
-                          class="w-28 rounded-xl border border-pink-200 p-3"
-                        >
-
-                      </div>
-
-                      <button
-                        type="submit"
-                        class="w-full mt-6 py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold"
-                      >
-                        Add To Cart 🛒
-                      </button>
-
-                    </form>
-
-
-                    <p class="mt-4 text-sm text-center text-gray-500">
-                        🔒 Secure payment powered by Paystack
-                    </p>
-
-                    {% endif %}
-
-                </div>
-
-
-                <!-- TRUST BADGES -->
-                <div class="mt-8 grid grid-cols-3 gap-4">
-
-                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
-                        <div class="text-2xl">
-                            🚚
-                        </div>
-
-                        <p class="mt-2 text-sm text-gray-600">
-                            Fast Delivery
-                        </p>
-                    </div>
-
-                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
-                        <div class="text-2xl">
-                            💕
-                        </div>
-
-                        <p class="mt-2 text-sm text-gray-600">
-                            Beauty Lovers
-                        </p>
-                    </div>
-
-                    <div class="bg-pink-50 rounded-3xl p-4 text-center shadow-sm">
-                        <div class="text-2xl">
-                            💎
-                        </div>
-
-                        <p class="mt-2 text-sm text-gray-600">
-                            Premium Quality
-                        </p>
-                    </div>
-
-                </div>
-
-
-                <!-- BACK BUTTON -->
+    <!-- BREADCRUMBS -->
+    <section class="border-b border-gray-100">
+        <div class="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
+            <nav
+                class="flex flex-wrap items-center gap-2 text-xs text-gray-500 sm:text-sm"
+                aria-label="Breadcrumb"
+            >
                 <a
-                    href="{% url 'products' %}"
-                    class="inline-flex items-center mt-8 text-pink-500 hover:text-pink-600 font-medium"
+                    href="{% url 'home' %}"
+                    class="transition hover:text-pink-500"
                 >
-                    << Continue Shopping
+                    Home
                 </a>
 
+                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+
+                {% if product.category %}
+                    <span>{{ product.category.name }}</span>
+                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                {% endif %}
+
+                {% if product.subcategory %}
+                    <span>{{ product.subcategory.name }}</span>
+                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                {% endif %}
+
+                <span class="font-medium text-pink-500">
+                    {{ product.name }}
+                </span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- PRODUCT INFORMATION -->
+    <section class="py-8 sm:py-12">
+        <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+
+            <div class="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+
+                <!-- PRODUCT GALLERY -->
+                <div>
+                    <div class="relative aspect-square w-full overflow-hidden rounded-2xl bg-[#fff1f6]">
+
+                        {% if product.is_on_sale %}
+                            <span class="absolute left-4 top-4 z-10 rounded-md bg-pink-500 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white">
+                                Sale
+                            </span>
+                        {% endif %}
+
+                        <div
+                            id="main-image-wrapper"
+                            class="relative aspect-square w-full overflow-hidden rounded-2xl"
+                        >
+                            {% if product.image %}
+                                <img
+                                    id="main-product-image"
+                                    src="{{ product.image.url }}"
+                                    alt="{{ product.name }}"
+                                    class="absolute inset-0 h-full w-full object-cover object-center"
+                                >
+                            {% else %}
+                                <div class="flex h-full w-full items-center justify-center bg-pink-50 text-gray-400">
+                                    <i class="fa-regular fa-image text-6xl"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button
+                            id="open-image-preview"
+                            type="button"
+                            aria-label="Enlarge product image"
+                            class="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg transition hover:scale-105 hover:text-pink-500"
+                        >
+                            <i class="fa-solid fa-magnifying-glass-plus"></i>
+                        </button>
+                    </div>
+
+                    <!-- THUMBNAILS -->
+                    <div class="mt-4 flex gap-3 overflow-x-auto pb-2">
+
+                        {% if product.image %}
+                            <button
+                                type="button"
+                                class="product-thumbnail active h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-pink-500 bg-[#fff1f6] p-1.5 sm:h-24 sm:w-24"
+                                data-image="{{ product.image.url }}"
+                            >
+                                <img
+                                    src="{{ product.image.url }}"
+                                    alt="{{ product.name }}"
+                                    class="h-full w-full object-contain"
+                                >
+                            </button>
+                        {% endif %}
+
+                        {% for variant in product.variants.all %}
+                            {% if variant.image %}
+                                <button
+                                    type="button"
+                                    class="product-thumbnail h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-gray-200 bg-[#fff1f6] p-1.5 sm:h-24 sm:w-24"
+                                    data-image="{{ variant.image.url }}"
+                                >
+                                    <img
+                                        src="{{ variant.image.url }}"
+                                        alt="{{ product.name }} {{ variant }}"
+                                        class="h-full w-full object-contain"
+                                    >
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- PRODUCT DETAILS -->
+                <div class="lg:pt-1">
+
+                    {% if product.is_on_sale %}
+                        <span class="inline-flex rounded-md bg-pink-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                            Sale
+                        </span>
+                    {% endif %}
+
+                    <h1 class="mt-4 font-display text-3xl font-bold leading-tight text-gray-950 sm:text-4xl">
+                        {{ product.name }}
+                    </h1>
+
+                    <!-- REVIEWS -->
+                    <div class="mt-4 flex flex-wrap items-center gap-2">
+                        <div class="flex text-sm text-pink-500">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+
+                        <span class="text-sm text-gray-600">
+                            Customer favourite
+                        </span>
+                    </div>
+
+                    <!-- PRICE -->
+                    <div class="mt-6 flex flex-wrap items-center gap-3">
+
+                        {% if selected_variant and selected_variant.price %}
+                            <span
+                                id="display-price"
+                                class="text-3xl font-extrabold text-pink-500"
+                            >
+                                ₦{{ selected_variant.price|floatformat:0|intcomma }}
+                            </span>
+                        {% elif product.is_on_sale %}
+                            <span
+                                id="display-price"
+                                class="text-3xl font-extrabold text-pink-500"
+                            >
+                                ₦{{ product.current_price|floatformat:0|intcomma }}
+                            </span>
+
+                            <span class="text-lg text-gray-400 line-through">
+                                ₦{{ product.price|floatformat:0|intcomma }}
+                            </span>
+
+                            {% if product.discount_percentage %}
+                                <span class="rounded-md bg-pink-500 px-2.5 py-1 text-xs font-bold text-white">
+                                    -{{ product.discount_percentage }}%
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span
+                                id="display-price"
+                                class="text-3xl font-extrabold text-pink-500"
+                            >
+                                ₦{{ product.price|floatformat:0|intcomma }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if product.description %}
+                        <div class="mt-6 text-[15px] leading-7 text-gray-600">
+                            {{ product.description|truncatewords:35 }}
+                        </div>
+                    {% endif %}
+
+                    <!-- PRODUCT BENEFITS -->
+                    <div class="mt-6 space-y-3">
+                        <p class="flex items-center gap-3 text-sm text-gray-700">
+                            <i class="fa-regular fa-circle-check text-pink-500"></i>
+                            Premium quality product
+                        </p>
+
+                        <p class="flex items-center gap-3 text-sm text-gray-700">
+                            <i class="fa-regular fa-circle-check text-pink-500"></i>
+                            Carefully selected for professional results
+                        </p>
+
+                        <p class="flex items-center gap-3 text-sm text-gray-700">
+                            <i class="fa-regular fa-circle-check text-pink-500"></i>
+                            Secure checkout and nationwide delivery
+                        </p>
+                    </div>
+
+                    <!-- VARIANTS -->
+                    {% if product.variants.exists %}
+                        <div class="mt-8">
+                            <label
+                                for="variant-select"
+                                class="mb-2 block text-sm font-semibold text-gray-900"
+                            >
+                                Select an option
+                            </label>
+
+                            <select
+                                id="variant-select"
+                                name="variant_id"
+                                form="add-to-cart-form"
+                                required
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-100"
+                            >
+                                {% for variant in product.variants.all %}
+                                    <option
+                                        value="{{ variant.id }}"
+                                        data-price="{% if variant.price %}{{ variant.price }}{% else %}{{ product.current_price }}{% endif %}"
+                                        data-stock="{{ variant.stock }}"
+                                        data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+                                        {% if selected_variant and selected_variant.id == variant.id %}selected{% endif %}
+                                    >
+                                        {% if variant.colour %}
+                                            {{ variant.colour }}
+                                        {% endif %}
+
+                                        {% if variant.product_type %}
+                                            {% if variant.colour %} — {% endif %}
+                                            {{ variant.product_type }}
+                                        {% endif %}
+
+                                        {% if variant.price %}
+                                            — ₦{{ variant.price|floatformat:0|intcomma }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+
+                    <div class="my-8 border-t border-gray-200"></div>
+
+                    <!-- STOCK -->
+                    <div
+                        id="stock-display"
+                        class="flex items-center gap-2 text-sm font-medium"
+                    >
+                        {% if selected_variant %}
+                            {% if selected_variant.stock > 0 %}
+                                <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                                <span class="text-green-600">
+                                    In stock
+                                </span>
+                            {% else %}
+                                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                                <span class="text-red-600">
+                                    Out of stock
+                                </span>
+                            {% endif %}
+                        {% elif product.stock > 0 %}
+                            <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                            <span class="text-green-600">
+                                In stock
+                            </span>
+                        {% else %}
+                            <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                            <span class="text-red-600">
+                                Out of stock
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- ADD TO CART -->
+                    <form
+                        id="add-to-cart-form"
+                        method="POST"
+                        action="{% url 'add_to_cart' product.id %}"
+                        class="mt-5"
+                    >
+                        {% csrf_token %}
+
+                        <div class="flex flex-col gap-3 sm:flex-row">
+
+                            <div class="flex h-14 w-full items-center rounded-xl border border-gray-300 sm:w-40">
+                                <button
+                                    id="decrease-quantity"
+                                    type="button"
+                                    aria-label="Decrease quantity"
+                                    class="h-full w-12 text-lg text-gray-600 transition hover:bg-pink-50 hover:text-pink-500"
+                                >
+                                    −
+                                </button>
+
+                                <input
+                                    id="product-quantity"
+                                    type="number"
+                                    name="quantity"
+                                    value="1"
+                                    min="1"
+                                    class="h-full min-w-0 flex-1 border-x border-gray-300 text-center font-semibold outline-none"
+                                >
+
+                                <button
+                                    id="increase-quantity"
+                                    type="button"
+                                    aria-label="Increase quantity"
+                                    class="h-full w-12 text-lg text-gray-600 transition hover:bg-pink-50 hover:text-pink-500"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="flex h-14 flex-1 items-center justify-center gap-3 rounded-xl bg-pink-500 px-6 font-bold uppercase tracking-wide text-white shadow-lg shadow-pink-200 transition hover:-translate-y-0.5 hover:bg-pink-600"
+                            >
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Add to cart
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- BUY NOW -->
+                    <form
+                        method="POST"
+                        action="{% url 'add_to_cart' product.id %}"
+                        class="mt-3"
+                    >
+                        {% csrf_token %}
+
+                        {% if selected_variant %}
+                            <input
+                                id="buy-now-variant"
+                                type="hidden"
+                                name="variant_id"
+                                value="{{ selected_variant.id }}"
+                            >
+                        {% endif %}
+
+                        <input
+                            id="buy-now-quantity"
+                            type="hidden"
+                            name="quantity"
+                            value="1"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="buy_now"
+                            value="true"
+                        >
+
+                        <button
+                            type="submit"
+                            class="flex h-14 w-full items-center justify-center rounded-xl border-2 border-pink-500 font-bold uppercase tracking-wide text-pink-500 transition hover:bg-pink-50"
+                        >
+                            Buy now
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>      
+
+    <!-- DESCRIPTION TABS -->
+    <section class="py-12 sm:py-16">
+        <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+
+            <div class="overflow-x-auto border-b border-gray-200">
+                <div class="flex min-w-max gap-8 pb-4">
+                    <button
+                        type="button"
+                        class="product-tab-button active text-sm font-bold uppercase"
+                        data-tab="description"
+                    >
+                        Description
+                    </button>
+
+                    <button
+                        type="button"
+                        class="product-tab-button text-sm font-bold uppercase text-gray-700"
+                        data-tab="delivery"
+                    >
+                        Delivery
+                    </button>
+
+                    <button
+                        type="button"
+                        class="product-tab-button text-sm font-bold uppercase text-gray-700"
+                        data-tab="reviews"
+                    >
+                        Reviews
+                    </button>
+                </div>
             </div>
 
+            <div class="pt-8">
+                <article
+                    id="tab-description"
+                    class="product-tab-panel"
+                >
+                    <div class="grid items-center gap-10 lg:grid-cols-2">
+
+                        <div class="max-w-2xl text-[15px] leading-8 text-gray-600">
+                            {% if product.description %}
+                                {{ product.description|linebreaks }}
+                            {% else %}
+                                <p>
+                                    {{ product.name }} is part of our carefully
+                                    selected collection of professional beauty
+                                    products.
+                                </p>
+                            {% endif %}
+
+                            <ul class="mt-5 space-y-2">
+                                <li class="flex gap-3">
+                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
+                                    Selected for quality and reliable performance
+                                </li>
+
+                                <li class="flex gap-3">
+                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
+                                    Suitable for beauty professionals and beauty lovers
+                                </li>
+
+                                <li class="flex gap-3">
+                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
+                                    Carefully packaged for delivery
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article
+                    id="tab-delivery"
+                    class="product-tab-panel hidden"
+                >
+                    <div class="max-w-3xl text-[15px] leading-8 text-gray-600">
+                        <h2 class="text-xl font-bold text-gray-900">
+                            Shipping and delivery
+                        </h2>
+
+                        <p class="mt-4">
+                            Orders within Edo State are normally delivered within
+                            2–3 working days. Deliveries outside Edo State normally
+                            take approximately 3–4 working days, depending on the
+                            destination.
+                        </p>
+
+                        <p class="mt-4">
+                            Pickup and delivery information will be communicated
+                            through WhatsApp after payment confirmation.
+                        </p>
+                    </div>
+                </article>
+
+                <article
+                    id="tab-reviews"
+                    class="product-tab-panel hidden"
+                >
+                    <div class="rounded-2xl bg-pink-50 px-6 py-10 text-center">
+                        <div class="text-xl text-pink-500">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                        </div>
+
+                        <h2 class="mt-4 text-xl font-bold text-gray-900">
+                            Customer reviews
+                        </h2>
+
+                        <p class="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-600">
+                            Customer reviews for this product will appear here.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- RELATED PRODUCTS -->
+    {% if related_products %}
+<section class="bg-[#fffafa] py-14 sm:py-20">
+    <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+
+        <div class="mb-9">
+            <h2 class="font-display text-3xl font-bold text-gray-950 sm:text-4xl">
+                You May Also Like
+            </h2>
+
+            <div class="mt-3 h-1 w-14 rounded-full bg-pink-500"></div>
         </div>
 
+        <div class="grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+
+            {% for item in related_products %}
+                <article class="flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+
+                    <a
+                        href="{% url 'product_detail' item.id %}"
+                        class="relative block aspect-square w-full overflow-hidden bg-pink-50"
+                    >
+                        {% if item.is_on_sale %}
+                            <span class="absolute left-3 top-3 z-10 rounded-md bg-pink-500 px-2.5 py-1 text-[10px] font-bold uppercase text-white">
+                                Sale
+                            </span>
+                        {% endif %}
+
+                        {% if item.image %}
+                            <img
+                                src="{{ item.image.url }}"
+                                alt="{{ item.name }}"
+                                loading="lazy"
+                                class="h-full w-full object-cover object-center transition duration-500 hover:scale-105"
+                            >
+                        {% else %}
+                            <div class="flex h-full w-full items-center justify-center text-gray-400">
+                                <i class="fa-regular fa-image text-5xl"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+
+                    <div class="flex flex-1 flex-col p-4">
+                        <a href="{% url 'product_detail' item.id %}">
+                            <h3 class="line-clamp-2 min-h-12 font-semibold leading-6 text-gray-900 transition hover:text-pink-500">
+                                {{ item.name }}
+                            </h3>
+                        </a>
+
+                        <div class="mt-2 flex text-xs text-pink-500">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-2">
+                            <span class="font-bold text-gray-950">
+                                ₦{{ item.current_price|floatformat:0|intcomma }}
+                            </span>
+
+                            {% if item.is_on_sale %}
+                                <span class="text-xs text-gray-400 line-through">
+                                    ₦{{ item.price|floatformat:0|intcomma }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <form
+                            method="POST"
+                            action="{% url 'add_to_cart' item.id %}"
+                            class="mt-auto pt-4"
+                        >
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="quantity"
+                                value="1"
+                            >
+
+                            <button
+                                type="submit"
+                                class="flex w-full items-center justify-center gap-2 rounded-lg border border-pink-500 px-4 py-2.5 text-xs font-bold uppercase text-pink-500 transition hover:bg-pink-500 hover:text-white"
+                            >
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                Add to cart
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+
+        </div>
     </div>
-
 </section>
+{% endif %}
 
+    <!-- NEWSLETTER -->
+    <section class="relative overflow-hidden bg-gradient-to-r from-pink-500 via-pink-400 to-pink-500">
+        <div class="absolute -left-12 -top-12 h-48 w-48 rounded-full bg-white/10"></div>
+        <div class="absolute -bottom-16 -right-12 h-56 w-56 rounded-full bg-white/10"></div>
 
+        <div class="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-7 px-5 py-10 sm:px-6 lg:flex-row lg:px-8">
+
+            <div class="flex items-center gap-4 text-white">
+                <i class="fa-regular fa-envelope text-4xl"></i>
+
+                <div>
+                    <h2 class="font-display text-2xl font-bold">
+                        Stay Glowing!
+                    </h2>
+
+                    <p class="mt-1 text-sm text-white/90">
+                        Get updates about new products and exclusive offers.
+                    </p>
+                </div>
+            </div>
+
+            <form class="flex w-full max-w-lg">
+                <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="Enter your email"
+                    class="min-w-0 flex-1 rounded-l-xl border-0 px-5 py-4 text-sm text-gray-900 outline-none"
+                >
+
+                <button
+                    type="submit"
+                    class="rounded-r-xl border border-white/60 bg-pink-600 px-5 py-4 text-sm font-bold uppercase text-white transition hover:bg-pink-700 sm:px-7"
+                >
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- IMAGE PREVIEW MODAL -->
+<div
+    id="image-preview-modal"
+    class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 p-5"
+>
+    <button
+        id="close-image-preview"
+        type="button"
+        aria-label="Close image preview"
+        class="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-900"
+    >
+        <i class="fa-solid fa-xmark text-xl"></i>
+    </button>
+
+    <img
+        id="preview-modal-image"
+        src=""
+        alt="{{ product.name }}"
+        class="max-h-[88vh] max-w-[95vw] rounded-xl bg-white object-contain p-4"
+    >
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+    const mainImage = document.getElementById("main-product-image");
+    const thumbnails = document.querySelectorAll(".product-thumbnail");
+    const variantSelect = document.getElementById("variant-select");
+    const displayPrice = document.getElementById("display-price");
+    const stockDisplay = document.getElementById("stock-display");
+    const buyNowVariant = document.getElementById("buy-now-variant");
 
-    const variantSelect =
-        document.getElementById("variant-select");
+    const quantityInput = document.getElementById("product-quantity");
+    const buyNowQuantity = document.getElementById("buy-now-quantity");
+    const decreaseButton = document.getElementById("decrease-quantity");
+    const increaseButton = document.getElementById("increase-quantity");
 
-    const productPrice =
-        document.getElementById("product-price");
+    const tabButtons = document.querySelectorAll(".product-tab-button");
+    const tabPanels = document.querySelectorAll(".product-tab-panel");
 
-    const productImage =
-        document.getElementById("product-image");
+    const previewModal = document.getElementById("image-preview-modal");
+    const previewModalImage = document.getElementById("preview-modal-image");
+    const openPreviewButton = document.getElementById("open-image-preview");
+    const closePreviewButton = document.getElementById("close-image-preview");
 
-    if (!variantSelect) return;
+    const formatNaira = (value) => {
+        const number = Number(value);
 
-    variantSelect.addEventListener("change", function () {
+        if (Number.isNaN(number)) {
+            return value;
+        }
 
-        const selected =
-            this.options[this.selectedIndex];
+        return new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            maximumFractionDigits: 0,
+        }).format(number);
+    };
 
-        const price =
-            selected.dataset.price;
+    thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener("click", () => {
+            const imageUrl = thumbnail.dataset.image;
 
-        const image =
-            selected.dataset.image;
+            if (mainImage && imageUrl) {
+                mainImage.src = imageUrl;
+            }
 
-        // update price
-        productPrice.innerHTML = `₦${price}`;
+            thumbnails.forEach((item) => {
+                item.classList.remove("active");
+            });
 
-        // update image
-        if (image) {
-            productImage.src = image;
+            thumbnail.classList.add("active");
+        });
+    });
+
+    if (variantSelect) {
+        variantSelect.addEventListener("change", () => {
+            const option =
+                variantSelect.options[variantSelect.selectedIndex];
+
+            const price = option.dataset.price;
+            const stock = Number(option.dataset.stock || 0);
+            const imageUrl = option.dataset.image;
+
+            if (displayPrice && price) {
+                displayPrice.textContent = formatNaira(price);
+            }
+
+            if (stockDisplay) {
+                if (stock > 0) {
+                    stockDisplay.innerHTML = `
+                        <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                        <span class="text-green-600">In stock</span>
+                    `;
+                } else {
+                    stockDisplay.innerHTML = `
+                        <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                        <span class="text-red-600">Out of stock</span>
+                    `;
+                }
+            }
+
+            if (mainImage && imageUrl) {
+                mainImage.src = imageUrl;
+            }
+
+            if (buyNowVariant) {
+                buyNowVariant.value = variantSelect.value;
+            }
+        });
+    }
+
+    const updateBuyNowQuantity = () => {
+        if (quantityInput && buyNowQuantity) {
+            buyNowQuantity.value = quantityInput.value;
+        }
+    };
+
+    if (decreaseButton && quantityInput) {
+        decreaseButton.addEventListener("click", () => {
+            const currentValue = Number(quantityInput.value || 1);
+
+            quantityInput.value = Math.max(1, currentValue - 1);
+            updateBuyNowQuantity();
+        });
+    }
+
+    if (increaseButton && quantityInput) {
+        increaseButton.addEventListener("click", () => {
+            const currentValue = Number(quantityInput.value || 1);
+
+            quantityInput.value = currentValue + 1;
+            updateBuyNowQuantity();
+        });
+    }
+
+    if (quantityInput) {
+        quantityInput.addEventListener("input", () => {
+            if (Number(quantityInput.value) < 1) {
+                quantityInput.value = 1;
+            }
+
+            updateBuyNowQuantity();
+        });
+    }
+
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const selectedTab = button.dataset.tab;
+
+            tabButtons.forEach((item) => {
+                item.classList.remove("active");
+                item.classList.add("text-gray-700");
+            });
+
+            button.classList.add("active");
+            button.classList.remove("text-gray-700");
+
+            tabPanels.forEach((panel) => {
+                panel.classList.toggle(
+                    "hidden",
+                    panel.id !== `tab-${selectedTab}`
+                );
+            });
+        });
+    });
+
+    if (openPreviewButton && previewModal && mainImage) {
+        openPreviewButton.addEventListener("click", () => {
+            previewModalImage.src = mainImage.src;
+            previewModal.classList.remove("hidden");
+            previewModal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        });
+    }
+
+    const closeImagePreview = () => {
+        if (!previewModal) {
+            return;
+        }
+
+        previewModal.classList.add("hidden");
+        previewModal.classList.remove("flex");
+        document.body.style.overflow = "";
+    };
+
+    if (closePreviewButton) {
+        closePreviewButton.addEventListener(
+            "click",
+            closeImagePreview
+        );
+    }
+
+    if (previewModal) {
+        previewModal.addEventListener("click", (event) => {
+            if (event.target === previewModal) {
+                closeImagePreview();
+            }
+        });
+    }
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeImagePreview();
         }
     });
 
 });
 </script>
-
 {% endblock %}
