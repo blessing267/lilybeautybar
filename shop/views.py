@@ -197,65 +197,36 @@ def product(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(
-        Product.objects.select_related(
-            "category",
-            "subcategory",
-        ).prefetch_related("variants"),
-        pk=pk,
+        Product.objects.prefetch_related("variants"),
+        pk=pk
     )
 
-    variant_id = request.GET.get("variant")
     selected_variant = None
+    variant_id = request.GET.get("variant")
 
     if variant_id:
-        selected_variant = product.variants.filter(
-            id=variant_id
-        ).first()
+        selected_variant = product.variants.filter(pk=variant_id).first()
 
-    # Automatically select the first variant when variants exist.
     if not selected_variant:
         selected_variant = product.variants.first()
 
-    has_paid = False
-
-    if request.user.is_authenticated:
-        payment_filter = {
-            "user": request.user,
-            "verified": True,
-        }
-
-        if selected_variant:
-            payment_filter["order__items__variant"] = selected_variant
-        else:
-            payment_filter["order__items__product"] = product
-
-        has_paid = Payment.objects.filter(
-            **payment_filter
-        ).exists()
-
-    # Related products from the same category.
-    related_products = Product.objects.exclude(
-        id=product.id
+    related_products = (
+        Product.objects
+        .exclude(pk=product.pk)
+        .prefetch_related("variants")
+        .order_by("-id")[:12]
     )
-
-    if product.category_id:
-        related_products = related_products.filter(
-            category_id=product.category_id
-        )
-
-    related_products = related_products.order_by("-id")[:8]
 
     context = {
         "product": product,
         "selected_variant": selected_variant,
-        "has_paid": has_paid,
         "related_products": related_products,
     }
 
     return render(
         request,
         "shop/product_detail.html",
-        context,
+        context
     )
 
 def reduce_order_stock(order):
