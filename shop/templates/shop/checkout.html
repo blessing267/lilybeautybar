@@ -1,217 +1,472 @@
 {% extends 'shop/base.html' %}
 
-{% block title %}
-Checkout • Lily Beauty Bar
-{% endblock %}
+{% block title %}Checkout | Lily Beauty Bar{% endblock %}
 
 {% block content %}
 
-<section class="bg-gradient-to-b from-[#fff7f8] to-white py-20 min-h-screen">
+<!-- CHECKOUT PAGE HEADER -->
+<section class="relative overflow-hidden border-b border-pink-100 bg-gradient-to-r from-pink-50 via-white to-pink-100 py-12">
+    <div class="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-pink-200/40 blur-3xl"></div>
 
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="relative mx-auto max-w-7xl px-5 text-center sm:px-6 lg:px-8">
+        <h1 class="font-display text-4xl font-bold text-gray-950 sm:text-5xl">
+            Checkout
+        </h1>
 
-        <!-- Heading -->
-        <div class="text-center mb-12">
+        <div class="mt-3 flex items-center justify-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'home' %}" class="transition hover:text-pink-600">
+                Home
+            </a>
 
-            <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
-                💳 Review Items
+            <span>›</span>
+
+            <span class="font-semibold text-pink-600">
+                Checkout
             </span>
-
-            <h1 class="mt-5 text-4xl md:text-5xl font-bold text-gray-900">
-                Complete Your Order
-            </h1>
-
-            <p class="mt-4 text-gray-600 text-lg">
-                Review your items and proceed to payment.
-            </p>
-
         </div>
+    </div>
+</section>
 
-        <div class="grid lg:grid-cols-3 gap-10">
 
-            <!-- LEFT: ORDER ITEMS -->
-            <div class="lg:col-span-2">
+<!-- CHECKOUT FORM -->
+<section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
 
-                <div class="bg-white rounded-[35px] shadow-lg border border-pink-100 p-8">
+        <form method="POST" id="checkout-form">
+            {% csrf_token %}
 
-                    <h2 class="text-2xl font-bold mb-8">
-                        Order Summary
-                    </h2>
+            <div class="grid gap-8 lg:grid-cols-[1.12fr_.88fr] lg:items-start">
 
-                    <div class="space-y-6">
+                <!-- LEFT SIDE -->
+                <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-lg sm:p-8">
+
+                    <!-- BILLING DETAILS HEADER -->
+                    <div class="flex items-center gap-3 border-b border-gray-100 pb-5">
+                        <span class="grid h-11 w-11 place-items-center rounded-full bg-pink-50 text-pink-600">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                class="h-6 w-6"
+                            >
+                                <path d="M8 5V4a4 4 0 0 1 8 0v1"></path>
+                                <path d="M5 5h14l-1 16H6L5 5Z"></path>
+                                <path d="M9 10h6M9 14h6"></path>
+                            </svg>
+
+                        </span>
+
+                        <div>
+                            <h2 class="font-display text-2xl font-bold text-gray-950">
+                                Billing Details
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-500">
+                                Enter your details to complete your order.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- NAME AND PHONE -->
+                    <div class="mt-7 grid gap-5 sm:grid-cols-2">
+
+                        <!-- FULL NAME -->
+                        <div>
+                            <label
+                                for="full_name"
+                                class="mb-2 block text-sm font-semibold text-gray-800"
+                            >
+                                Full Name
+                                <span class="text-pink-600">*</span>
+                            </label>
+
+                            <input
+                                id="full_name"
+                                type="text"
+                                name="full_name"
+                                required
+                                autocomplete="name"
+                                value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}"
+                                placeholder="Enter your full name"
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-pink-500 focus:ring-4 focus:ring-pink-100"
+                            >
+                        </div>
+
+
+                        <!-- PHONE NUMBER -->
+                        <div>
+                            <label
+                                for="phone"
+                                class="mb-2 block text-sm font-semibold text-gray-800"
+                            >
+                                Phone Number
+                                <span class="text-pink-600">*</span>
+                            </label>
+
+                            <div class="flex overflow-hidden rounded-xl border border-gray-300 bg-white transition focus-within:border-pink-500 focus-within:ring-4 focus-within:ring-pink-100">
+
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    name="phone"
+                                    required
+                                    autocomplete="tel"
+                                    inputmode="tel"
+                                    placeholder="0801 234 5678"
+                                    class="min-w-0 flex-1 border-0 px-4 py-3.5 text-gray-900 outline-none placeholder:text-gray-400"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- EMAIL ADDRESS -->
+                    <div class="mt-5">
+                        <label
+                            for="email"
+                            class="mb-2 block text-sm font-semibold text-gray-800"
+                        >
+                            Email Address
+                            <span class="text-pink-600">*</span>
+                        </label>
+
+                        {% if request.user.is_authenticated %}
+
+                            <input
+                                id="email"
+                                type="email"
+                                value="{{ request.user.email }}"
+                                readonly
+                                class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-gray-600 outline-none"
+                            >
+
+                        {% else %}
+
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                required
+                                autocomplete="email"
+                                placeholder="Enter your email address"
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-pink-500 focus:ring-4 focus:ring-pink-100"
+                            >
+
+                        {% endif %}
+
+                        <p class="mt-2 text-xs text-gray-500">
+                            Your receipt and payment confirmation will be sent to this email.
+                        </p>
+                    </div>
+
+
+                    <!-- OPTIONAL ORDER NOTE -->
+                    <div class="mt-5">
+                        <label
+                            for="order_note"
+                            class="mb-2 block text-sm font-semibold text-gray-800"
+                        >
+                            Order Note
+                            <span class="font-normal text-gray-400">(optional)</span>
+                        </label>
+
+                        <textarea
+                            id="order_note"
+                            name="order_note"
+                            rows="4"
+                            maxlength="250"
+                            placeholder="Add a note about your order"
+                            class="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-pink-500 focus:ring-4 focus:ring-pink-100"
+                        ></textarea>
+
+                        <p class="mt-1 text-right text-xs text-gray-400">
+                            <span id="note-count">0</span>/250
+                        </p>
+                    </div>
+                </div>
+
+
+                <!-- RIGHT SIDE: ORDER SUMMARY -->
+                <aside class="rounded-3xl border border-gray-200 bg-white p-5 shadow-lg sm:p-7 lg:sticky lg:top-28">
+
+                    <!-- HEADER -->
+                    <div class="flex items-center gap-3 border-b border-gray-100 pb-5">
+
+                        <span class="grid h-11 w-11 place-items-center rounded-full bg-pink-50 text-pink-600">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                class="h-6 w-6"
+                            >
+                                <path d="M6 8h12l1 13H5L6 8Z"></path>
+                                <path d="M9 9V6a3 3 0 0 1 6 0v3"></path>
+                            </svg>
+
+                        </span>
+
+                        <h2 class="font-display text-2xl font-bold text-gray-950">
+                            Order Summary
+                        </h2>
+                    </div>
+
+
+                    <!-- PRODUCTS -->
+                    <div class="divide-y divide-gray-100">
 
                         {% for item in cart_items %}
 
-                        <div class="flex justify-between items-center border-b border-gray-100 pb-5">
+                            <article class="flex gap-4 py-5">
 
-                            <div class="flex items-center gap-4">
+                                <!-- PRODUCT IMAGE -->
+                                <div class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-50">
 
-                                {% if item.product.image %}
-                                <img
-                                    src="{{ item.product.image.url }}"
-                                    alt="{{ item.product.name }}"
-                                    class="w-24 h-24 object-cover rounded-2xl shadow"
-                                >
-                                {% endif %}
+                                    {% if item.product.image %}
 
-                                <div>
+                                        <img
+                                            src="{{ item.product.image.url }}"
+                                            alt="{{ item.product.name }}"
+                                            class="h-full w-full object-contain p-1.5"
+                                        >
 
-                                    <h3 class="font-semibold text-lg">
-                                        {{ item.product.name }}
-                                    </h3>
+                                    {% else %}
+
+                                        <div class="grid h-full w-full place-items-center text-center text-xs text-gray-400">
+                                            No image
+                                        </div>
+
+                                    {% endif %}
+                                </div>
+
+
+                                <!-- PRODUCT INFORMATION -->
+                                <div class="min-w-0 flex-1">
+
+                                    <div class="flex items-start justify-between gap-3">
+
+                                        <h3 class="line-clamp-2 font-semibold text-gray-950">
+                                            {{ item.product.name }}
+                                        </h3>
+
+                                        <p class="shrink-0 font-bold text-gray-950">
+                                            ₦{{ item.subtotal|floatformat:2 }}
+                                        </p>
+
+                                    </div>
+
 
                                     {% if item.variant %}
-                                    <p class="text-sm text-gray-500">
-                                        {{ item.variant.colour }}
-                                        -
-                                        {{ item.variant.product_type }}
-                                    </p>
+
+                                        <p class="mt-1 text-xs text-gray-500">
+
+                                            {% if item.variant.colour %}
+                                                {{ item.variant.colour }}
+                                            {% endif %}
+
+                                            {% if item.variant.colour and item.variant.product_type %}
+                                                ·
+                                            {% endif %}
+
+                                            {% if item.variant.product_type %}
+                                                {{ item.variant.product_type }}
+                                            {% endif %}
+
+                                        </p>
+
                                     {% endif %}
 
-                                    <p class="text-sm text-gray-500">
-                                        Qty:
-                                        {{ item.quantity }}
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        Quantity: {{ item.quantity }}
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-gray-400">
+                                        ₦{{ item.price|floatformat:2 }} each
                                     </p>
 
                                 </div>
+                            </article>
 
-                            </div>
+                        {% empty %}
 
-                            <div class="text-right">
-
-                                <p class="font-bold text-lg text-pink-500">
-                                    ₦{{ item.subtotal }}
+                            <div class="py-10 text-center">
+                                <p class="text-gray-500">
+                                    Your cart is empty.
                                 </p>
 
+                                <a
+                                    href="{% url 'products' %}"
+                                    class="mt-4 inline-block font-semibold text-pink-600 hover:text-pink-700"
+                                >
+                                    Continue shopping
+                                </a>
                             </div>
-
-                        </div>
 
                         {% endfor %}
 
                     </div>
 
-                </div>
 
-            </div>
+                    <!-- SUBTOTAL AND DELIVERY -->
+                    <div class="border-t border-pink-200 pt-5">
 
-
-            <!-- RIGHT: PAYMENT CARD -->
-            <div>
-
-                <div class="bg-white rounded-[35px] shadow-xl border border-pink-100 p-8 sticky top-28">
-
-                    <h2 class="text-2xl font-bold mb-6">
-                        Payment Summary
-                    </h2>
-
-                    <div class="space-y-4 border-b border-gray-200 pb-6">
-
-                        <div class="flex justify-between text-gray-600">
+                        <div class="flex items-center justify-between text-gray-600">
                             <span>Subtotal</span>
-                            <span>₦{{ total }}</span>
-                        </div>
 
-                        <div class="flex justify-between text-gray-600">
-                            <span>Delivery</span>
-                            <span>Calculated later</span>
+                            <span class="font-semibold text-gray-900">
+                                ₦{{ total|floatformat:2 }}
+                            </span>
                         </div>
 
                     </div>
 
-                    <div class="flex justify-between items-center mt-6">
 
-                        <span class="text-xl font-bold">
+                    <!-- TOTAL -->
+                    <div class="mt-5 flex items-end justify-between border-t border-pink-200 pt-5">
+
+                        <span class="text-xl font-bold text-gray-950">
                             Total
                         </span>
 
-                        <span class="text-3xl font-bold text-pink-500">
-                            ₦{{ total }}
+                        <span class="text-xl font-extrabold text-pink-600">
+                            ₦{{ total|floatformat:2 }}
                         </span>
 
                     </div>
 
+                    <!-- PAY BUTTON -->
+                    <button
+                        type="submit"
+                        id="pay-button"
+                        class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-pink-600 px-5 py-4 text-base font-bold uppercase tracking-wide text-white shadow-lg shadow-pink-200 transition hover:bg-pink-700 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-70"
+                    >
 
-                    <!-- PAYMENT FORM -->
-                    <form method="POST" class="mt-8">
-
-                        {% csrf_token %}
-
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" name="full_name" required value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" placeholder="Enter your full name" class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400">
-                        </div>
-                        <div class="mb-5">
-                            <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="tel" name="phone" required placeholder="e.g. 08012345678" class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400">
-                        </div>
-
-                        <!-- EMAIL FOR GUEST -->
-                        {% if not request.user.is_authenticated %}
-
-                        <div class="mb-5">
-
-                            <label class="block mb-2 text-sm font-medium text-gray-700">
-                                Email Address
-                            </label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                placeholder="Enter your email"
-                                class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                            >
-
-                            <p class="text-xs text-gray-500 mt-2">
-                                Receipt will be sent to your email.
-                            </p>
-
-                        </div>
-
-                        {% else %}
-
-                        <div class="mb-5 bg-pink-50 rounded-2xl p-4">
-
-                            <p class="text-sm text-gray-600">
-                                Paying as:
-                            </p>
-
-                            <p class="font-semibold text-gray-900">
-                                {{ request.user.email }}
-                            </p>
-
-                        </div>
-
-                        {% endif %}
-
-                        <!-- PAY BUTTON -->
-                        <button
-                            type="submit"
-                            class="w-full py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg transition duration-300 shadow-lg hover:scale-[1.02]"
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            class="h-5 w-5"
                         >
-                            Proceed to Payment 💳
-                        </button>
+                            <rect x="5" y="10" width="14" height="11" rx="2"></rect>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                        </svg>
 
-                    </form>
+                        <span>
+                            Pay Now
+                        </span>
 
-                    <!-- SECURITY -->
+                    </button>
+
+                    <!-- PAYMENT PROVIDER -->
                     <div class="mt-6 text-center">
-
-                        <p class="text-sm text-gray-500">
-                            🔒 Secure payment powered by Paystack
+                    
+                        <p class="text-sm font-medium text-gray-500 mb-3">
+                            Secure payment powered by
                         </p>
-
+                    
+                        <div class="flex justify-center items-center">
+                            <span class="flex items-center gap-2 text-cyan-600 font-bold text-xl">
+                                <i class="fa-solid fa-layer-group"></i>
+                                Paystack
+                            </span>
+                        </div>
+                    
                     </div>
 
-                </div>
-
+                </aside>
             </div>
 
+        </form>
+    </div>
+</section>
+
+
+<!-- ======================================================
+     SHOPPING BENEFITS
+====================================================== -->
+<section class="bg-[#fff3f7]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 py-8
+               sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-truck-fast text-3xl text-pink-600"></i>
+        
+            <div>
+                <h3 class="font-bold text-gray-900">Reliable Delivery</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    Carefully packaged orders
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-shield-halved text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Secure Payment</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    100% secure checkout
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-award text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Quality Products</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    Premium and authentic
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-headset text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Customer Support</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    We are here to help
+                </p>
+            </div>
         </div>
 
     </div>
-
 </section>
+
+
+<script>
+    const checkoutForm = document.getElementById("checkout-form");
+    const payButton = document.getElementById("pay-button");
+    const orderNote = document.getElementById("order_note");
+    const noteCount = document.getElementById("note-count");
+
+    if (orderNote && noteCount) {
+        orderNote.addEventListener("input", function () {
+            noteCount.textContent = this.value.length;
+        });
+    }
+
+    if (checkoutForm && payButton) {
+        checkoutForm.addEventListener("submit", function () {
+            payButton.disabled = true;
+
+            const buttonText = payButton.querySelector("span");
+
+            if (buttonText) {
+                buttonText.textContent = "Redirecting to Paystack...";
+            }
+        });
+    }
+</script>
 
 {% endblock %}

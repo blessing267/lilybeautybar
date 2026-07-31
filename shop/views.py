@@ -478,82 +478,65 @@ def add_to_cart(request, product_id):
     return redirect("cart")
 
 def cart(request):
-
-    cart = request.session.get(
-        "cart",
-        {}
-    )
+    session_cart = request.session.get("cart", {})
 
     cart_items = []
+    total = Decimal("0.00")
+    cart_count = 0
 
-    total = Decimal(
-        "0.00"
-    )
-
-    for key, item in cart.items():
-
+    for key, item in session_cart.items():
         product = Product.objects.filter(
-            id=item[
-                "product_id"
-            ]
+            id=item.get("product_id")
         ).first()
 
         if not product:
             continue
 
         variant = None
+        variant_id = item.get("variant_id")
 
-        if item[
-            "variant_id"
-        ]:
-            variant = (
-                ProductVariant.objects
-                .filter(
-                    id=item[
-                        "variant_id"
-                    ]
-                )
-                .first()
-            )
+        if variant_id:
+            variant = ProductVariant.objects.filter(
+                id=variant_id,
+                product=product,
+            ).first()
 
-        quantity = item[
-            "quantity"
-        ]
+        try:
+            quantity = int(item.get("quantity", 1))
+        except (TypeError, ValueError):
+            quantity = 1
 
-        price = (
-            variant.price
-            if (
-                variant
-                and variant.price
-            )
-            else product.current_price
+        quantity = max(quantity, 1)
+
+        if variant and variant.price is not None:
+            price = variant.price
+        else:
+            price = product.current_price
+
+        item_subtotal = price * quantity
+
+        total += item_subtotal
+        cart_count += quantity
+
+        cart_items.append(
+            {
+                "key": key,
+                "product": product,
+                "variant": variant,
+                "quantity": quantity,
+                "price": price,
+                "subtotal": item_subtotal,
+            }
         )
-
-        subtotal = (
-            price *
-            quantity
-        )
-
-        total += subtotal
-
-        cart_items.append({
-            "key": key,
-            "product": product,
-            "variant": variant,
-            "quantity": quantity,
-            "price": price,
-            "subtotal": subtotal
-        })
 
     return render(
         request,
         "shop/cart.html",
         {
-            "cart_items":
-                cart_items,
-            "total":
-                total
-        }
+            "cart_items": cart_items,
+            "total": total,
+            "cart_count": cart_count,
+        },
     )
 
 def remove_from_cart(
@@ -728,6 +711,7 @@ def checkout(request):
         customer_email = (request.user.email if request.user.is_authenticated else request.POST.get("email"))
         customer_name = request.POST.get("full_name", "").strip()
         customer_phone = request.POST.get("phone", "").strip()
+        order_note = request.POST.get("order_note", "").strip()
 
         if request.user.is_authenticated and not customer_name:
             customer_name = request.user.get_full_name().strip()
@@ -754,12 +738,11 @@ def checkout(request):
             email=customer_email,
             full_name=customer_name,
             phone=customer_phone,
+            order_note=order_note,
 
-            status=
-                "pending",
+            status="pending",
 
-            amount=
-                total_amount
+            amount=total_amount
         )
 
         # Save OrderItems
@@ -963,6 +946,8 @@ def success(request):
             for item in items_summary
         )
 
+        note_text = order.order_note if order.order_note else "None"
+
         whatsapp_message = f"""
         Hello Lily Beauty Bar,
 
@@ -978,6 +963,13 @@ def success(request):
         Items:
         {items_text}
 
+        Order Note:
+        {note_text}
+
+        Delivery Information:
+        • Orders within Edo State are delivered within 2–3 working days.
+        • Orders outside Edo State are delivered within approximately 3–4 working days, depending on your location.
+        
         Please confirm my order. Thank you.
         """.strip()
 

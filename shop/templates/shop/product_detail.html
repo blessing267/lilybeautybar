@@ -635,14 +635,15 @@
                 </div>
             </div>
 
-            <form class="flex w-full max-w-lg">
-                <input type="email" name="email" required placeholder="Enter your email"
-                    class="min-w-0 flex-1 rounded-l-xl border-0 px-5 py-4 text-sm text-gray-900 outline-none">
-
+            <form class="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row">
+            
+                <input type="email" name="email" required placeholder="Enter your email address"
+                    class="sm:flex-[2] rounded-xl border border-gray-300 bg-white px-5 py-4 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-500 focus:border-pink-500 focus:ring-4 focus:ring-pink-200">
                 <button type="submit"
-                    class="rounded-r-xl border border-white/60 bg-pink-600 px-5 py-4 text-sm font-bold uppercase text-white transition hover:bg-pink-700 sm:px-7">
+                    class="sm:flex-1 rounded-xl bg-pink-600 px-6 py-4 text-sm font-bold uppercase text-white transition hover:bg-pink-700">
                     Subscribe
                 </button>
+            
             </form>
         </div>
     </section>

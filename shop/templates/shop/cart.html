@@ -1,204 +1,373 @@
-{% extends 'shop/base.html' %}
+{% extends "shop/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Your Cart | Lily Beauty Bar{% endblock %}
 
 {% block content %}
 
-<section class="bg-pink-100 min-h-screen">
+<style>
+    .cart-hero {
+        background:
+            linear-gradient(90deg,
+                rgba(255, 241, 246, 0.97),
+                rgba(255, 228, 239, 0.88)),
+            radial-gradient(circle at 85% 50%,
+                rgba(244, 114, 182, 0.22),
+                transparent 38%);
+    }
 
-    <!-- TOP HEADER -->
-    <div class=" bg-pink-300 border-b border-gray-100 py-6 shadow-sm">
-        <div class="max-w-7xl mx-auto px-6">
-            <h1 class="text-3xl font-bold tracking-wide">
-                YOUR BAG 💕
-            </h1>
-            <p class="text-white/80 text-sm mt-1">
-                Review your beauty picks before checkout
-            </p>
-        </div>
+    .cart-card {
+        box-shadow: 0 12px 40px rgba(17, 24, 39, 0.07);
+    }
+
+    .cart-product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+    }
+
+    @media (max-width: 640px) {
+        .cart-product-image {
+            width: 82px;
+            height: 82px;
+        }
+    }
+</style>
+
+
+<!-- ======================================================
+     CART PAGE HERO
+====================================================== -->
+<section class="cart-hero border-b border-pink-100">
+    <div class="mx-auto max-w-7xl px-4 py-14 text-center sm:px-6 lg:px-8">
+
+        <h1 class="font-display text-4xl font-bold text-gray-900 sm:text-5xl">
+            Your Cart
+        </h1>
+
+        <nav class="mt-4 flex items-center justify-center gap-3 text-sm" aria-label="Breadcrumb">
+            <a href="{% url 'home' %}" class="font-medium text-gray-600 transition hover:text-pink-600">
+                Home
+            </a>
+
+            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+
+            <span class="font-semibold text-pink-600">
+                Your Cart
+            </span>
+        </nav>
+
     </div>
+</section>
 
-    <div class="max-w-7xl mx-auto px-6 py-12">
+
+<!-- ======================================================
+     CART CONTENT
+====================================================== -->
+<section class="bg-[#fffdfd] py-12 sm:py-16">
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {% if cart_items %}
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1.65fr)_minmax(320px,0.75fr)]">
 
-            <!-- LEFT: CART ITEMS -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- ==========================================
+                     CART PRODUCTS
+                =========================================== -->
+            <div class="cart-card overflow-hidden rounded-2xl border border-gray-100 bg-white">
 
-                {% for item in cart_items %}
+                <!-- Desktop table heading -->
+                <div class="hidden grid-cols-[minmax(300px,1.8fr)_0.65fr_0.9fr_0.75fr_0.4fr]
+                               items-center gap-4 border-b border-pink-200
+                               px-7 py-5 text-xs font-bold uppercase
+                               tracking-wider text-pink-600 md:grid">
+                    <span>Product</span>
+                    <span>Price</span>
+                    <span class="text-center">Quantity</span>
+                    <span>Total</span>
+                    <span class="text-center">Action</span>
+                </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-pink-100 p-6 hover:shadow-md transition">
 
-                    <div class="flex gap-6">
+                <!-- Products -->
+                <div class="divide-y divide-gray-100">
 
-                        <!-- IMAGE -->
-                        <div class="w-32 h-32 rounded-xl overflow-hidden bg-pink-50">
+                    {% for item in cart_items %}
 
-                            {% if item.variant and item.variant.image %}
-                            <img src="{{ item.variant.image.url }}"
-                                 class="w-full h-full object-cover">
-                            {% elif item.product.image %}
-                            <img src="{{ item.product.image.url }}"
-                                 class="w-full h-full object-cover">
-                            {% endif %}
+                    <article class="grid gap-5 px-5 py-6 sm:px-7
+                                       md:grid-cols-[minmax(300px,1.8fr)_0.65fr_0.9fr_0.75fr_0.4fr]
+                                       md:items-center md:gap-4">
 
-                        </div>
+                        <!-- PRODUCT -->
+                        <div class="flex items-center gap-4">
 
-                        <!-- DETAILS -->
-                        <div class="flex-1">
+                            <a href="{% url 'product_detail' item.product.id %}" class="flex h-28 w-28 shrink-0 items-center justify-center
+                                               overflow-hidden rounded-xl bg-gray-50 p-2
+                                               transition hover:bg-pink-50">
+                                {% if item.variant and item.variant.image %}
+                                <img src="{{ item.variant.image.url }}" alt="{{ item.product.name }}"
+                                    class="cart-product-image">
 
-                            <div class="flex justify-between">
+                                {% elif item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                    class="cart-product-image">
 
-                                <div>
-
-                                    <h2 class="text-lg font-semibold text-gray-900">
-                                        {{ item.product.name }}
-                                    </h2>
-
-                                    {% if item.variant %}
-                                    <p class="text-sm text-gray-500 mt-1">
-                                        💖 {{ item.variant.colour }}
-                                        {% if item.variant.product_type %}
-                                        • {{ item.variant.product_type }}
-                                        {% endif %}
-                                    </p>
-                                    {% endif %}
-
-                                    <p class="text-rose-500 font-bold text-lg mt-2">
-                                        ₦{{ item.price }}
-                                    </p>
-
+                                {% else %}
+                                <div class="flex h-full w-full items-center justify-center
+                                                       rounded-lg bg-pink-50 text-pink-300">
+                                    <i class="fa-solid fa-image text-3xl"></i>
                                 </div>
+                                {% endif %}
+                            </a>
 
-                                <a href="{% url 'remove_from_cart' item.key %}"
-                                   class="text-xs text-pink-400 hover:text-pink-600 uppercase tracking-widest">
-                                    Remove
+
+                            <div class="min-w-0">
+
+                                <a href="{% url 'product_detail' item.product.id %}" class="line-clamp-2 font-semibold text-gray-900
+                                                   transition hover:text-pink-600">
+                                    {{ item.product.name }}
                                 </a>
 
+                                {% if item.variant %}
+                                <p class="mt-1 text-sm text-gray-500">
+                                    {{ item.variant }}
+                                </p>
+                                {% endif %}
+
+                                {% if item.product.description %}
+                                <p class="mt-1 line-clamp-1 text-sm text-gray-500">
+                                    {{ item.product.description|striptags }}
+                                </p>
+                                {% endif %}
+
+                                <!-- Mobile product price -->
+                                <p class="mt-2 font-bold text-gray-900 md:hidden">
+                                    ₦{{ item.price|floatformat:0|intcomma }}
+                                </p>
+
                             </div>
 
-                            <!-- QTY + SUBTOTAL -->
-                            <div class="flex justify-between items-center mt-6">
-                                
-                                <form method="POST"
-                                      action="{% url 'update_cart' item.key %}"
-                                      class="flex items-center border border-pink-100 rounded-full overflow-hidden bg-pink-50">
+                        </div>
 
-                                    {% csrf_token %}
 
-                                    <!-- QTY BLOCK -->
+                        <!-- PRICE -->
+                        <div class="hidden md:block">
+                            <span class="font-semibold text-gray-900">
+                                ₦{{ item.price|floatformat:0|intcomma }}
+                            </span>
+                        </div>
 
-                                        <input type="number"
-                                           name="quantity"
-                                           value="{{ item.quantity }}"
-                                           min="1"
-                                           class="w-20 border border-gray-200 rounded-2xl p-2 text-center focus:outline-none focus:ring-2 focus:ring-pink-300">
-                                    
-                                    <!-- UPDATE BUTTON -->
-                                    <button
-                                        type="submit"
-                                        class="bg-pink-100 text-pink-700 px-5 py-2 rounded-2xl hover:bg-pink-200 transition"
-                                    >
-                                        Update
+
+                        <!-- QUANTITY -->
+                        <div>
+
+                            <p class="mb-2 text-xs font-bold uppercase text-pink-600 md:hidden">
+                                Quantity
+                            </p>
+
+                            <form method="POST" action="{% url 'update_cart' item.key %}" class="quantity-form">
+                                {% csrf_token %}
+
+                                <div class="mx-0 flex h-11 w-32 items-center overflow-hidden
+                                                   rounded-lg border border-gray-300 bg-white
+                                                   md:mx-auto">
+
+                                    <button type="button" class="quantity-minus flex h-full w-10 items-center
+                                                       justify-center text-lg font-medium text-gray-700
+                                                       transition hover:bg-pink-50 hover:text-pink-600"
+                                        aria-label="Reduce quantity">
+                                        −
                                     </button>
 
-                                </form>
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99"
+                                        class="quantity-input h-full min-w-0 flex-1 border-0
+                                                       bg-transparent text-center font-semibold
+                                                       text-gray-900 outline-none
+                                                       [appearance:textfield]
+                                                       [&::-webkit-inner-spin-button]:appearance-none
+                                                       [&::-webkit-outer-spin-button]:appearance-none"
+                                        aria-label="Product quantity">
 
-                                <div class="text-right">
-
-                                    <p class="text-xs text-gray-400 uppercase">
-                                        Subtotal
-                                    </p>
-
-                                    <p class="font-bold text-gray-900 text-lg">
-                                        ₦{{ item.subtotal }}
-                                    </p>
+                                    <button type="button" class="quantity-plus flex h-full w-10 items-center
+                                                       justify-center text-lg font-medium text-gray-700
+                                                       transition hover:bg-pink-50 hover:text-pink-600"
+                                        aria-label="Increase quantity">
+                                        +
+                                    </button>
 
                                 </div>
-
-                            </div>
+                            </form>
 
                         </div>
 
-                    </div>
+
+                        <!-- SUBTOTAL -->
+                        <div>
+
+                            <p class="mb-1 text-xs font-bold uppercase text-pink-600 md:hidden">
+                                Item total
+                            </p>
+
+                            <span class="font-bold text-gray-900">
+                                ₦{{ item.subtotal|floatformat:0|intcomma }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- REMOVE -->
+                        <div class="md:text-center">
+
+                            <a href="{% url 'remove_from_cart' item.key %}" onclick="
+                                            return confirm(
+                                                'Remove this product from your cart?'
+                                            );
+                                        " class="inline-flex h-10 w-10 items-center justify-center
+                                               rounded-full text-pink-500 transition
+                                               hover:bg-pink-50 hover:text-pink-700"
+                                aria-label="Remove {{ item.product.name }} from cart" title="Remove product">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                    {% endfor %}
 
                 </div>
 
-                {% endfor %}
 
-                <!-- CONTINUE SHOPPING -->
-                <div class="pt-6">
-
-                    <a href="{% url 'products' %}"
-                       class="text-pink-500 hover:text-pink-600 font-medium">
-                        << Continue Shopping
+                <!-- Bottom buttons -->
+                <div class="border-t border-gray-100 px-5 py-6 sm:px-7">
+                    <a href="{% url 'products' %}" class="inline-flex items-center justify-center gap-2
+                                   rounded-lg border border-pink-500 px-6 py-3
+                                   text-sm font-bold uppercase tracking-wide
+                                   text-pink-600 transition
+                                   hover:bg-pink-500 hover:text-white">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Continue Shopping
                     </a>
-
                 </div>
 
             </div>
 
-            <!-- RIGHT: SUMMARY -->
-            <div class="h-fit sticky top-24">
 
-                <div class="bg-white rounded-3xl shadow-md border border-pink-100 p-8">
+            <!-- ==========================================
+                     ORDER SUMMARY
+                =========================================== -->
+            <aside>
 
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">
-                        Order Summary 💕
+                <div class="cart-card sticky top-6 rounded-2xl border
+                               border-gray-100 bg-white p-6 sm:p-8">
+
+                    <h2 class="font-display text-3xl font-bold text-gray-900">
+                        Order Summary
                     </h2>
 
-                    <div class="space-y-4 text-sm">
 
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span>₦{{ total }}</span>
-                        </div>
+                    <div class="mt-8">
 
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Delivery</span>
-                            <span>Calculated at checkout</span>
-                        </div>
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="text-gray-600">
+                                Subtotal
+                                <span class="text-sm">
+                                    ({{ cart_count }} item{{ cart_count|pluralize }})
+                                </span>
+                            </span>
 
-                        <div class="border-t pt-4 flex justify-between font-bold text-lg">
-                            <span>Total</span>
-                            <span class="text-rose-500">₦{{ total }}</span>
+                            <span class="font-bold text-gray-900">
+                                ₦{{ total|floatformat:0|intcomma }}
+                            </span>
                         </div>
 
                     </div>
 
-                    <a href="{% url 'checkout' %}"
-                       class="block mt-8 bg-gradient-to-r from-pink-500 via-rose-400 to-purple-400 text-white text-center py-4 rounded-2xl font-semibold shadow-lg hover:scale-[1.02] transition">
-                        Proceed to Checkout 💳
+                    <div class="my-7 border-t border-pink-200"></div>
+
+                    <div class="flex items-end justify-between gap-4">
+
+                        <span class="text-xl font-bold text-gray-900">
+                            Total
+                        </span>
+
+                        <span class="text-xl font-extrabold text-pink-600">
+                            ₦{{ total|floatformat:0|intcomma }}
+                        </span>
+
+                    </div>
+
+                    
+
+                    <a href="{% url 'checkout' %}" class="mt-7 inline-flex w-full items-center
+                                   justify-center gap-3 rounded-lg bg-pink-600
+                                   px-6 py-4 text-sm font-bold uppercase
+                                   tracking-wide text-white shadow-lg
+                                   shadow-pink-200 transition
+                                   hover:-translate-y-0.5 hover:bg-pink-700">
+                        <i class="fa-solid fa-lock"></i>
+                        Proceed to Checkout
                     </a>
 
-                    <p class="text-xs text-gray-400 text-center mt-4">
-                        Secure payment powered by Paystack 🔒
-                    </p>
+
+                    <div class="mt-7 flex flex-wrap items-center
+                               justify-center gap-4">
+                        <span class="text-lg font-black italic text-blue-700">
+                            VISA
+                        </span>
+                    
+                        <span class="flex -space-x-2">
+                            <span class="h-6 w-6 rounded-full bg-red-500"></span>
+                            <span class="h-6 w-6 rounded-full bg-yellow-400"></span>
+                        </span>
+                    
+                        <span class="font-extrabold text-blue-600">
+                            Verve
+                        </span>
+                    
+                        <span class="flex items-center gap-1 font-bold text-cyan-600">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Paystack
+                        </span>
+                    </div>
 
                 </div>
 
-            </div>
+            </aside>
 
         </div>
 
+
         {% else %}
 
-        <!-- EMPTY CART -->
-        <div class="text-center py-32">
+        <!-- ==========================================
+                 EMPTY CART
+            =========================================== -->
+        <div class="cart-card mx-auto max-w-2xl rounded-3xl
+                       border border-pink-100 bg-white px-6 py-16
+                       text-center sm:px-12">
 
-            <div class="text-6xl mb-4">🛍️</div>
+            <div class="mx-auto flex h-24 w-24 items-center justify-center
+                           rounded-full bg-pink-50 text-pink-500">
+                <i class="fa-solid fa-bag-shopping text-4xl"></i>
+            </div>
 
-            <h2 class="text-3xl font-bold text-gray-900">
-                Your bag is empty
+            <h2 class="font-display mt-7 text-3xl font-bold text-gray-900">
+                Your cart is empty
             </h2>
 
-            <p class="text-gray-500 mt-2">
-                Add your favourite beauty products to continue
+            <p class="mx-auto mt-4 max-w-md leading-7 text-gray-600">
+                You have not added any beauty products to your cart yet.
+                Explore our collection and discover something you will love.
             </p>
 
-            <a href="{% url 'products' %}"
-               class="inline-block mt-8 bg-gradient-to-r from-pink-500 to-purple-400 text-white px-10 py-4 rounded-2xl">
-                Start Shopping 💕
+            <a href="{% url 'products' %}" class="mt-8 inline-flex items-center justify-center gap-2
+                           rounded-lg bg-pink-600 px-8 py-4 font-bold
+                           text-white transition hover:bg-pink-700">
+                Start Shopping
+                <i class="fa-solid fa-arrow-right"></i>
             </a>
 
         </div>
@@ -209,4 +378,210 @@
 
 </section>
 
-{% endblock %}
+
+<!-- ======================================================
+     SHOPPING BENEFITS
+====================================================== -->
+<section class="bg-[#fff3f7]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 py-8
+               sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-truck-fast text-3xl text-pink-600"></i>
+        
+            <div>
+                <h3 class="font-bold text-gray-900">Reliable Delivery</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    Carefully packaged orders
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-shield-halved text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Secure Payment</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    100% secure checkout
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-award text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Quality Products</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    Premium and authentic
+                </p>
+            </div>
+        </div>
+
+
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-headset text-3xl text-pink-600"></i>
+
+            <div>
+                <h3 class="font-bold text-gray-900">Customer Support</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    We are here to help
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ======================================================
+     NEWSLETTER
+====================================================== -->
+<section class="bg-gradient-to-r from-pink-600 to-pink-500">
+    <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12
+               sm:px-6 lg:flex-row lg:items-center
+               lg:justify-between lg:px-8">
+
+        <div class="max-w-2xl text-white">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">
+                Get Special Offers &amp; Updates
+            </h2>
+
+            <p class="mt-3 leading-7 text-pink-50">
+                Subscribe to our newsletter and be the first to know about
+                new arrivals, exclusive deals and beauty tips.
+            </p>
+        </div>
+
+
+        <form action="#" method="POST" class="flex w-full max-w-lg flex-col gap-3 sm:flex-row">
+            {% csrf_token %}
+
+            <label for="newsletter-email" class="sr-only">
+                Email address
+            </label>
+
+            <input id="newsletter-email" type="email" name="email" required placeholder="Enter your email" class="min-h-13 flex-1 rounded-lg border-0 bg-white
+                       px-5 py-4 text-gray-900 outline-none
+                       placeholder:text-gray-400 focus:ring-4
+                       focus:ring-pink-200">
+
+            <button type="submit" class="rounded-lg border-2 border-white px-7 py-4
+                       text-sm font-bold uppercase text-white transition
+                       hover:bg-white hover:text-pink-600">
+                Subscribe
+            </button>
+        </form>
+
+    </div>
+</section>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    /*
+     * Free-shipping progress bar
+     */
+    const progressBar = document.querySelector(
+        ".free-shipping-progress"
+    );
+
+    if (progressBar) {
+        const progress = Number(
+            progressBar.dataset.progress || 0
+        );
+
+        progressBar.style.width =
+            `${Math.min(Math.max(progress, 0), 100)}%`;
+    }
+
+
+    /*
+     * Quantity controls
+     *
+     * The form submits automatically after the customer
+     * increases, decreases or manually changes a quantity.
+     */
+    const quantityForms = document.querySelectorAll(
+        ".quantity-form"
+    );
+
+    quantityForms.forEach(function (form) {
+        const input = form.querySelector(".quantity-input");
+        const minusButton = form.querySelector(".quantity-minus");
+        const plusButton = form.querySelector(".quantity-plus");
+
+        let isSubmitting = false;
+        let changeTimer = null;
+
+
+        function submitQuantityForm() {
+            if (isSubmitting) {
+                return;
+            }
+
+            isSubmitting = true;
+
+            minusButton.disabled = true;
+            plusButton.disabled = true;
+            input.readOnly = true;
+
+            form.submit();
+        }
+
+
+        minusButton.addEventListener("click", function () {
+            const currentQuantity =
+                parseInt(input.value, 10) || 1;
+
+            if (currentQuantity > 1) {
+                input.value = currentQuantity - 1;
+                submitQuantityForm();
+            }
+        });
+
+
+        plusButton.addEventListener("click", function () {
+            const currentQuantity =
+                parseInt(input.value, 10) || 1;
+
+            if (currentQuantity < 99) {
+                input.value = currentQuantity + 1;
+                submitQuantityForm();
+            }
+        });
+
+
+        input.addEventListener("input", function () {
+            clearTimeout(changeTimer);
+
+            let quantity =
+                parseInt(input.value, 10) || 1;
+
+            quantity = Math.max(
+                1,
+                Math.min(quantity, 99)
+            );
+
+            input.value = quantity;
+
+            /*
+             * Wait briefly so the form does not submit
+             * while the customer is still typing.
+             */
+            changeTimer = setTimeout(function () {
+                submitQuantityForm();
+            }, 700);
+        });
+    });
+});
+</script>
+
+{% endblock extra_js %}
