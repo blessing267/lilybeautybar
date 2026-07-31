@@ -30,7 +30,7 @@ export default function Sidebar({ onClose }) {
 
       <nav className="space-y-2">
         <NavLink
-          to="/dashboard"
+          to="/"
           end
           className={navStyle}
           onClick={onClose}

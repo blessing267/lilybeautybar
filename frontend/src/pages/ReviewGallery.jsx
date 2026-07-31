@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/axios";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 const initialForm = {
   image: null,
@@ -7,7 +8,7 @@ const initialForm = {
   display_order: 0,
 };
 
-export default function ReviewGallery() {
+export default function ReviewGallery({ onLogout }) {
   const [reviews, setReviews] = useState([]);
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
@@ -185,79 +186,80 @@ export default function ReviewGallery() {
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Review Gallery
-        </h1>
+    <DashboardLayout onLogout={onLogout}>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Review Gallery
+          </h1>
 
-        <p className="mt-2 text-gray-600">
-          Upload and manage customer feedback screenshots.
-        </p>
-      </div>
+          <p className="mt-2 text-gray-600">
+            Upload and manage customer feedback screenshots.
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="rounded-2xl bg-white p-6 shadow-sm"
-      >
-        <h2 className="mb-6 text-xl font-semibold text-gray-900">
-          {editingId
-            ? "Edit review image"
-            : "Upload review image"}
-        </h2>
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-2xl bg-white p-6 shadow-sm"
+        >
+          <h2 className="mb-6 text-xl font-semibold text-gray-900">
+            {editingId
+              ? "Edit review image"
+              : "Upload review image"}
+          </h2>
 
-        {error && (
-          <div className="mb-5 rounded-xl bg-red-50 p-4 text-red-700">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="mb-5 rounded-xl bg-red-50 p-4 text-red-700">
+              {error}
+            </div>
+          )}
 
-        <div className="grid gap-5 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              Review image
-            </label>
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Review image
+              </label>
 
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleImageChange}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3"
-            />
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleImageChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-3"
+              />
 
-            {editingId && (
-              <p className="mt-2 text-sm text-gray-500">
-                Select a new image only when you want to replace
-                the existing one.
-              </p>
-            )}
-          </div>
+              {editingId && (
+                <p className="mt-2 text-sm text-gray-500">
+                  Select a new image only when you want to replace
+                  the existing one.
+                </p>
+              )}
+            </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              Display order
-            </label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Display order
+              </label>
 
-            <input
-              type="number"
-              min="0"
-              value={form.display_order}
-              onChange={(event) =>
-                setForm((previous) => ({
-                  ...previous,
-                  display_order: event.target.value,
-                }))
-              }
-              className="w-full rounded-xl border border-gray-300 px-4 py-3"
-            />
-          </div>
+              <input
+                type="number"
+                min="0"
+                value={form.display_order}
+                onChange={(event) =>
+                  setForm((previous) => ({
+                    ...previous,
+                    display_order: event.target.value,
+                  }))
+                }
+                className="w-full rounded-xl border border-gray-300 px-4 py-3"
+              />
+            </div>
 
-          <label className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={form.is_active}
-              onChange={(event) =>
-                setForm((previous) => ({
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(event) =>
+                  setForm((previous) => ({
                   ...previous,
                   is_active: event.target.checked,
                 }))
@@ -391,5 +393,6 @@ export default function ReviewGallery() {
         )}
       </section>
     </div>
+    </DashboardLayout>
   );
 }
