@@ -566,28 +566,32 @@ export default function Products({ onLogout }) {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-rose-50">
-                  <tr className="text-left">
-                    <th className="p-5">
-                      Image
-                    </th>
+  <tr className="text-left">
+    <th className="p-5">
+      Image
+    </th>
 
-                    <th className="p-5">
-                      Product
-                    </th>
+    <th className="p-5">
+      Product
+    </th>
 
-                    <th className="p-5">
-                      Price
-                    </th>
+    <th className="p-5">
+      Price
+    </th>
 
-                    <th className="p-5">
-                      Type
-                    </th>
+    <th className="p-5">
+      Stock
+    </th>
 
-                    <th className="p-5">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+    <th className="p-5">
+      Type
+    </th>
+
+    <th className="p-5">
+      Actions
+    </th>
+  </tr>
+</thead>
 
                 <tbody>
                   {paginatedProducts.map(
@@ -595,91 +599,103 @@ export default function Products({ onLogout }) {
                       product
                     ) => (
                       <tr
-                        key={
-                          product.id
-                        }
-                        className="border-t hover:bg-rose-50 transition"
-                      >
-                        <td className="p-5">
-                          <img
-                            src={
-                              product.image_url
-                            }
-                            alt={
-                              product.name
-                            }
-                            className="w-16 h-16 rounded-2xl object-cover"
-                          />
-                        </td>
+  key={product.id}
+  className="border-t hover:bg-rose-50 transition"
+>
+  {/* 1. IMAGE */}
+  <td className="p-5">
+    <img
+      src={product.image_url}
+      alt={product.name}
+      className="w-16 h-16 rounded-2xl object-cover"
+    />
+  </td>
 
-                        <td className="p-5">
-                          <div>
-                            <h3 className="font-semibold text-gray-800">
-                              {
-                                product.name
-                              }
-                            </h3>
+  {/* 2. PRODUCT */}
+  <td className="p-5">
+    <div>
+      <h3 className="font-semibold text-gray-800">
+        {product.name}
+      </h3>
 
-                            <p className="text-sm text-gray-500 line-clamp-1">
-                              {
-                                product.description
-                              }
-                            </p>
-                          </div>
-                        </td>
+      <p className="text-sm text-gray-500 line-clamp-1">
+        {product.description}
+      </p>
+    </div>
+  </td>
 
-                        <td className="p-5 font-bold text-rose-700">
-                          ₦
-                          {
-                            product.price
-                          }
-                        </td>
+  {/* 3. PRICE */}
+  <td className="p-5 font-bold text-rose-700">
+    ₦{Number(product.price).toLocaleString()}
+  </td>
 
-                        <td className="p-5">
-                          {product
-                            .variants
-                            ?.length ? (
-                            <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm">
-                              {
-                                product
-                                  .variants
-                                  .length
-                              }{" "}
-                              Variants
-                            </span>
-                          ) : (
-                            <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm">
-                              Single Product
-                            </span>
-                          )}
-                        </td>
+  {/* 4. STOCK */}
+  <td className="p-5">
+    {product.variants?.length > 0 ? (
+      <div>
+        <span className="font-bold text-gray-900">
+          {product.variants.reduce(
+            (total, variant) =>
+              total + Number(variant.stock || 0),
+            0
+          )}
+        </span>
 
-                        <td className="p-5">
-                          <div className="flex gap-3">
-                            <button
-                              onClick={() =>
-                                handleEdit(
-                                  product
-                                )
-                              }
-                              className="bg-rose-100 hover:bg-rose-200 text-rose-700 px-4 py-2 rounded-xl transition"
-                            >
-                              Edit
-                            </button>
+        <p className="mt-1 text-xs text-gray-500">
+          Across all variants
+        </p>
+      </div>
+    ) : (
+      <span
+        className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
+          Number(product.stock) === 0
+            ? "bg-red-100 text-red-700"
+            : Number(product.stock) <= 3
+            ? "bg-orange-100 text-orange-700"
+            : "bg-green-100 text-green-700"
+        }`}
+      >
+        {Number(product.stock) === 0
+          ? "Out of stock"
+          : Number(product.stock) <= 3
+          ? `${product.stock} left`
+          : `${product.stock} in stock`}
+      </span>
+    )}
+  </td>
 
-                            <button
-                              onClick={() =>
-                                handleDelete(
-                                  product.id
-                                )
-                              }
-                              className="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-xl transition"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+  {/* 5. TYPE */}
+  <td className="p-5">
+    {product.variants?.length > 0 ? (
+      <span className="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm">
+        {product.variants.length} Variants
+      </span>
+    ) : (
+      <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm">
+        Single Product
+      </span>
+    )}
+  </td>
+
+  {/* 6. ACTIONS */}
+  <td className="p-5">
+    <div className="flex gap-3">
+      <button
+        onClick={() => handleEdit(product)}
+        className="bg-rose-100 hover:bg-rose-200 text-rose-700 px-4 py-2 rounded-xl transition"
+      >
+        Edit
+      </button>
+
+      <button
+        onClick={() => handleDelete(product.id)}
+        className="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-xl transition"
+      >
+        Delete
+      </button>
+    </div>
+  </td>
+</tr>
                     )
                   )}
                 </tbody>

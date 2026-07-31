@@ -29,9 +29,23 @@ class ProductVariantInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price')
+    list_display = ('name', 'price', 'stock', 'stock_status',)
+    inlines = [ProductVariantInline]
+    list_filter = ('category', 'subcategory',)
+    search_fields = ('name',)
     inlines = [ProductVariantInline]
 
+    def stock_status(self, obj):
+        if obj.stock == 0:
+            return "Out of stock"
+
+        if obj.stock <= 3:
+            return f"Low stock — {obj.stock} left"
+
+        return "In stock"
+
+    stock_status.short_description = "Stock status"
+    
 @admin.register(ProductVariant)
 class ProductVariantAdmin(admin.ModelAdmin):
     list_display = (

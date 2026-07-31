@@ -470,17 +470,6 @@ Shop All Products | Lily Beauty Bar
         value="{{ sort }}"
     >
 
-    <div
-        class="mb-4 flex items-center justify-between
-               border-b border-gray-100 pb-3"
-    >
-        <h2 class="font-bold">
-            SEARCH PRODUCTS
-        </h2>
-
-        
-    </div>
-
     <div class="relative">
 
         <i
@@ -1107,7 +1096,16 @@ Shop All Products | Lily Beauty Bar
         >
             {{ product.description|default:"A premium beauty essential selected for your self-care routine." }}
         </p>
+        {% if product.stock <= 3 and product.stock > 0 %}
 
+    <p class="mt-1 flex items-center gap-1.5 text-xs font-bold text-orange-600">
+        <i class="fa-solid fa-fire"></i>
+
+        Only {{ product.stock }}
+        item{{ product.stock|pluralize }} left
+    </p>
+
+{% endif %}
         {% if product.stock > 0 %}
 
             <form

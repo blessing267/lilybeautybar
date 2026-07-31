@@ -219,15 +219,51 @@ def product_detail(request, pk):
      })
 
 def reduce_order_stock(order):
-    for item in order.items.all():
-        if item.variant:
-            if item.variant.stock >= item.quantity:
-                item.variant.stock -= item.quantity
-                item.variant.save()
+    for item in order.items.select_related(
+        "product",
+        "variant",
+    ):
+        if item.variant_id:
+            variant = (
+                ProductVariant.objects
+                .select_for_update()
+                .get(id=item.variant_id)
+            )
+
+            if variant.stock < item.quantity:
+                raise ValueError(
+                    (
+                        f"Only {variant.stock} unit(s) of "
+                        f"{item.product.name} — "
+                        f"{variant.colour or variant.product_type or variant.sku} "
+                        f"remain."
+                    )
+                )
+
+            variant.stock = F("stock") - item.quantity
+            variant.save(
+                update_fields=["stock"],
+            )
+
         else:
-            if item.product.stock >= item.quantity:
-                item.product.stock -= item.quantity
-                item.product.save()
+            product = (
+                Product.objects
+                .select_for_update()
+                .get(id=item.product_id)
+            )
+
+            if product.stock < item.quantity:
+                raise ValueError(
+                    (
+                        f"Only {product.stock} unit(s) "
+                        f"of {product.name} remain."
+                    )
+                )
+
+            product.stock = F("stock") - item.quantity
+            product.save(
+                update_fields=["stock"],
+            )
                 
 # -------------------------------
 # Review Gallery API
@@ -315,72 +351,117 @@ def review_gallery_api_detail(request, pk):
 # Cart
 # -------------------------------
 def add_to_cart(request, product_id):
-    if request.method == "POST":
+    if request.method != "POST":
+        return redirect("products")
 
-        product = get_object_or_404(
-            Product,
-            id=product_id
-        )
+    product = get_object_or_404(
+        Product,
+        id=product_id,
+    )
 
-        variant_id = request.POST.get(
-            "variant_id"
-        )
+    variant_id = request.POST.get("variant_id")
 
-        quantity = int(
-            request.POST.get(
-                "quantity",
-                1
-            )
-        )
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (TypeError, ValueError):
+        quantity = 1
 
-        # Variant is OPTIONAL
-        variant = None
-
-        if variant_id:
-            variant = get_object_or_404(
-                ProductVariant,
-                id=variant_id
-            )
-
-        cart = request.session.get(
-            "cart",
-            {}
-        )
-
-        # Create unique cart key
-        cart_key = (
-            f"{product.id}-{variant.id}"
-            if variant
-            else str(product.id)
-        )
-
-        if cart_key in cart:
-            cart[cart_key][
-                "quantity"
-            ] += quantity
-        else:
-            cart[cart_key] = {
-                "product_id":
-                    product.id,
-                "variant_id":
-                    variant.id
-                    if variant
-                    else None,
-                "quantity":
-                    quantity
-            }
-
-        request.session["cart"] = cart
-        request.session.modified = True
-
-        messages.success(
+    if quantity < 1:
+        messages.error(
             request,
-            "Added to cart!"
+            "Please select a valid quantity.",
+        )
+        return redirect(
+            "product_detail",
+            pk=product.id,
         )
 
-        return redirect("cart")
+    variant = None
 
-    return redirect("home")
+    if variant_id:
+        variant = get_object_or_404(
+            ProductVariant,
+            id=variant_id,
+            product=product,
+        )
+
+    available_stock = (
+        variant.stock
+        if variant
+        else product.stock
+    )
+
+    cart = request.session.get(
+        "cart",
+        {},
+    )
+
+    cart_key = (
+        f"{product.id}-{variant.id}"
+        if variant
+        else str(product.id)
+    )
+
+    quantity_already_in_cart = (
+        cart.get(cart_key, {}).get(
+            "quantity",
+            0,
+        )
+    )
+
+    requested_total = (
+        quantity_already_in_cart
+        + quantity
+    )
+
+    if available_stock <= 0:
+        messages.error(
+            request,
+            f"{product.name} is currently out of stock.",
+        )
+        return redirect(
+            "product_detail",
+            pk=product.id,
+        )
+
+    if requested_total > available_stock:
+        messages.error(
+            request,
+            (
+                f"Only {available_stock} "
+                f"unit{'s' if available_stock != 1 else ''} "
+                f"of {product.name} are available."
+            ),
+        )
+
+        return redirect(
+            "product_detail",
+            pk=product.id,
+        )
+
+    if cart_key in cart:
+        cart[cart_key]["quantity"] = requested_total
+
+    else:
+        cart[cart_key] = {
+            "product_id": product.id,
+            "variant_id": (
+                variant.id
+                if variant
+                else None
+            ),
+            "quantity": quantity,
+        }
+
+    request.session["cart"] = cart
+    request.session.modified = True
+
+    messages.success(
+        request,
+        f"{product.name} added to cart!",
+    )
+
+    return redirect("cart")
 
 def cart(request):
 
