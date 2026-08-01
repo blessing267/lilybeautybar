@@ -1,0 +1,437 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+    Order #LBB-{{ order.id|stringformat:"04d" }} | Lily Beauty Bar
+{% endblock %}
+
+{% block content %}
+
+<!-- ORDER HEADING -->
+<section
+    class="border-b border-pink-100
+           bg-pink-50/70"
+>
+    <div
+        class="mx-auto max-w-6xl
+               px-4 py-8
+               sm:px-6
+               lg:px-8"
+    >
+
+        <a
+            href="{% url 'orders' %}"
+            class="text-sm font-semibold
+                   text-pink-600
+                   hover:underline"
+        >
+            ← Back to My Orders
+        </a>
+
+
+        <div
+            class="mt-5 flex flex-col gap-4
+                   sm:flex-row
+                   sm:items-end
+                   sm:justify-between"
+        >
+
+            <div>
+
+                <h1
+                    class="font-display
+                           text-4xl font-bold"
+                >
+                    Order #LBB-{{ order.id|stringformat:"04d" }}
+                </h1>
+
+                <p class="mt-2 text-gray-600">
+                    Placed on
+                    {{ order.created_at|date:"F d, Y" }}
+                    at
+                    {{ order.created_at|time:"h:i A" }}
+                </p>
+
+            </div>
+
+
+            {% if order.status == "paid" %}
+
+                <span
+                    class="w-fit rounded-full
+                           bg-green-100
+                           px-4 py-2
+                           text-sm font-bold
+                           text-green-700"
+                >
+                    Completed
+                </span>
+
+            {% elif order.status == "pending" %}
+
+                <span
+                    class="w-fit rounded-full
+                           bg-amber-100
+                           px-4 py-2
+                           text-sm font-bold
+                           text-amber-700"
+                >
+                    Pending payment
+                </span>
+
+            {% else %}
+
+                <span
+                    class="w-fit rounded-full
+                           bg-gray-200
+                           px-4 py-2
+                           text-sm font-bold
+                           text-gray-700"
+                >
+                    Cancelled
+                </span>
+
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ORDER CONTENT -->
+<section
+    class="mx-auto grid max-w-6xl
+           gap-8 px-4 py-10
+           sm:px-6
+           lg:grid-cols-[1fr_340px]
+           lg:px-8"
+>
+
+    <div class="space-y-6">
+
+        <!-- ORDER PRODUCTS -->
+        <div
+            class="overflow-hidden rounded-2xl
+                   border border-gray-200
+                   bg-white shadow-sm"
+        >
+
+            <div
+                class="border-b border-gray-100
+                       px-6 py-5"
+            >
+                <h2 class="text-lg font-bold">
+                    Items in your order
+                </h2>
+            </div>
+
+
+            <div class="divide-y divide-gray-100">
+
+                {% for item in order.items.all %}
+
+                    <div class="flex gap-5 p-6">
+
+                        <div
+                            class="grid h-24 w-24
+                                   shrink-0 place-items-center
+                                   overflow-hidden
+                                   rounded-xl bg-gray-50"
+                        >
+
+                            {% if item.product.image %}
+
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                    class="h-full w-full
+                                           object-contain p-2"
+                                >
+
+                            {% else %}
+
+                                <span class="text-xs text-gray-400">
+                                    No image
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div
+                            class="flex flex-1 flex-col
+                                   justify-center
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between"
+                        >
+
+                            <div>
+
+                                <a
+                                    href="{% url 'product_detail' item.product.id %}"
+                                    class="font-bold
+                                           transition
+                                           hover:text-pink-600"
+                                >
+                                    {{ item.product.name }}
+                                </a>
+
+
+                                {% if item.variant %}
+
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        {{ item.variant }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Quantity: {{ item.quantity }}
+                                </p>
+
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Unit price:
+                                    ₦{{ item.unit_price|floatformat:2 }}
+                                </p>
+
+                            </div>
+
+
+                            <p class="mt-3 font-bold sm:mt-0">
+                                ₦{{ item.line_total|floatformat:2 }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER AND PAYMENT DETAILS -->
+        <div class="grid gap-6 sm:grid-cols-2">
+
+            <div
+                class="rounded-2xl
+                       border border-gray-200
+                       bg-white p-6
+                       shadow-sm"
+            >
+
+                <h2 class="font-bold">
+                    Customer details
+                </h2>
+
+
+                <p class="mt-4 text-sm font-semibold">
+
+                    {% if order.full_name %}
+
+                        {{ order.full_name }}
+
+                    {% elif request.user.get_full_name %}
+
+                        {{ request.user.get_full_name }}
+
+                    {% else %}
+
+                        {{ request.user.username }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <p class="mt-1 text-sm text-gray-600">
+                    {{ order.email }}
+                </p>
+
+
+                {% if order.phone %}
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        {{ order.phone }}
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <div
+                class="rounded-2xl
+                       border border-gray-200
+                       bg-white p-6
+                       shadow-sm"
+            >
+
+                <h2 class="font-bold">
+                    Payment details
+                </h2>
+
+
+                <p class="mt-4 text-sm text-gray-600">
+                    Method:
+
+                    <span class="font-semibold text-gray-900">
+                        Paystack
+                    </span>
+                </p>
+
+
+                <p
+                    class="mt-1 break-all
+                           text-sm text-gray-600"
+                >
+                    Reference:
+
+                    <span class="font-semibold text-gray-900">
+
+                        {% if latest_payment %}
+
+                            {{ latest_payment.reference }}
+
+                        {% else %}
+
+                            Not available
+
+                        {% endif %}
+
+                    </span>
+                </p>
+
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Payment status:
+
+                    {% if latest_payment and latest_payment.verified %}
+
+                        <span class="font-semibold text-green-600">
+                            Verified
+                        </span>
+
+                    {% elif order.status == "paid" %}
+
+                        <span class="font-semibold text-green-600">
+                            Paid
+                        </span>
+
+                    {% else %}
+
+                        <span class="font-semibold text-amber-600">
+                            Pending
+                        </span>
+
+                    {% endif %}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ORDER SUMMARY -->
+    <aside
+        class="h-fit rounded-2xl
+               border border-gray-200
+               bg-white p-6
+               shadow-sm"
+    >
+
+        <h2 class="text-lg font-bold">
+            Order summary
+        </h2>
+
+
+        <div
+            class="mt-5 space-y-3
+                   border-b border-gray-100
+                   pb-5 text-sm"
+        >
+
+            {% for item in order.items.all %}
+
+                <div class="flex justify-between gap-4">
+
+                    <span class="text-gray-600">
+                        {{ item.product.name }}
+                        × {{ item.quantity }}
+                    </span>
+
+                    <span class="font-semibold">
+                        ₦{{ item.line_total|floatformat:2 }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div
+            class="flex items-center
+                   justify-between py-5"
+        >
+
+            <span class="font-bold">
+                Total
+            </span>
+
+            <span
+                class="text-2xl font-bold
+                       text-pink-600"
+            >
+                ₦{{ order_total|floatformat:2 }}
+            </span>
+
+        </div>
+
+
+        <form
+            method="post"
+            action="{% url 'buy_again' order.id %}"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="w-full rounded-xl
+                       bg-pink-500
+                       px-5 py-3.5
+                       font-bold text-white
+                       transition
+                       hover:bg-pink-600"
+            >
+                Buy This Order Again
+            </button>
+        </form>
+
+
+        <a
+            href="{% url 'contact' %}"
+            class="mt-3 block
+                   rounded-xl
+                   border border-gray-200
+                   px-5 py-3
+                   text-center text-sm font-bold
+                   transition
+                   hover:border-pink-300
+                   hover:text-pink-600"
+        >
+            Need help with this order?
+        </a>
+
+    </aside>
+
+</section>
+
+{% endblock %}

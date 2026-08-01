@@ -9,16 +9,33 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+
 def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+    if request.method == "POST":
+        form = UserRegisterForm(
+            request.POST
+        )
+
         if form.is_valid():
-            user = form.save()
-            messages.success(request, f'Account created for {user.username}. You can now log in.')
-            return redirect('login')
+            form.save()
+
+            messages.success(
+                request,
+                "Your account has successfully been created. You can now log in!",
+            )
+
+            return redirect("login")
+
     else:
         form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+
+    return render(
+        request,
+        "users/register.html",
+        {
+            "form": form,
+        },
+    )
 
 def login_view(request):
     if request.method == 'POST':
@@ -32,28 +49,47 @@ def login_view(request):
 
             next_url = request.POST.get("next")
 
-            messages.success(request, f'Welcome, {user.username}!')
+            messages.success(request, f'Welcome back, {user.username}!')
             return redirect(next_url if next_url else 'home')
         else:
-            messages.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid username or password!')
     return render(request, 'users/login.html')
 
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been logged out.')
+    messages.success(request, 'You have been logged out!')
     return redirect('login')
 
 @login_required
 def profile(request):
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=request.user)
+    if request.method == "POST":
+        form = UserUpdateForm(
+            request.POST,
+            instance=request.user,
+        )
+
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your profile has been updated!')
-            return redirect('profile')
+
+            messages.success(
+                request,
+                "Your profile has been updated successfully!",
+            )
+
+            return redirect("profile")
+
     else:
-        form = UserUpdateForm(instance=request.user)
-    return render(request, 'users/profile.html', {'form': form})
+        form = UserUpdateForm(
+            instance=request.user,
+        )
+
+    return render(
+        request,
+        "users/profile.html",
+        {
+            "form": form,
+        },
+    )
 
 @ensure_csrf_cookie
 @require_http_methods(["GET"])
@@ -109,4 +145,4 @@ def session_login(request):
 @require_http_methods(["POST"])
 def session_logout(request):
     logout(request)
-    return JsonResponse({"detail": "Logged out successfully."})
+    return JsonResponse({"detail": "Logged out successfully!"})

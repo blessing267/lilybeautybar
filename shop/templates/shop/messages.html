@@ -1,0 +1,153 @@
+{% if messages %}
+
+<div
+  id="global-messages"
+  class="fixed right-4 top-24 z-[100]
+         w-[calc(100%-2rem)]
+         max-w-sm
+         space-y-3
+         sm:right-6"
+>
+
+  {% for message in messages %}
+
+    <div
+      class="global-message
+             flex items-center gap-3
+             rounded-2xl
+             border
+             bg-white
+             px-4 py-3
+             text-sm
+             shadow-lg
+             transition-all
+             duration-300
+
+             {% if message.tags == 'success' %}
+               border-green-200 text-green-800
+
+             {% elif message.tags == 'error' %}
+               border-red-200 text-red-800
+
+             {% elif message.tags == 'warning' %}
+               border-amber-200 text-amber-800
+
+             {% elif message.tags == 'info' %}
+               border-blue-200 text-blue-800
+
+             {% else %}
+               border-pink-200 text-pink-700
+             {% endif %}"
+      role="alert"
+    >
+
+      <!-- ICON -->
+      <div
+        class="grid h-8 w-8
+               shrink-0 place-items-center
+               rounded-full
+
+               {% if message.tags == 'success' %}
+                 bg-green-100
+
+               {% elif message.tags == 'error' %}
+                 bg-red-100
+
+               {% elif message.tags == 'warning' %}
+                 bg-amber-100
+
+               {% elif message.tags == 'info' %}
+                 bg-blue-100
+
+               {% else %}
+                 bg-pink-100
+               {% endif %}"
+      >
+
+        {% if message.tags == 'success' %}
+
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m5 12 4 4L19 6"
+            />
+          </svg>
+
+        {% elif message.tags == 'error' %}
+
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 6l12 12M18 6 6 18"
+            />
+          </svg>
+
+        {% elif message.tags == 'warning' %}
+
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v4m0 4h.01M10.3 4.4 2.8 18a2 2 0 0 0 1.8 3h14.8a2 2 0 0 0 1.8-3L13.7 4.4a2 2 0 0 0-3.4 0Z"
+            />
+          </svg>
+
+        {% else %}
+
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+              stroke-width="2"
+            />
+
+            <path
+              stroke-linecap="round"
+              stroke-width="2"
+              d="M12 11v5m0-8h.01"
+            />
+          </svg>
+
+        {% endif %}
+
+      </div>
+
+
+      <!-- MESSAGE TEXT -->
+      <p class="flex-1 font-medium leading-5">
+        {{ message }}
+      </p>
+
+    </div>
+
+  {% endfor %}
+
+</div>
+
+{% endif %}

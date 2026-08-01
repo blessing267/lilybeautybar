@@ -6,100 +6,58 @@
 {{ product.name }} | Lily Beauty Bar
 {% endblock %}
 
+
 {% block extra_css %}
 <style>
-    .product-thumbnail {
-        transition:
-            border-color 0.2s ease,
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
+    [x-cloak] {
+        display: none !important;
     }
 
-    .product-thumbnail:hover {
+    .thumbnail {
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .thumbnail:hover {
         transform: translateY(-2px);
     }
 
-    .product-thumbnail.active {
+    .thumbnail.active {
         border-color: #ec4899;
-        box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.12);
     }
 
-    .product-tab-button {
-        position: relative;
-    }
-
-    .product-tab-button.active {
+    .tab-button.active {
         color: #ec4899;
+        border-bottom-color: #ec4899;
     }
 
-    .product-tab-button.active::after {
-        position: absolute;
-        right: 0;
-        bottom: -17px;
-        left: 0;
-        height: 2px;
-        content: "";
-        background: #ec4899;
-    }
-
-    .related-products-track {
-        display: flex;
-        gap: 0.75rem;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding-bottom: 0.75rem;
-        scroll-behavior: smooth;
-        scroll-snap-type: x mandatory;
-        overscroll-behavior-inline: contain;
+    .related-products {
         scrollbar-width: none;
-        -ms-overflow-style: none;
+        scroll-snap-type: x mandatory;
     }
 
-    .related-products-track::-webkit-scrollbar {
+    .related-products::-webkit-scrollbar {
         display: none;
     }
 
-    .related-product-card {
-        /*
-    Two complete products on every mobile screen.
-    The gap between the two cards is removed from the calculation.
-    */
+    .related-card {
         flex: 0 0 calc((100% - 0.75rem) / 2);
-        min-width: 0;
         scroll-snap-align: start;
     }
 
-    /* Three visible cards on tablets */
     @media (min-width: 768px) {
-        .related-products-track {
-            gap: 1rem;
-        }
-
-        .related-product-card {
+        .related-card {
             flex-basis: calc((100% - 2rem) / 3);
         }
     }
 
-    /* Four visible cards on desktop */
     @media (min-width: 1024px) {
-        .related-products-track {
-            gap: 1.25rem;
-        }
-
-        .related-product-card {
-            flex-basis: calc((100% - 3.75rem) / 4);
-        }
-    }
-
-    /* Five visible cards on wide desktop screens */
-    @media (min-width: 1280px) {
-        .related-product-card {
-            flex-basis: calc((100% - 5rem) / 5);
+        .related-card {
+            flex-basis: calc((100% - 3rem) / 4);
         }
     }
 </style>
 {% endblock %}
+
 
 {% block content %}
 
@@ -107,106 +65,207 @@
 
     <!-- BREADCRUMBS -->
     <section class="border-b border-gray-100">
-        <div class="mx-auto max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
-            <nav class="flex flex-wrap items-center gap-2 text-xs text-gray-500 sm:text-sm" aria-label="Breadcrumb">
-                <a href="{% url 'home' %}" class="transition hover:text-pink-500">
+        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+
+            <nav
+                class="flex flex-wrap items-center gap-2
+                       text-xs text-gray-500 sm:text-sm"
+                aria-label="Breadcrumb"
+            >
+                <a
+                    href="{% url 'home' %}"
+                    class="transition hover:text-pink-600"
+                >
                     Home
                 </a>
 
                 <i class="fa-solid fa-chevron-right text-[9px]"></i>
 
+                <a
+                    href="{% url 'products' %}"
+                    class="transition hover:text-pink-600"
+                >
+                    Shop
+                </a>
+
                 {% if product.category %}
-                <span>{{ product.category.name }}</span>
-                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+
+                    <a
+                        href="{% url 'products' %}?category={{ product.category.id }}"
+                        class="transition hover:text-pink-600"
+                    >
+                        {{ product.category.name }}
+                    </a>
                 {% endif %}
 
                 {% if product.subcategory %}
-                <span>{{ product.subcategory.name }}</span>
-                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
+
+                    <a
+                        href="{% url 'products' %}?subcategory={{ product.subcategory.id }}"
+                        class="transition hover:text-pink-600"
+                    >
+                        {{ product.subcategory.name }}
+                    </a>
                 {% endif %}
 
-                <span class="font-medium text-pink-500">
+                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+
+                <span class="font-semibold text-pink-600">
                     {{ product.name }}
                 </span>
             </nav>
+
         </div>
     </section>
 
-    <!-- PRODUCT INFORMATION -->
+
+    <!-- PRODUCT -->
     <section class="py-8 sm:py-12">
-        <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
 
-            <div class="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-                <!-- PRODUCT GALLERY -->
+            <div class="grid items-start gap-8 lg:grid-cols-2 lg:gap-14">
+
+                <!-- PRODUCT IMAGES -->
                 <div>
-                    <div class="relative aspect-square w-full overflow-hidden rounded-2xl bg-[#fff1f6]">
+
+                    <div
+                        class="relative aspect-square overflow-hidden
+                               rounded-2xl bg-pink-50"
+                    >
 
                         {% if product.is_on_sale %}
-                        <span
-                            class="absolute left-4 top-4 z-10 rounded-md bg-pink-500 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white">
-                            Sale
-                        </span>
+                            <span
+                                class="absolute left-4 top-4 z-20 rounded-full
+                                       bg-pink-600 px-3 py-1.5 text-xs
+                                       font-bold uppercase text-white shadow"
+                            >
+                                Sale
+                            </span>
                         {% endif %}
-
-                        <div id="main-image-wrapper" class="relative aspect-square w-full overflow-hidden rounded-2xl">
-                            {% if product.image %}
-                            <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}"
-                                class="absolute inset-0 h-full w-full object-cover object-center">
-                            {% else %}
-                            <div class="flex h-full w-full items-center justify-center bg-pink-50 text-gray-400">
-                                <i class="fa-regular fa-image text-6xl"></i>
-                            </div>
-                            {% endif %}
-                        </div>
-
-                        <button id="open-image-preview" type="button" aria-label="Enlarge product image"
-                            class="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg transition hover:scale-105 hover:text-pink-500">
-                            <i class="fa-solid fa-magnifying-glass-plus"></i>
-                        </button>
-                    </div>
-
-                    <!-- THUMBNAILS -->
-                    <div class="mt-4 flex gap-3 overflow-x-auto pb-2">
 
                         {% if product.image %}
-                        <button type="button"
-                            class="product-thumbnail active h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-pink-500 bg-[#fff1f6] p-1.5 sm:h-24 sm:w-24"
-                            data-image="{{ product.image.url }}">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                                class="h-full w-full object-contain">
-                        </button>
+                            <img
+                                id="main-product-image"
+                                src="{{ product.image.url }}"
+                                alt="{{ product.name }}"
+                                class="h-full w-full object-contain p-4"
+                            >
+                        {% else %}
+                            <div
+                                class="grid h-full place-items-center
+                                       text-5xl text-pink-200"
+                            >
+                                <i class="fa-regular fa-image"></i>
+                            </div>
                         {% endif %}
 
-                        {% for variant in product.variants.all %}
-                        {% if variant.image %}
-                        <button type="button"
-                            class="product-thumbnail h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-gray-200 bg-[#fff1f6] p-1.5 sm:h-24 sm:w-24"
-                            data-image="{{ variant.image.url }}">
-                            <img src="{{ variant.image.url }}" alt="{{ product.name }} {{ variant }}"
-                                class="h-full w-full object-contain">
-                        </button>
+                        {% if product.image %}
+                            <button
+                                id="open-preview"
+                                type="button"
+                                aria-label="Enlarge product image"
+                                class="absolute bottom-4 right-4 grid
+                                       h-11 w-11 place-items-center
+                                       rounded-full bg-white text-gray-700
+                                       shadow-lg transition
+                                       hover:text-pink-600"
+                            >
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </button>
                         {% endif %}
-                        {% endfor %}
+
                     </div>
-                </div>
 
-                <!-- PRODUCT DETAILS -->
-                <div class="lg:pt-1">
 
-                    {% if product.is_on_sale %}
-                    <span
-                        class="inline-flex rounded-md bg-pink-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                        Sale
-                    </span>
+                    <!-- THUMBNAILS -->
+                    {% if product.image or product.variants.exists %}
+
+                        <div class="mt-4 flex gap-3 overflow-x-auto pb-2">
+
+                            {% if product.image %}
+                                <button
+                                    type="button"
+                                    class="thumbnail active h-20 w-20 shrink-0
+                                           overflow-hidden rounded-xl border-2
+                                           border-pink-500 bg-pink-50 p-1"
+                                    data-image="{{ product.image.url }}"
+                                >
+                                    <img
+                                        src="{{ product.image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="h-full w-full object-contain"
+                                    >
+                                </button>
+                            {% endif %}
+
+                            {% for variant in product.variants.all %}
+
+                                {% if variant.image %}
+                                    <button
+                                        type="button"
+                                        class="thumbnail h-20 w-20 shrink-0
+                                               overflow-hidden rounded-xl
+                                               border-2 border-gray-200
+                                               bg-pink-50 p-1"
+                                        data-image="{{ variant.image.url }}"
+                                    >
+                                        <img
+                                            src="{{ variant.image.url }}"
+                                            alt="{{ product.name }}"
+                                            class="h-full w-full object-contain"
+                                        >
+                                    </button>
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
                     {% endif %}
 
-                    <h1 class="mt-4 font-display text-3xl font-bold leading-tight text-gray-950 sm:text-4xl">
+                </div>
+
+
+                <!-- PRODUCT DETAILS -->
+                <div>
+
+                    {% if product.is_on_sale %}
+                        <span
+                            id="sale-label"
+                            class="inline-flex rounded-full bg-pink-100
+                                   px-3 py-1 text-xs font-bold
+                                   uppercase text-pink-600"
+                        >
+                            Sale
+                        </span>
+                    {% endif %}
+
+
+                    <h1
+                        class="mt-3 font-display text-3xl font-bold
+                               leading-tight text-gray-950 sm:text-4xl"
+                    >
                         {{ product.name }}
                     </h1>
 
-                    <!-- REVIEWS -->
-                    <div class="mt-4 flex flex-wrap items-center gap-2">
+
+                    {% if product.category %}
+                        <p class="mt-2 text-sm text-gray-500">
+                            {{ product.category.name }}
+
+                            {% if product.subcategory %}
+                                · {{ product.subcategory.name }}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+
+
+                    <!-- RATING -->
+                    <div class="mt-4 flex items-center gap-2">
+
                         <div class="flex text-sm text-pink-500">
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
@@ -215,644 +274,904 @@
                             <i class="fa-solid fa-star-half-stroke"></i>
                         </div>
 
-                        <span class="text-sm text-gray-600">
+                        <span class="text-sm text-gray-500">
                             Customer favourite
                         </span>
+
                     </div>
+
 
                     <!-- PRICE -->
                     <div class="mt-6 flex flex-wrap items-center gap-3">
 
-                        {% if selected_variant and selected_variant.price %}
-                        <span id="display-price" class="text-3xl font-extrabold text-pink-500">
-                            ₦{{ selected_variant.price|floatformat:0|intcomma }}
-                        </span>
-                        {% elif product.is_on_sale %}
-                        <span id="display-price" class="text-3xl font-extrabold text-pink-500">
-                            ₦{{ product.current_price|floatformat:0|intcomma }}
+                        <span
+                            id="display-price"
+                            class="text-3xl font-extrabold text-pink-600"
+                        >
+                            {% if selected_variant and selected_variant.price %}
+                                ₦{{ selected_variant.price|floatformat:0|intcomma }}
+                            {% else %}
+                                ₦{{ product.current_price|floatformat:0|intcomma }}
+                            {% endif %}
                         </span>
 
-                        <span class="text-lg text-gray-400 line-through">
+
+                        <span
+                            id="original-price"
+                            class="text-lg text-gray-400 line-through
+                            {% if selected_variant and selected_variant.price or not product.is_on_sale %}
+                                hidden
+                            {% endif %}"
+                        >
                             ₦{{ product.price|floatformat:0|intcomma }}
                         </span>
+
 
                         {% if product.discount_percentage %}
-                        <span class="rounded-md bg-pink-500 px-2.5 py-1 text-xs font-bold text-white">
-                            -{{ product.discount_percentage }}%
-                        </span>
+                            <span
+                                id="discount-badge"
+                                class="rounded-full bg-pink-600 px-2.5 py-1
+                                       text-xs font-bold text-white
+                                {% if selected_variant and selected_variant.price %}
+                                    hidden
+                                {% endif %}"
+                            >
+                                -{{ product.discount_percentage }}%
+                            </span>
                         {% endif %}
-                        {% else %}
-                        <span id="display-price" class="text-3xl font-extrabold text-pink-500">
-                            ₦{{ product.price|floatformat:0|intcomma }}
-                        </span>
-                        {% endif %}
+
                     </div>
+
 
                     {% if product.description %}
-                    <div class="mt-6 text-[15px] leading-7 text-gray-600">
-                        {{ product.description|truncatewords:35 }}
-                    </div>
+                        <p class="mt-6 text-[15px] leading-7 text-gray-600">
+                            {{ product.description|truncatewords:40 }}
+                        </p>
                     {% endif %}
 
-                    <!-- PRODUCT BENEFITS -->
-                    <div class="mt-6 space-y-3">
-                        <p class="flex items-center gap-3 text-sm text-gray-700">
-                            <i class="fa-regular fa-circle-check text-pink-500"></i>
-                            Premium quality product
+
+                    <!-- BENEFITS -->
+                    <div class="mt-6 space-y-3 text-sm text-gray-700">
+
+                        <p class="flex items-center gap-3">
+                            <i class="fa-regular fa-circle-check text-pink-600"></i>
+                            Carefully selected quality product
                         </p>
 
-                        <p class="flex items-center gap-3 text-sm text-gray-700">
-                            <i class="fa-regular fa-circle-check text-pink-500"></i>
-                            Carefully selected for professional results
+                        <p class="flex items-center gap-3">
+                            <i class="fa-regular fa-circle-check text-pink-600"></i>
+                            Secure Paystack checkout
                         </p>
 
-                        <p class="flex items-center gap-3 text-sm text-gray-700">
-                            <i class="fa-regular fa-circle-check text-pink-500"></i>
-                            Secure checkout and nationwide delivery
+                        <p class="flex items-center gap-3">
+                            <i class="fa-regular fa-circle-check text-pink-600"></i>
+                            Nationwide delivery across Nigeria
                         </p>
+
                     </div>
+
 
                     <!-- VARIANTS -->
                     {% if product.variants.exists %}
-                    <div class="mt-8">
-                        <label for="variant-select" class="mb-2 block text-sm font-semibold text-gray-900">
-                            Select an option
-                        </label>
 
-                        <select id="variant-select" name="variant_id" form="add-to-cart-form" required
-                            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-100">
-                            {% for variant in product.variants.all %}
-                        
-                            {% if selected_variant and selected_variant.id == variant.id %}
-                            <option value="{{ variant.id }}"
-                                data-price="{% if variant.price %}{{ variant.price }}{% else %}{{ product.current_price }}{% endif %}"
-                                data-stock="{{ variant.stock }}" data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}" selected>
-                                {% else %}
-                            <option value="{{ variant.id }}"
-                                data-price="{% if variant.price %}{{ variant.price }}{% else %}{{ product.current_price }}{% endif %}"
-                                data-stock="{{ variant.stock }}" data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}">
-                                {% endif %}
-                        
-                                {% if variant.colour %}
-                                {{ variant.colour }}
-                                {% endif %}
-                        
-                                {% if variant.product_type %}
-                                {% if variant.colour %} — {% endif %}
-                                {{ variant.product_type }}
-                                {% endif %}
-                        
-                                {% if variant.price %}
-                                — ₦{{ variant.price|floatformat:0|intcomma }}
-                                {% endif %}
-                            </option>
-                        
-                            {% empty %}
-                            <option value="" disabled>
-                                No options available
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                        <div class="mt-7">
+
+                            <label
+                                for="variant-select"
+                                class="mb-2 block text-sm font-bold"
+                            >
+                                Select an option
+                            </label>
+
+                            <select
+                                id="variant-select"
+                                name="variant_id"
+                                form="add-to-cart-form"
+                                required
+                                class="w-full rounded-xl border
+                                       border-gray-300 bg-white px-4 py-3
+                                       text-sm outline-none
+                                       focus:border-pink-500
+                                       focus:ring-2 focus:ring-pink-100"
+                            >
+
+                                {% for variant in product.variants.all %}
+
+                                    <option
+                                        value="{{ variant.id }}"
+                                        data-price="{% if variant.price %}{{ variant.price }}{% else %}{{ product.current_price }}{% endif %}"
+                                        data-own-price="{% if variant.price %}true{% else %}false{% endif %}"
+                                        data-stock="{{ variant.stock }}"
+                                        data-image="{% if variant.image %}{{ variant.image.url }}{% endif %}"
+                                        {% if selected_variant and selected_variant.id == variant.id %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {% if variant.colour %}
+                                            {{ variant.colour }}
+                                        {% endif %}
+
+                                        {% if variant.product_type %}
+                                            {% if variant.colour %} — {% endif %}
+                                            {{ variant.product_type }}
+                                        {% endif %}
+
+                                        {% if not variant.colour and not variant.product_type %}
+                                            {{ variant.sku }}
+                                        {% endif %}
+
+                                        {% if variant.price %}
+                                            — ₦{{ variant.price|floatformat:0|intcomma }}
+                                        {% endif %}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
                     {% endif %}
 
-                    <div class="my-8 border-t border-gray-200"></div>
 
                     <!-- STOCK -->
-                    <div id="stock-display" class="flex items-center gap-2 text-sm font-medium">
-                        {% if selected_variant %}
-                        {% if selected_variant.stock > 0 %}
-                        <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
-                        <span class="text-green-600">
-                            In stock
-                        </span>
-                        {% else %}
-                        <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                        <span class="text-red-600">
-                            Out of stock
-                        </span>
-                        {% endif %}
-                        {% elif product.stock > 0 %}
-                        <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
-                        <span class="text-green-600">
-                            In stock
-                        </span>
-                        {% else %}
-                        <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                        <span class="text-red-600">
-                            Out of stock
-                        </span>
-                        {% endif %}
-                    </div>
+                    <div
+                        id="stock-display"
+                        class="mt-6 flex items-center gap-2 text-sm font-semibold"
+                    >
 
-                    <!-- ADD TO CART -->
-                    <form id="add-to-cart-form" method="POST" action="{% url 'add_to_cart' product.id %}" class="mt-5 w-full">
-                        {% csrf_token %}
-                    
                         {% if selected_variant %}
-                        <input id="cart-variant-id" type="hidden" name="variant_id" value="{{ selected_variant.id }}">
-                        {% endif %}
-                    
-                        <div class="grid w-full grid-cols-[105px_minmax(0,1fr)] gap-2 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-3">
-                    
-                            <div class="flex h-12 min-w-0 items-center overflow-hidden rounded-xl border border-gray-300 bg-white sm:h-14">
-                    
-                                <button id="decrease-quantity" type="button" aria-label="Decrease quantity"
-                                    class="flex h-full w-9 shrink-0 items-center justify-center text-base text-gray-600 transition hover:bg-pink-50 hover:text-pink-500 sm:w-11 sm:text-lg">
-                                    −
-                                </button>
-                    
-                                <input id="product-quantity" type="number" name="quantity" value="1" min="1" inputmode="numeric"
-                                    class="h-full min-w-0 flex-1 border-x border-gray-300 bg-white px-0 text-center text-sm font-semibold outline-none sm:text-base">
-                    
-                                <button id="increase-quantity" type="button" aria-label="Increase quantity"
-                                    class="flex h-full w-9 shrink-0 items-center justify-center text-base text-gray-600 transition hover:bg-pink-50 hover:text-pink-500 sm:w-11 sm:text-lg">
-                                    +
-                                </button>
-                            </div>
-                    
-                            <button type="submit"
-                                class="flex h-12 min-w-0 items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-pink-500 px-2 text-[11px] font-bold uppercase tracking-wide text-white shadow-md shadow-pink-100 transition hover:bg-pink-600 sm:h-14 sm:gap-2 sm:px-5 sm:text-sm">
-                                <i class="fa-solid fa-cart-shopping shrink-0"></i>
-                    
-                                <span class="whitespace-nowrap">
-                                    Add to cart
+
+                            {% if selected_variant.stock > 0 %}
+                                <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                                <span class="text-green-600">
+                                    In stock — {{ selected_variant.stock }} available
                                 </span>
-                            </button>
-                        </div>
-                    </form>
-
-                            <!-- BUY NOW -->
-                            <form method="POST" action="{% url 'add_to_cart' product.id %}" class="mt-3">
-                                {% csrf_token %}
-
-                                {% if selected_variant %}
-                                <input id="buy-now-variant" type="hidden" name="variant_id"
-                                    value="{{ selected_variant.id }}">
-                                {% endif %}
-
-                                <input id="buy-now-quantity" type="hidden" name="quantity" value="1">
-
-                                <input type="hidden" name="buy_now" value="true">
-
-                                <button type="submit"
-                                    class="flex h-14 w-full items-center justify-center rounded-xl border-2 border-pink-500 font-bold uppercase tracking-wide text-pink-500 transition hover:bg-pink-50">
-                                    Buy now
-                                </button>
-                            </form>
-                        </div>
-                </div>
-            </div>
-    </section>
-
-    <!-- DESCRIPTION TABS -->
-    <section class="py-12 sm:py-16">
-        <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-
-            <div class="overflow-x-auto border-b border-gray-200">
-                <div class="flex min-w-max gap-8 pb-4">
-                    <button type="button" class="product-tab-button active text-sm font-bold uppercase"
-                        data-tab="description">
-                        Description
-                    </button>
-
-                    <button type="button" class="product-tab-button text-sm font-bold uppercase text-gray-700"
-                        data-tab="delivery">
-                        Delivery
-                    </button>
-
-                    <button type="button" class="product-tab-button text-sm font-bold uppercase text-gray-700"
-                        data-tab="reviews">
-                        Reviews
-                    </button>
-                </div>
-            </div>
-
-            <div class="pt-8">
-                <article id="tab-description" class="product-tab-panel">
-                    <div class="grid items-center gap-10 lg:grid-cols-2">
-
-                        <div class="max-w-2xl text-[15px] leading-8 text-gray-600">
-                            {% if product.description %}
-                            {{ product.description|linebreaks }}
                             {% else %}
-                            <p>
-                                {{ product.name }} is part of our carefully
-                                selected collection of professional beauty
-                                products.
-                            </p>
+                                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                                <span class="text-red-600">
+                                    Out of stock
+                                </span>
                             {% endif %}
 
-                            <ul class="mt-5 space-y-2">
-                                <li class="flex gap-3">
-                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
-                                    Selected for quality and reliable performance
-                                </li>
+                        {% elif product.stock > 0 %}
 
-                                <li class="flex gap-3">
-                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
-                                    Suitable for beauty professionals and beauty lovers
-                                </li>
+                            <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
 
-                                <li class="flex gap-3">
-                                    <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-pink-500"></span>
-                                    Carefully packaged for delivery
-                                </li>
-                            </ul>
+                            <span class="text-green-600">
+                                In stock — {{ product.stock }} available
+                            </span>
+
+                        {% else %}
+
+                            <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+
+                            <span class="text-red-600">
+                                Out of stock
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ADD TO CART -->
+                    <form
+                        id="add-to-cart-form"
+                        method="post"
+                        action="{% url 'add_to_cart' product.id %}"
+                        class="mt-6"
+                    >
+                        {% csrf_token %}
+
+                        {% if selected_variant %}
+                            <input
+                                id="cart-variant-id"
+                                type="hidden"
+                                name="variant_id"
+                                value="{{ selected_variant.id }}"
+                            >
+                        {% endif %}
+
+                        <div
+                            class="grid grid-cols-[110px_minmax(0,1fr)]
+                                   gap-3 sm:grid-cols-[140px_minmax(0,1fr)]"
+                        >
+
+                            <!-- QUANTITY -->
+                            <div
+                                class="flex h-13 items-center overflow-hidden
+                                       rounded-xl border border-gray-300"
+                            >
+
+                                <button
+                                    id="decrease-quantity"
+                                    type="button"
+                                    aria-label="Decrease quantity"
+                                    class="h-full w-10 shrink-0 text-lg
+                                           hover:bg-pink-50 hover:text-pink-600"
+                                >
+                                    −
+                                </button>
+
+                                <input
+                                    id="product-quantity"
+                                    type="number"
+                                    name="quantity"
+                                    value="1"
+                                    min="1"
+                                    class="h-full min-w-0 flex-1 border-x
+                                           border-gray-300 text-center
+                                           font-semibold outline-none"
+                                >
+
+                                <button
+                                    id="increase-quantity"
+                                    type="button"
+                                    aria-label="Increase quantity"
+                                    class="h-full w-10 shrink-0 text-lg
+                                           hover:bg-pink-50 hover:text-pink-600"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+
+                            <button
+                                id="add-to-cart-button"
+                                type="submit"
+                                {% if selected_variant %}
+                                    {% if selected_variant.stock <= 0 %}disabled{% endif %}
+                                {% elif product.stock <= 0 %}
+                                    disabled
+                                {% endif %}
+                                class="flex h-13 items-center justify-center
+                                       gap-2 rounded-xl bg-pink-600 px-4
+                                       text-sm font-bold uppercase
+                                       text-white transition
+                                       hover:bg-pink-700
+                                       disabled:cursor-not-allowed
+                                       disabled:bg-gray-300
+                                       disabled:text-gray-500"
+                            >
+                                <i class="fa-solid fa-cart-shopping"></i>
+
+                                <span id="cart-button-text">
+                                    {% if selected_variant %}
+                                        {% if selected_variant.stock > 0 %}
+                                            Add to Cart
+                                        {% else %}
+                                            Out of Stock
+                                        {% endif %}
+                                    {% elif product.stock > 0 %}
+                                        Add to Cart
+                                    {% else %}
+                                        Out of Stock
+                                    {% endif %}
+                                </span>
+                            </button>
+
                         </div>
-                    </div>
-                </article>
 
-                <article id="tab-delivery" class="product-tab-panel hidden">
-                    <div class="max-w-3xl text-[15px] leading-8 text-gray-600">
-                        <h2 class="text-xl font-bold text-gray-900">
-                            Shipping and delivery
-                        </h2>
+                    </form>
 
-                        <p class="mt-4">
-                            Orders within Edo State are normally delivered within
-                            2–3 working days. Deliveries outside Edo State normally
-                            take approximately 3–4 working days, depending on the
-                            destination.
-                        </p>
 
-                        <p class="mt-4">
-                            Pickup and delivery information will be communicated
-                            through WhatsApp after payment confirmation.
-                        </p>
-                    </div>
-                </article>
+                    <!-- BUY NOW -->
+                    <form
+                        method="post"
+                        action="{% url 'add_to_cart' product.id %}"
+                        class="mt-3"
+                    >
+                        {% csrf_token %}
 
-                <article id="tab-reviews" class="product-tab-panel hidden">
-                    <div class="rounded-2xl bg-pink-50 px-6 py-10 text-center">
-                        <div class="text-xl text-pink-500">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-stroke"></i>
-                        </div>
+                        {% if selected_variant %}
+                            <input
+                                id="buy-now-variant"
+                                type="hidden"
+                                name="variant_id"
+                                value="{{ selected_variant.id }}"
+                            >
+                        {% endif %}
 
-                        <h2 class="mt-4 text-xl font-bold text-gray-900">
-                            Customer reviews
-                        </h2>
+                        <input
+                            id="buy-now-quantity"
+                            type="hidden"
+                            name="quantity"
+                            value="1"
+                        >
 
-                        <p class="mx-auto mt-2 max-w-xl text-sm leading-6 text-gray-600">
-                            Customer reviews for this product will appear here.
-                        </p>
-                    </div>
-                </article>
+                        <input
+                            type="hidden"
+                            name="buy_now"
+                            value="true"
+                        >
+
+                        <button
+                            id="buy-now-button"
+                            type="submit"
+                            {% if selected_variant %}
+                                {% if selected_variant.stock <= 0 %}disabled{% endif %}
+                            {% elif product.stock <= 0 %}
+                                disabled
+                            {% endif %}
+                            class="flex h-13 w-full items-center
+                                   justify-center rounded-xl border-2
+                                   border-pink-600 font-bold uppercase
+                                   text-pink-600 transition
+                                   hover:bg-pink-50
+                                   disabled:cursor-not-allowed
+                                   disabled:border-gray-300
+                                   disabled:text-gray-400"
+                        >
+                            Buy Now
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
+
         </div>
+
     </section>
+
+
+    <!-- PRODUCT INFORMATION TABS -->
+    <section class="border-t border-gray-100 py-10">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <div class="flex gap-6 overflow-x-auto border-b border-gray-200">
+
+                <button
+                    type="button"
+                    class="tab-button active shrink-0 border-b-2
+                           border-pink-500 pb-3 text-sm font-bold"
+                    data-tab="description"
+                >
+                    Description
+                </button>
+
+                <button
+                    type="button"
+                    class="tab-button shrink-0 border-b-2
+                           border-transparent pb-3 text-sm
+                           font-bold text-gray-600"
+                    data-tab="delivery"
+                >
+                    Delivery
+                </button>
+
+            </div>
+
+
+            <div class="pt-7">
+
+                <article
+                    id="tab-description"
+                    class="tab-panel max-w-3xl text-[15px]
+                           leading-8 text-gray-600"
+                >
+                    {% if product.description %}
+                        {{ product.description|linebreaks }}
+                    {% else %}
+                        <p>
+                            {{ product.name }} is part of our carefully selected
+                            collection of professional beauty products.
+                        </p>
+                    {% endif %}
+                </article>
+
+
+                <article
+                    id="tab-delivery"
+                    class="tab-panel hidden max-w-3xl
+                           text-[15px] leading-8 text-gray-600"
+                >
+                    <h2 class="text-xl font-bold text-gray-900">
+                        Shipping and delivery
+                    </h2>
+
+                    <p class="mt-3">
+                        Orders within Edo State are normally delivered within
+                        2–3 working days.
+                    </p>
+
+                    <p class="mt-3">
+                        Deliveries outside Edo State normally take approximately
+                        3–4 working days, depending on the destination.
+                    </p>
+
+                    <p class="mt-3">
+                        Pickup and delivery information will be communicated
+                        through WhatsApp after payment confirmation.
+                    </p>
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
 
     <!-- RELATED PRODUCTS -->
     {% if related_products %}
-    <section class="overflow-hidden bg-[#fffafa] py-8 sm:py-10">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    
-            <!-- SECTION HEADING -->
-            <div class="mb-5 sm:mb-6">
-                <h2 class="font-display text-2xl font-bold text-gray-950 sm:text-3xl">
-                    You May Also Like
-                </h2>
-    
-                <div class="mt-2 h-1 w-12 rounded-full bg-pink-500"></div>
-    
-                <p class="mt-2 text-xs text-gray-500 sm:hidden">
-                    Swipe to see more
-                </p>
-            </div>
-    
-            <!-- SINGLE HORIZONTAL ROW -->
-            <div class="related-products-track flex gap-3 overflow-x-auto overflow-y-hidden pb-2 sm:gap-4">
-    
-                {% for item in related_products %}
-                <article
-                    class="related-product-card flex shrink-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-    
-                    <!-- PRODUCT IMAGE -->
-                    <a href="{% url 'product_detail' item.id %}"
-                        class="relative block aspect-[4/3] w-full overflow-hidden bg-pink-50">
-                        {% if item.is_on_sale %}
-                        <span
-                            class="absolute left-2 top-2 z-10 rounded bg-pink-500 px-1.5 py-0.5 text-[8px] font-bold uppercase text-white sm:text-[9px]">
-                            Sale
-                        </span>
-                        {% endif %}
-    
-                        {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy"
-                            class="h-full w-full object-cover object-center transition duration-300 hover:scale-105">
-                        {% else %}
-                        <div class="flex h-full w-full items-center justify-center text-gray-400">
-                            <i class="fa-regular fa-image text-3xl"></i>
-                        </div>
-                        {% endif %}
-                    </a>
-    
-                    <!-- PRODUCT DETAILS -->
-                    <div class="flex flex-1 flex-col p-2.5 sm:p-3">
-    
-                        <a href="{% url 'product_detail' item.id %}">
-                            <h3
-                                class="line-clamp-2 text-xs font-semibold leading-4 text-gray-900 transition hover:text-pink-500 sm:text-sm sm:leading-5">
-                                {{ item.name }}
-                            </h3>
-                        </a>
-    
-                        <!-- RATING -->
-                        <div class="mt-1.5 flex gap-0.5 text-[9px] text-pink-500 sm:text-[10px]">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                        </div>
-    
-                        <!-- PRICE -->
-                        <div class="mt-2 flex flex-wrap items-center gap-1">
-                            <span class="text-xs font-bold text-gray-950 sm:text-sm">
-                                ₦{{ item.current_price|floatformat:0|intcomma }}
-                            </span>
-    
-                            {% if item.is_on_sale %}
-                            <span class="text-[9px] text-gray-400 line-through sm:text-[10px]">
-                                ₦{{ item.price|floatformat:0|intcomma }}
-                            </span>
-                            {% endif %}
-                        </div>
-    
-                        <!-- ADD TO CART -->
-                        <form method="POST" action="{% url 'add_to_cart' item.id %}" class="mt-auto pt-2.5">
-                            {% csrf_token %}
-    
-                            <input type="hidden" name="quantity" value="1">
-    
-                            {% with first_variant=item.variants.first %}
-                            {% if first_variant %}
-                            <input type="hidden" name="variant_id" value="{{ first_variant.id }}">
-                            {% endif %}
-                            {% endwith %}
-    
-                            <button type="submit"
-                                class="flex w-full min-w-0 items-center justify-center gap-1 rounded-lg border border-pink-500 px-1.5 py-2 text-[9px] font-bold uppercase text-pink-500 transition hover:bg-pink-500 hover:text-white sm:px-2 sm:text-[10px]">
-                                <i class="fa-solid fa-cart-shopping shrink-0"></i>
-    
-                                <span class="whitespace-nowrap">
-                                    Add to cart
-                                </span>
-                            </button>
-                        </form>
-                    </div>
-                </article>
-                {% endfor %}
-    
-            </div>
-        </div>
-    </section>
-    {% endif %}
 
-    <!-- NEWSLETTER -->
-    <section class="relative overflow-hidden bg-gradient-to-r from-pink-500 via-pink-400 to-pink-500">
-        <div class="absolute -left-12 -top-12 h-48 w-48 rounded-full bg-white/10"></div>
-        <div class="absolute -bottom-16 -right-12 h-56 w-56 rounded-full bg-white/10"></div>
+        <section class="overflow-hidden bg-pink-50/40 py-10">
 
-        <div
-            class="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-7 px-5 py-10 sm:px-6 lg:flex-row lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-            <div class="flex items-center gap-4 text-white">
-                <i class="fa-regular fa-envelope text-4xl"></i>
+                <div class="mb-5">
 
-                <div>
-                    <h2 class="font-display text-2xl font-bold">
-                        Stay Glowing!
+                    <h2 class="font-display text-2xl font-bold sm:text-3xl">
+                        You May Also Like
                     </h2>
 
-                    <p class="mt-1 text-sm text-white/90">
-                        Get updates about new products and exclusive offers.
+                    <div class="mt-2 h-1 w-12 rounded-full bg-pink-500"></div>
+
+                    <p class="mt-2 text-xs text-gray-500 sm:hidden">
+                        Swipe to see more
                     </p>
+
                 </div>
+
+
+                <div
+                    class="related-products flex gap-3 overflow-x-auto
+                           pb-3 md:gap-4"
+                >
+
+                    {% for item in related_products %}
+
+                        <article
+                            class="related-card flex shrink-0 flex-col
+                                   overflow-hidden rounded-xl border
+                                   border-gray-100 bg-white shadow-sm"
+                        >
+
+                            <!-- IMAGE -->
+                            <a
+                                href="{% url 'product_detail' item.id %}"
+                                class="relative block aspect-square
+                                       overflow-hidden bg-pink-50"
+                            >
+
+                                {% if item.is_on_sale %}
+                                    <span
+                                        class="absolute left-2 top-2 z-10
+                                               rounded-full bg-pink-600
+                                               px-2 py-1 text-[8px]
+                                               font-bold uppercase text-white"
+                                    >
+                                        Sale
+                                    </span>
+                                {% endif %}
+
+                                {% if item.image %}
+                                    <img
+                                        src="{{ item.image.url }}"
+                                        alt="{{ item.name }}"
+                                        loading="lazy"
+                                        class="h-full w-full object-contain
+                                               p-2 transition duration-300
+                                               hover:scale-105"
+                                    >
+                                {% else %}
+                                    <div
+                                        class="grid h-full place-items-center
+                                               text-3xl text-pink-200"
+                                    >
+                                        <i class="fa-regular fa-image"></i>
+                                    </div>
+                                {% endif %}
+
+                            </a>
+
+
+                            <!-- INFORMATION -->
+                            <div class="flex flex-1 flex-col p-3">
+
+                                <h3
+                                    class="line-clamp-2 text-xs font-bold
+                                           leading-4 sm:text-sm sm:leading-5"
+                                >
+                                    <a
+                                        href="{% url 'product_detail' item.id %}"
+                                        class="hover:text-pink-600"
+                                    >
+                                        {{ item.name }}
+                                    </a>
+                                </h3>
+
+
+                                <!-- SALE PRICE -->
+                                <div class="mt-2 flex flex-wrap items-center gap-1.5">
+
+                                    {% if item.is_on_sale %}
+
+                                        <span
+                                            class="text-xs font-bold
+                                                   text-pink-600 sm:text-sm"
+                                        >
+                                            ₦{{ item.current_price|floatformat:0|intcomma }}
+                                        </span>
+
+                                        <span
+                                            class="text-[9px] text-gray-400
+                                                   line-through sm:text-[10px]"
+                                        >
+                                            ₦{{ item.price|floatformat:0|intcomma }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="text-xs font-bold
+                                                   text-pink-600 sm:text-sm"
+                                        >
+                                            ₦{{ item.price|floatformat:0|intcomma }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                {% if item.stock > 0 %}
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'add_to_cart' item.id %}"
+                                        class="mt-auto pt-3"
+                                    >
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="quantity"
+                                            value="1"
+                                        >
+
+                                        {% with first_variant=item.variants.first %}
+                                            {% if first_variant %}
+                                                <input
+                                                    type="hidden"
+                                                    name="variant_id"
+                                                    value="{{ first_variant.id }}"
+                                                >
+                                            {% endif %}
+                                        {% endwith %}
+
+                                        <button
+                                            type="submit"
+                                            class="flex w-full items-center
+                                                   justify-center gap-1
+                                                   rounded-lg border
+                                                   border-pink-500 px-2 py-2
+                                                   text-[9px] font-bold uppercase
+                                                   text-pink-600 transition
+                                                   hover:bg-pink-600
+                                                   hover:text-white sm:text-[10px]"
+                                        >
+                                            <i class="fa-solid fa-cart-shopping"></i>
+                                            Add to Cart
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        disabled
+                                        class="mt-auto w-full rounded-lg
+                                               bg-gray-200 px-2 py-2
+                                               text-[9px] font-bold
+                                               uppercase text-gray-500"
+                                    >
+                                        Out of Stock
+                                    </button>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
             </div>
 
-            <form class="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row">
-            
-                <input type="email" name="email" required placeholder="Enter your email address"
-                    class="sm:flex-[2] rounded-xl border border-gray-300 bg-white px-5 py-4 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-500 focus:border-pink-500 focus:ring-4 focus:ring-pink-200">
-                <button type="submit"
-                    class="sm:flex-1 rounded-xl bg-pink-600 px-6 py-4 text-sm font-bold uppercase text-white transition hover:bg-pink-700">
-                    Subscribe
-                </button>
-            
-            </form>
-        </div>
-    </section>
+        </section>
+
+    {% endif %}
+
 </main>
 
-<!-- IMAGE PREVIEW MODAL -->
-<div id="image-preview-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 p-5">
-    <button id="close-image-preview" type="button" aria-label="Close image preview"
-        class="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-900">
+
+<!-- IMAGE PREVIEW -->
+<div
+    id="preview-modal"
+    class="fixed inset-0 z-[200] hidden items-center
+           justify-center bg-black/80 p-5"
+>
+
+    <button
+        id="close-preview"
+        type="button"
+        aria-label="Close image preview"
+        class="absolute right-5 top-5 grid h-11 w-11
+               place-items-center rounded-full bg-white text-gray-900"
+    >
         <i class="fa-solid fa-xmark text-xl"></i>
     </button>
 
-    <img id="preview-modal-image" src="" alt="{{ product.name }}"
-        class="max-h-[88vh] max-w-[95vw] rounded-xl bg-white object-contain p-4">
+    <img
+        id="preview-image"
+        src=""
+        alt="{{ product.name }}"
+        class="max-h-[88vh] max-w-[95vw] rounded-xl
+               bg-white object-contain p-3"
+    >
+
 </div>
 
 {% endblock %}
 
+
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const mainImage = document.getElementById("main-product-image");
-        const thumbnails = document.querySelectorAll(".product-thumbnail");
-        const variantSelect = document.getElementById("variant-select");
-        const displayPrice = document.getElementById("display-price");
-        const stockDisplay = document.getElementById("stock-display");
-        const buyNowVariant = document.getElementById("buy-now-variant");
+document.addEventListener("DOMContentLoaded", () => {
+    const mainImage = document.getElementById("main-product-image");
+    const thumbnails = document.querySelectorAll(".thumbnail");
 
-        const quantityInput = document.getElementById("product-quantity");
-        const buyNowQuantity = document.getElementById("buy-now-quantity");
-        const decreaseButton = document.getElementById("decrease-quantity");
-        const increaseButton = document.getElementById("increase-quantity");
+    const variantSelect = document.getElementById("variant-select");
+    const cartVariantInput = document.getElementById("cart-variant-id");
+    const buyNowVariantInput = document.getElementById("buy-now-variant");
 
-        const tabButtons = document.querySelectorAll(".product-tab-button");
-        const tabPanels = document.querySelectorAll(".product-tab-panel");
+    const displayPrice = document.getElementById("display-price");
+    const originalPrice = document.getElementById("original-price");
+    const discountBadge = document.getElementById("discount-badge");
 
-        const previewModal = document.getElementById("image-preview-modal");
-        const previewModalImage = document.getElementById("preview-modal-image");
-        const openPreviewButton = document.getElementById("open-image-preview");
-        const closePreviewButton = document.getElementById("close-image-preview");
+    const stockDisplay = document.getElementById("stock-display");
+    const addToCartButton = document.getElementById("add-to-cart-button");
+    const cartButtonText = document.getElementById("cart-button-text");
+    const buyNowButton = document.getElementById("buy-now-button");
 
-        const formatNaira = (value) => {
-            const number = Number(value);
+    const quantityInput = document.getElementById("product-quantity");
+    const buyNowQuantity = document.getElementById("buy-now-quantity");
+    const decreaseButton = document.getElementById("decrease-quantity");
+    const increaseButton = document.getElementById("increase-quantity");
 
-            if (Number.isNaN(number)) {
-                return value;
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    const openPreview = document.getElementById("open-preview");
+    const closePreview = document.getElementById("close-preview");
+    const previewModal = document.getElementById("preview-modal");
+    const previewImage = document.getElementById("preview-image");
+
+
+    const formatNaira = (value) => {
+        const number = Number(value);
+
+        if (Number.isNaN(number)) {
+            return value;
+        }
+
+        return new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            maximumFractionDigits: 0,
+        }).format(number);
+    };
+
+
+    // THUMBNAILS
+    thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener("click", () => {
+            const imageUrl = thumbnail.dataset.image;
+
+            if (mainImage && imageUrl) {
+                mainImage.src = imageUrl;
             }
 
-            return new Intl.NumberFormat("en-NG", {
-                style: "currency",
-                currency: "NGN",
-                maximumFractionDigits: 0,
-            }).format(number);
-        };
-
-        thumbnails.forEach((thumbnail) => {
-            thumbnail.addEventListener("click", () => {
-                const imageUrl = thumbnail.dataset.image;
-
-                if (mainImage && imageUrl) {
-                    mainImage.src = imageUrl;
-                }
-
-                thumbnails.forEach((item) => {
-                    item.classList.remove("active");
-                });
-
-                thumbnail.classList.add("active");
+            thumbnails.forEach((item) => {
+                item.classList.remove("active");
             });
+
+            thumbnail.classList.add("active");
         });
-
-        if (variantSelect) {
-            variantSelect.addEventListener("change", () => {
-                const option =
-                    variantSelect.options[variantSelect.selectedIndex];
-
-                const price = option.dataset.price;
-                const stock = Number(option.dataset.stock || 0);
-                const imageUrl = option.dataset.image;
-                const cartVariantInput = document.getElementById("cart-variant-id");
+    });
 
 
-                if (displayPrice && price) {
-                    displayPrice.textContent = formatNaira(price);
-                }
+    // VARIANTS
+    if (variantSelect) {
+        variantSelect.addEventListener("change", () => {
+            const option =
+                variantSelect.options[variantSelect.selectedIndex];
 
-                if (stockDisplay) {
-                    if (stock > 0) {
-                        stockDisplay.innerHTML = `
+            const price = option.dataset.price;
+            const hasOwnPrice = option.dataset.ownPrice === "true";
+            const stock = Number(option.dataset.stock || 0);
+            const imageUrl = option.dataset.image;
+
+            if (displayPrice && price) {
+                displayPrice.textContent = formatNaira(price);
+            }
+
+            /*
+                A variant with its own price is not currently using the
+                main product sale price, so hide the original-price slash
+                and product discount percentage.
+            */
+            if (originalPrice) {
+                originalPrice.classList.toggle("hidden", hasOwnPrice);
+            }
+
+            if (discountBadge) {
+                discountBadge.classList.toggle("hidden", hasOwnPrice);
+            }
+
+            if (stockDisplay) {
+                if (stock > 0) {
+                    stockDisplay.innerHTML = `
                         <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
-                        <span class="text-green-600">In stock</span>
+                        <span class="text-green-600">
+                            In stock — ${stock} available
+                        </span>
                     `;
-                    } else {
-                        stockDisplay.innerHTML = `
+                } else {
+                    stockDisplay.innerHTML = `
                         <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                        <span class="text-red-600">Out of stock</span>
+                        <span class="text-red-600">
+                            Out of stock
+                        </span>
                     `;
-                    }
                 }
-
-                if (mainImage && imageUrl) {
-                    mainImage.src = imageUrl;
-                }
-
-                if (cartVariantInput) {
-                    cartVariantInput.value = variantSelect.value;
-                }
-
-                if (buyNowVariant) {
-                    buyNowVariant.value = variantSelect.value;
-                }
-            });
-        }
-
-        const updateBuyNowQuantity = () => {
-            if (quantityInput && buyNowQuantity) {
-                buyNowQuantity.value = quantityInput.value;
             }
-        };
 
-        if (decreaseButton && quantityInput) {
-            decreaseButton.addEventListener("click", () => {
-                const currentValue = Number(quantityInput.value || 1);
+            if (mainImage && imageUrl) {
+                mainImage.src = imageUrl;
+            }
 
-                quantityInput.value = Math.max(1, currentValue - 1);
-                updateBuyNowQuantity();
-            });
+            if (cartVariantInput) {
+                cartVariantInput.value = variantSelect.value;
+            }
+
+            if (buyNowVariantInput) {
+                buyNowVariantInput.value = variantSelect.value;
+            }
+
+            if (addToCartButton) {
+                addToCartButton.disabled = stock <= 0;
+            }
+
+            if (buyNowButton) {
+                buyNowButton.disabled = stock <= 0;
+            }
+
+            if (cartButtonText) {
+                cartButtonText.textContent =
+                    stock > 0 ? "Add to Cart" : "Out of Stock";
+            }
+        });
+    }
+
+
+    // QUANTITY
+    const syncQuantity = () => {
+        if (!quantityInput) {
+            return;
         }
 
-        if (increaseButton && quantityInput) {
-            increaseButton.addEventListener("click", () => {
-                const currentValue = Number(quantityInput.value || 1);
+        const quantity = Math.max(
+            1,
+            Number(quantityInput.value || 1)
+        );
 
-                quantityInput.value = currentValue + 1;
-                updateBuyNowQuantity();
-            });
+        quantityInput.value = quantity;
+
+        if (buyNowQuantity) {
+            buyNowQuantity.value = quantity;
         }
+    };
 
-        if (quantityInput) {
-            quantityInput.addEventListener("input", () => {
-                if (Number(quantityInput.value) < 1) {
-                    quantityInput.value = 1;
-                }
 
-                updateBuyNowQuantity();
+    if (decreaseButton && quantityInput) {
+        decreaseButton.addEventListener("click", () => {
+            quantityInput.value =
+                Math.max(1, Number(quantityInput.value || 1) - 1);
+
+            syncQuantity();
+        });
+    }
+
+
+    if (increaseButton && quantityInput) {
+        increaseButton.addEventListener("click", () => {
+            quantityInput.value =
+                Number(quantityInput.value || 1) + 1;
+
+            syncQuantity();
+        });
+    }
+
+
+    if (quantityInput) {
+        quantityInput.addEventListener("input", syncQuantity);
+    }
+
+
+    // TABS
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const selectedTab = button.dataset.tab;
+
+            tabButtons.forEach((item) => {
+                item.classList.remove("active");
+                item.classList.add("text-gray-600");
             });
-        }
 
-        tabButtons.forEach((button) => {
-            button.addEventListener("click", () => {
-                const selectedTab = button.dataset.tab;
+            button.classList.add("active");
+            button.classList.remove("text-gray-600");
 
-                tabButtons.forEach((item) => {
-                    item.classList.remove("active");
-                    item.classList.add("text-gray-700");
-                });
-
-                button.classList.add("active");
-                button.classList.remove("text-gray-700");
-
-                tabPanels.forEach((panel) => {
-                    panel.classList.toggle(
-                        "hidden",
-                        panel.id !== `tab-${selectedTab}`
-                    );
-                });
+            tabPanels.forEach((panel) => {
+                panel.classList.toggle(
+                    "hidden",
+                    panel.id !== `tab-${selectedTab}`
+                );
             });
         });
+    });
 
-        if (openPreviewButton && previewModal && mainImage) {
-            openPreviewButton.addEventListener("click", () => {
-                previewModalImage.src = mainImage.src;
-                previewModal.classList.remove("hidden");
-                previewModal.classList.add("flex");
-                document.body.style.overflow = "hidden";
-            });
+
+    // IMAGE PREVIEW
+    if (openPreview && previewModal && previewImage && mainImage) {
+        openPreview.addEventListener("click", () => {
+            previewImage.src = mainImage.src;
+            previewModal.classList.remove("hidden");
+            previewModal.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        });
+    }
+
+
+    const closeImagePreview = () => {
+        if (!previewModal) {
+            return;
         }
 
-        const closeImagePreview = () => {
-            if (!previewModal) {
-                return;
-            }
+        previewModal.classList.add("hidden");
+        previewModal.classList.remove("flex");
+        document.body.style.overflow = "";
+    };
 
-            previewModal.classList.add("hidden");
-            previewModal.classList.remove("flex");
-            document.body.style.overflow = "";
-        };
 
-        if (closePreviewButton) {
-            closePreviewButton.addEventListener(
-                "click",
-                closeImagePreview
-            );
-        }
+    if (closePreview) {
+        closePreview.addEventListener("click", closeImagePreview);
+    }
 
-        if (previewModal) {
-            previewModal.addEventListener("click", (event) => {
-                if (event.target === previewModal) {
-                    closeImagePreview();
-                }
-            });
-        }
 
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
+    if (previewModal) {
+        previewModal.addEventListener("click", (event) => {
+            if (event.target === previewModal) {
                 closeImagePreview();
             }
         });
+    }
 
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeImagePreview();
+        }
     });
+});
 </script>
 {% endblock %}

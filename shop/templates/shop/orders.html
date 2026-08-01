@@ -1,18 +1,1149 @@
-{% extends 'shop/base.html' %}
-{% block title %}My Orders • Lily Beauty Bar{% endblock %}
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+    My Orders | Lily Beauty Bar
+{% endblock %}
+
 
 {% block content %}
-<section class="max-w-4xl mx-auto px-4 py-10">
-  <h2 class="text-2xl font-semibold mb-6">My Orders</h2>
 
-  {% for payment in payments %}
-    <div class="border p-4 rounded-lg mb-4 shadow">
-      <p class="font-semibold">{{ payment.product.name }}</p>
-      <p>₦{{ payment.amount }}</p>
-      <p class="text-sm text-gray-500">{{ payment.created_at }}</p>
+<!-- PAGE HEADER -->
+<section
+    class="border-b border-pink-100
+           bg-gradient-to-r
+           from-white via-pink-50 to-white"
+>
+    <div
+        class="mx-auto max-w-7xl
+               px-4 py-8
+               sm:px-6
+               lg:px-8"
+    >
+
+        <div class="text-sm text-gray-500">
+
+            <a
+                href="{% url 'home' %}"
+                class="transition hover:text-pink-600"
+            >
+                Home
+            </a>
+
+            <span class="mx-2">›</span>
+
+            <span>My Account</span>
+
+            <span class="mx-2">›</span>
+
+            <span class="font-semibold text-pink-600">
+                Orders
+            </span>
+
+        </div>
+
+
+        <div
+            class="mt-4 flex items-end
+                   justify-between gap-5"
+        >
+
+            <div>
+
+                <h1
+                    class="font-display
+                           text-3xl font-bold
+                           text-gray-950
+                           sm:text-4xl"
+                >
+                    My Orders
+                </h1>
+
+                <p class="mt-2 text-sm text-gray-600 sm:text-base">
+                    View and manage your Lily Beauty Bar orders.
+                </p>
+
+            </div>
+
+
+            <div
+                class="hidden rounded-2xl
+                       bg-pink-100 p-3
+                       text-pink-600
+                       sm:block"
+            >
+                <svg
+                    class="h-9 w-9"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M6 7h12l1 14H5L6 7Z"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M9 9V5a3 3 0 0 1 6 0v4"
+                    />
+                </svg>
+            </div>
+
+        </div>
+
     </div>
-  {% empty %}
-    <p>No orders yet.</p>
-  {% endfor %}
 </section>
+
+
+<!-- MAIN CONTENT -->
+<section
+    class="mx-auto max-w-7xl
+           px-4 py-8
+           sm:px-6
+           lg:px-8"
+>
+
+    <!-- MOBILE ACCOUNT BUTTON -->
+    <div
+        class="mb-6 flex items-center
+               justify-between lg:hidden"
+    >
+
+        <button
+            id="open-account-menu"
+            type="button"
+            class="inline-flex items-center gap-2
+                   rounded-xl
+                   border border-gray-200
+                   bg-white
+                   px-4 py-2.5
+                   text-sm font-semibold
+                   text-gray-800
+                   shadow-sm
+                   transition
+                   hover:border-pink-300
+                   hover:text-pink-600"
+            aria-controls="mobile-account-menu"
+            aria-expanded="false"
+        >
+            <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.8"
+                    d="M4 6h16M4 12h16M4 18h16"
+                />
+            </svg>
+
+            Dashboard
+        </button>
+
+
+        <span class="text-sm font-semibold text-pink-600">
+            Orders
+        </span>
+
+    </div>
+
+
+    <!-- MOBILE OVERLAY -->
+    <div
+        id="account-menu-overlay"
+        class="fixed inset-0 z-40
+               hidden bg-black/40
+               lg:hidden"
+    ></div>
+
+
+    <!-- MOBILE DRAWER -->
+    <aside
+        id="mobile-account-menu"
+        class="fixed left-0 top-0 z-50
+               h-full w-[285px]
+               -translate-x-full
+               overflow-y-auto
+               bg-white
+               shadow-2xl
+               transition-transform
+               duration-300
+               lg:hidden"
+        aria-hidden="true"
+    >
+
+        <div
+            class="flex items-center
+                   justify-between
+                   border-b border-gray-100
+                   px-5 py-4"
+        >
+
+            <p class="font-bold text-gray-950">
+                My Account
+            </p>
+
+            <button
+                id="close-account-menu"
+                type="button"
+                class="grid h-9 w-9
+                       place-items-center
+                       rounded-full
+                       text-gray-500
+                       transition
+                       hover:bg-gray-100
+                       hover:text-pink-600"
+                aria-label="Close account menu"
+            >
+                <svg
+                    class="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M6 6l12 12M18 6 6 18"
+                    />
+                </svg>
+            </button>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+        <div class="border-b border-gray-100 p-5">
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="grid h-11 w-11
+                           shrink-0 place-items-center
+                           rounded-full
+                           bg-pink-100
+                           font-bold text-pink-600"
+                >
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <p class="truncate font-bold text-gray-950">
+                        {% if request.user.get_full_name %}
+                            {{ request.user.get_full_name }}
+                        {% else %}
+                            {{ request.user.username }}
+                        {% endif %}
+                    </p>
+
+                    <p class="truncate text-xs text-gray-500">
+                        {{ request.user.email }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MOBILE LINKS -->
+        <nav class="p-4 text-sm font-medium">
+
+            <a
+                href="{% url 'profile' %}"
+                class="flex items-center gap-3
+                       rounded-xl
+                       px-4 py-3
+                       text-gray-600
+                       transition
+                       hover:text-pink-600"
+            >
+                <svg
+                    class="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <circle
+                        cx="12"
+                        cy="8"
+                        r="4"
+                        stroke-width="1.7"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.7"
+                        d="M4 21a8 8 0 0 1 16 0"
+                    />
+                </svg>
+
+                <span>Profile</span>
+            </a>
+
+
+            <!-- ACTIVE PAGE -->
+            <a
+                href="{% url 'orders' %}"
+                class="flex items-center gap-3
+                       rounded-xl
+                       px-4 py-3
+                       font-semibold
+                       text-pink-600"
+            >
+                <svg
+                    class="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.7"
+                        d="M6 7h12l1 14H5L6 7Z"
+                    />
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.7"
+                        d="M9 9V5a3 3 0 0 1 6 0v4"
+                    />
+                </svg>
+
+                <span>Orders</span>
+            </a>
+
+
+            <a
+                href="{% url 'logout' %}"
+                class="mt-2 flex items-center gap-3
+                       border-t border-gray-100
+                       px-4 py-4
+                       text-gray-600
+                       transition
+                       hover:text-pink-600"
+            >
+                <svg
+                    class="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.7"
+                        d="M10 17l5-5-5-5M15 12H3M13 3h8v18h-8"
+                    />
+                </svg>
+
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+
+        <!-- MOBILE HELP -->
+        <div class="m-4 rounded-xl bg-pink-50 p-4">
+
+            <p class="font-semibold text-pink-600">
+                Need help?
+            </p>
+
+            <p class="mt-1 text-xs text-gray-600">
+                Contact us for assistance with your order.
+            </p>
+
+            <a
+                href="{% url 'contact' %}"
+                class="mt-3 inline-block
+                       text-xs font-bold
+                       text-pink-600
+                       hover:underline"
+            >
+                Contact support →
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <div
+        class="grid gap-8
+               lg:grid-cols-[250px_1fr]"
+    >
+
+        <!-- DESKTOP SIDEBAR -->
+        <aside
+            class="hidden h-fit
+                   overflow-hidden
+                   rounded-2xl
+                   border border-gray-200
+                   bg-white
+                   shadow-sm
+                   lg:block"
+        >
+
+            <!-- CUSTOMER DETAILS -->
+            <div class="border-b border-gray-100 p-5">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="grid h-11 w-11
+                               shrink-0 place-items-center
+                               rounded-full
+                               bg-pink-100
+                               font-bold text-pink-600"
+                    >
+                        {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                    </div>
+
+
+                    <div class="min-w-0">
+
+                        <p class="truncate font-bold text-gray-950">
+                            {% if request.user.get_full_name %}
+                                {{ request.user.get_full_name }}
+                            {% else %}
+                                {{ request.user.username }}
+                            {% endif %}
+                        </p>
+
+                        <p class="truncate text-xs text-gray-500">
+                            {{ request.user.email }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DESKTOP LINKS -->
+            <nav class="p-3 text-sm font-medium">
+
+                <a
+                    href="{% url 'profile' %}"
+                    class="flex items-center gap-3
+                           rounded-xl
+                           px-4 py-3
+                           text-gray-600
+                           transition
+                           hover:text-pink-600"
+                >
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                            stroke-width="1.7"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.7"
+                            d="M4 21a8 8 0 0 1 16 0"
+                        />
+                    </svg>
+
+                    <span>Profile</span>
+                </a>
+
+
+                <!-- ACTIVE PAGE -->
+                <a
+                    href="{% url 'orders' %}"
+                    class="flex items-center gap-3
+                           rounded-xl
+                           px-4 py-3
+                           font-semibold
+                           text-pink-600"
+                >
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.7"
+                            d="M6 7h12l1 14H5L6 7Z"
+                        />
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.7"
+                            d="M9 9V5a3 3 0 0 1 6 0v4"
+                        />
+                    </svg>
+
+                    <span>Orders</span>
+                </a>
+
+
+                <a
+                    href="{% url 'logout' %}"
+                    class="mt-2 flex items-center gap-3
+                           border-t border-gray-100
+                           px-4 py-4
+                           text-gray-600
+                           transition
+                           hover:text-pink-600"
+                >
+                    <svg
+                        class="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.7"
+                            d="M10 17l5-5-5-5M15 12H3M13 3h8v18h-8"
+                        />
+                    </svg>
+
+                    <span>Logout</span>
+                </a>
+
+            </nav>
+
+
+            <!-- DESKTOP HELP -->
+            <div class="m-4 rounded-xl bg-pink-50 p-4">
+
+                <p class="font-semibold text-pink-600">
+                    Need help?
+                </p>
+
+                <p class="mt-1 text-xs text-gray-600">
+                    Contact us for assistance with your order.
+                </p>
+
+                <a
+                    href="{% url 'contact' %}"
+                    class="mt-3 inline-block
+                           text-xs font-bold
+                           text-pink-600
+                           hover:underline"
+                >
+                    Contact support →
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ORDERS CONTENT -->
+        <div class="min-w-0">
+
+            <!-- FILTERS -->
+            <div
+                class="overflow-x-auto
+                       border-b border-gray-200"
+            >
+                <div class="flex min-w-max gap-2">
+
+                    <a
+                        href="?status=all"
+                        class="border-b-2
+                               px-3 py-3
+                               text-sm font-semibold
+                               {% if selected_status == 'all' %}
+                                   border-pink-500 text-pink-600
+                               {% else %}
+                                   border-transparent text-gray-500
+                                   hover:text-pink-600
+                               {% endif %}"
+                    >
+                        All ({{ counts.all }})
+                    </a>
+
+
+                    <a
+                        href="?status=pending"
+                        class="border-b-2
+                               px-3 py-3
+                               text-sm font-semibold
+                               {% if selected_status == 'pending' %}
+                                   border-pink-500 text-pink-600
+                               {% else %}
+                                   border-transparent text-gray-500
+                                   hover:text-pink-600
+                               {% endif %}"
+                    >
+                        Pending ({{ counts.pending }})
+                    </a>
+
+
+                    <a
+                        href="?status=paid"
+                        class="border-b-2
+                               px-3 py-3
+                               text-sm font-semibold
+                               {% if selected_status == 'paid' %}
+                                   border-pink-500 text-pink-600
+                               {% else %}
+                                   border-transparent text-gray-500
+                                   hover:text-pink-600
+                               {% endif %}"
+                    >
+                        Completed ({{ counts.paid }})
+                    </a>
+
+
+                    <a
+                        href="?status=failed"
+                        class="border-b-2
+                               px-3 py-3
+                               text-sm font-semibold
+                               {% if selected_status == 'failed' %}
+                                   border-pink-500 text-pink-600
+                               {% else %}
+                                   border-transparent text-gray-500
+                                   hover:text-pink-600
+                               {% endif %}"
+                    >
+                        Cancelled ({{ counts.failed }})
+                    </a>
+
+                </div>
+            </div>
+
+
+            <!-- ORDER CARDS -->
+            <div class="mt-5 space-y-4">
+
+                {% for order in orders %}
+
+                    <article
+                        class="rounded-2xl
+                               border border-gray-200
+                               bg-white
+                               shadow-sm
+                               transition
+                               hover:shadow-md"
+                    >
+
+                        <div
+                            class="grid gap-5 p-4
+                                   md:grid-cols-[115px_1fr_135px_135px]
+                                   md:items-center"
+                        >
+
+                            <!-- ORDER META -->
+                            <div>
+
+                                <a
+                                    href="{% url 'order_detail' order.id %}"
+                                    class="font-bold text-pink-600
+                                           hover:underline"
+                                >
+                                    #LBB-{{ order.id|stringformat:"04d" }}
+                                </a>
+
+                                <p class="mt-1 text-xs text-gray-500">
+                                    {{ order.created_at|date:"M d, Y" }}
+                                </p>
+
+                                <p class="text-xs text-gray-400">
+                                    {{ order.created_at|time:"h:i A" }}
+                                </p>
+
+
+                                {% if order.status == "paid" %}
+
+                                    <span
+                                        class="mt-2 inline-flex
+                                               rounded-full
+                                               bg-green-100
+                                               px-2.5 py-1
+                                               text-xs font-semibold
+                                               text-green-700"
+                                    >
+                                        Completed
+                                    </span>
+
+                                {% elif order.status == "pending" %}
+
+                                    <span
+                                        class="mt-2 inline-flex
+                                               rounded-full
+                                               bg-amber-100
+                                               px-2.5 py-1
+                                               text-xs font-semibold
+                                               text-amber-700"
+                                    >
+                                        Pending
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="mt-2 inline-flex
+                                               rounded-full
+                                               bg-gray-100
+                                               px-2.5 py-1
+                                               text-xs font-semibold
+                                               text-gray-600"
+                                    >
+                                        Cancelled
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- PRODUCTS -->
+                            <div class="space-y-3">
+
+                                {% for item in order.items.all|slice:":2" %}
+
+                                    <div class="flex items-center gap-3">
+
+                                        <div
+                                            class="grid h-16 w-16
+                                                   shrink-0 place-items-center
+                                                   overflow-hidden
+                                                   rounded-xl bg-gray-50"
+                                        >
+
+                                            {% if item.product.image %}
+
+                                                <img
+                                                    src="{{ item.product.image.url }}"
+                                                    alt="{{ item.product.name }}"
+                                                    class="h-full w-full
+                                                           object-contain p-1.5"
+                                                >
+
+                                            {% else %}
+
+                                                <span class="text-xs text-gray-400">
+                                                    No image
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="min-w-0">
+
+                                            <p
+                                                class="truncate
+                                                       text-sm font-semibold
+                                                       text-gray-950"
+                                            >
+                                                {{ item.product.name }}
+                                            </p>
+
+
+                                            {% if item.variant %}
+
+                                                <p class="truncate text-xs text-gray-500">
+                                                    {{ item.variant }}
+                                                </p>
+
+                                            {% endif %}
+
+
+                                            <p class="text-xs text-gray-500">
+                                                Qty: {{ item.quantity }}
+                                            </p>
+
+                                            <p class="text-sm font-semibold">
+                                                ₦{{ item.unit_price|floatformat:2 }}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+
+                                {% if order.items.count > 2 %}
+
+                                    <p class="text-xs text-gray-500">
+                                        + {{ order.items.count|add:"-2" }}
+                                        more item{{ order.items.count|add:"-2"|pluralize }}
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- TOTAL -->
+                            <div>
+
+                                <p class="text-xs uppercase text-gray-500">
+                                    Total
+                                </p>
+
+                                <p
+                                    class="mt-1 text-lg font-bold
+                                           text-pink-600"
+                                >
+                                    ₦{{ order.display_total|floatformat:2 }}
+                                </p>
+
+                                <p class="mt-3 text-xs uppercase text-gray-500">
+                                    Payment
+                                </p>
+
+                                <p class="mt-1 text-sm font-semibold">
+                                    Paystack
+                                </p>
+
+                            </div>
+
+
+                            <!-- ACTIONS -->
+                            <div class="flex flex-col gap-2">
+
+                                <a
+                                    href="{% url 'order_detail' order.id %}"
+                                    class="rounded-lg
+                                           border border-pink-500
+                                           px-3 py-2.5
+                                           text-center
+                                           text-sm font-bold
+                                           text-pink-600
+                                           transition
+                                           hover:bg-pink-500
+                                           hover:text-white"
+                                >
+                                    View Details
+                                </a>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'buy_again' order.id %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="w-full rounded-lg
+                                               px-3 py-2
+                                               text-sm font-bold
+                                               text-pink-600
+                                               transition
+                                               hover:bg-pink-50"
+                                    >
+                                        Buy Again ↻
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                {% empty %}
+
+                    <div
+                        class="rounded-2xl
+                               border border-dashed
+                               border-pink-200
+                               bg-pink-50
+                               px-6 py-14
+                               text-center"
+                    >
+
+                        <div
+                            class="mx-auto grid
+                                   h-14 w-14
+                                   place-items-center
+                                   rounded-full
+                                   bg-white
+                                   text-2xl
+                                   shadow-sm"
+                        >
+                            🛍
+                        </div>
+
+                        <h2 class="mt-4 text-xl font-bold">
+                            No orders found
+                        </h2>
+
+                        <p
+                            class="mx-auto mt-2
+                                   max-w-md
+                                   text-sm text-gray-600"
+                        >
+                            You do not have any orders in this section yet.
+                        </p>
+
+                        <a
+                            href="{% url 'products' %}"
+                            class="mt-5 inline-flex
+                                   rounded-lg
+                                   bg-pink-500
+                                   px-5 py-2.5
+                                   text-sm font-bold
+                                   text-white
+                                   transition
+                                   hover:bg-pink-600"
+                        >
+                            Start Shopping
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- PAGINATION -->
+            {% if page_obj.paginator.num_pages > 1 %}
+
+                <nav
+                    class="mt-8 flex flex-col gap-4
+                           border-t border-gray-100
+                           pt-6
+                           sm:flex-row
+                           sm:items-center
+                           sm:justify-between"
+                    aria-label="Orders pagination"
+                >
+
+                    <p class="text-sm text-gray-500">
+                        Showing
+                        {{ page_obj.start_index }}
+                        to
+                        {{ page_obj.end_index }}
+                        of
+                        {{ page_obj.paginator.count }}
+                        orders
+                    </p>
+
+
+                    <div class="flex flex-wrap items-center gap-2">
+
+                        {% if page_obj.has_previous %}
+
+                            <a
+                                href="?status={{ selected_status }}&page={{ page_obj.previous_page_number }}"
+                                class="inline-flex h-10
+                                       items-center justify-center
+                                       rounded-lg
+                                       border border-gray-200
+                                       bg-white
+                                       px-3
+                                       text-sm font-semibold
+                                       text-gray-700
+                                       transition
+                                       hover:border-pink-300
+                                       hover:text-pink-600"
+                            >
+                                Previous
+                            </a>
+
+                        {% endif %}
+
+
+                        {% for number in page_obj.paginator.page_range %}
+
+                            {% if number == page_obj.number %}
+
+                                <span
+                                    class="inline-flex h-10 w-10
+                                           items-center justify-center
+                                           rounded-full
+                                           bg-pink-500
+                                           text-sm font-bold
+                                           text-white"
+                                >
+                                    {{ number }}
+                                </span>
+
+                            {% elif number >= page_obj.number|add:"-2" and number <= page_obj.number|add:"2" %}
+
+                                <a
+                                    href="?status={{ selected_status }}&page={{ number }}"
+                                    class="inline-flex h-10 w-10
+                                           items-center justify-center
+                                           rounded-full
+                                           border border-gray-200
+                                           bg-white
+                                           text-sm font-semibold
+                                           text-gray-700
+                                           transition
+                                           hover:border-pink-300
+                                           hover:text-pink-600"
+                                >
+                                    {{ number }}
+                                </a>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        {% if page_obj.has_next %}
+
+                            <a
+                                href="?status={{ selected_status }}&page={{ page_obj.next_page_number }}"
+                                class="inline-flex h-10
+                                       items-center justify-center
+                                       rounded-lg
+                                       border border-gray-200
+                                       bg-white
+                                       px-3
+                                       text-sm font-semibold
+                                       text-gray-700
+                                       transition
+                                       hover:border-pink-300
+                                       hover:text-pink-600"
+                            >
+                                Next
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </nav>
+
+            {% elif orders %}
+
+                <p class="mt-6 text-center text-sm text-gray-500">
+                    Showing {{ orders|length }}
+                    order{{ orders|length|pluralize }}
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MOBILE DRAWER SCRIPT -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const openButton = document.getElementById(
+            "open-account-menu"
+        );
+
+        const closeButton = document.getElementById(
+            "close-account-menu"
+        );
+
+        const menu = document.getElementById(
+            "mobile-account-menu"
+        );
+
+        const overlay = document.getElementById(
+            "account-menu-overlay"
+        );
+
+        if (!openButton || !closeButton || !menu || !overlay) {
+            return;
+        }
+
+        function openMenu() {
+            menu.classList.remove("-translate-x-full");
+            overlay.classList.remove("hidden");
+
+            menu.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+            openButton.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+            document.body.classList.add(
+                "overflow-hidden"
+            );
+        }
+
+        function closeMenu() {
+            menu.classList.add("-translate-x-full");
+            overlay.classList.add("hidden");
+
+            menu.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            openButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            document.body.classList.remove(
+                "overflow-hidden"
+            );
+        }
+
+        openButton.addEventListener(
+            "click",
+            openMenu
+        );
+
+        closeButton.addEventListener(
+            "click",
+            closeMenu
+        );
+
+        overlay.addEventListener(
+            "click",
+            closeMenu
+        );
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+                if (event.key === "Escape") {
+                    closeMenu();
+                }
+            }
+        );
+    });
+</script>
+
 {% endblock %}

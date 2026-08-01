@@ -559,7 +559,7 @@ def remove_from_cart(
 
     messages.success(
         request,
-        "Item removed."
+        "Item removed!"
     )
 
     return redirect("cart")
@@ -601,13 +601,232 @@ def update_cart(
 
 @login_required
 def orders(request):
-    payments = Payment.objects.filter(
-        verified=True,
-        email=request.user.email
-    ).order_by('-created_at')
+    
+    selected_status = request.GET.get("status", "all").lower()
 
-    return render(request, 'shop/orders.html', {'payments': payments})
+    allowed_statuses = {
+        "all",
+        "pending",
+        "paid",
+        "failed",
+    }
 
+    if selected_status not in allowed_statuses:
+        selected_status = "all"
+
+    customer_orders = (
+        Order.objects
+        .filter(
+            Q(user=request.user)
+            | Q(email__iexact=request.user.email)
+        )
+        .prefetch_related(
+            "items__product",
+            "items__variant",
+            "payments",
+        )
+        .distinct()
+        .order_by("-created_at")
+    )
+
+    counts = {
+        "all": customer_orders.count(),
+        "pending": customer_orders.filter(
+            status="pending"
+        ).count(),
+        "paid": customer_orders.filter(
+            status="paid"
+        ).count(),
+        "failed": customer_orders.filter(
+            status="failed"
+        ).count(),
+    }
+
+    if selected_status != "all":
+        customer_orders = customer_orders.filter(
+            status=selected_status
+        )
+
+    paginator = Paginator(
+        customer_orders,
+        7,
+    )
+
+    page_obj = paginator.get_page(
+        request.GET.get("page")
+    )
+
+    orders_list = list(page_obj.object_list)
+
+    for order in orders_list:
+        payments = list(order.payments.all())
+
+        order.latest_payment = (
+            max(
+                payments,
+                key=lambda payment: payment.created_at,
+            )
+            if payments
+            else None
+        )
+
+        order.display_total = (
+            order.amount
+            if order.amount is not None
+            else order.get_total()
+        )
+
+    page_obj.object_list = orders_list
+
+    context = {
+        "orders": orders_list,
+        "page_obj": page_obj,
+        "selected_status": selected_status,
+        "counts": counts,
+    }
+
+    return render(
+        request,
+        "shop/orders.html",
+        context,
+    )
+
+
+@login_required
+def order_detail(request, order_id):
+    """
+    Show one order to the customer who owns it.
+    """
+
+    order = get_object_or_404(
+        Order.objects
+        .prefetch_related(
+            "items__product",
+            "items__variant",
+            "payments",
+        )
+        .filter(
+            Q(user=request.user)
+            | Q(email__iexact=request.user.email)
+        ),
+        id=order_id,
+    )
+
+    payments = list(order.payments.all())
+
+    latest_payment = (
+        max(
+            payments,
+            key=lambda payment: payment.created_at,
+        )
+        if payments
+        else None
+    )
+
+    for item in order.items.all():
+        item.line_total = (
+            item.unit_price * item.quantity
+        )
+
+    order_total = (
+        order.amount
+        if order.amount is not None
+        else order.get_total()
+    )
+
+    context = {
+        "order": order,
+        "latest_payment": latest_payment,
+        "order_total": order_total,
+    }
+
+    return render(
+        request,
+        "shop/order_detail.html",
+        context,
+    )
+
+
+@login_required
+def buy_again(request, order_id):
+    """
+    Add all products from an old order back into the cart.
+    """
+
+    if request.method != "POST":
+        return redirect(
+            "order_detail",
+            order_id=order_id,
+        )
+
+    order = get_object_or_404(
+        Order.objects
+        .prefetch_related(
+            "items__product",
+            "items__variant",
+        )
+        .filter(
+            Q(user=request.user)
+            | Q(email__iexact=request.user.email)
+        ),
+        id=order_id,
+    )
+
+    cart = request.session.get("cart", {})
+
+    added_items = 0
+
+    for item in order.items.all():
+        product = item.product
+        variant = item.variant
+
+        if not product:
+            continue
+
+        if variant:
+            cart_key = (
+                f"{product.id}-{variant.id}"
+            )
+        else:
+            cart_key = str(product.id)
+
+        if cart_key in cart:
+            cart[cart_key]["quantity"] += (
+                item.quantity
+            )
+        else:
+            cart[cart_key] = {
+                "product_id": product.id,
+                "variant_id": (
+                    variant.id
+                    if variant
+                    else None
+                ),
+                "quantity": item.quantity,
+            }
+
+        added_items += 1
+
+    request.session["cart"] = cart
+    request.session.modified = True
+
+    if added_items > 0:
+        messages.success(
+            request,
+            "The products from this order were added to your cart!",
+        )
+
+        return redirect("cart")
+
+    messages.error(
+        request,
+        "No products from this order could be added to your cart!",
+    )
+
+    return redirect(
+        "order_detail",
+        order_id=order.id,
+    )
 # -------------------------------
 # Payment Method
 # -------------------------------
@@ -828,24 +1047,24 @@ def success(request):
     reference = request.GET.get('reference')
 
     if not reference:
-        messages.error(request, "No payment reference provided.")
+        messages.error(request, "No payment reference provided!")
         return redirect('home')
 
     try:
         response = Transaction.verify(reference=reference)
 
         if not response:
-            messages.error(request, "Empty response from Paystack.")
+            messages.error(request, "Empty response from Paystack!")
             return redirect('home')
 
         if not response.get('status'):
-            messages.error(request, "Payment verification failed.")
+            messages.error(request, "Payment verification failed!")
             return redirect('home')
 
         data = response.get('data', {})
 
         if data.get('status') != 'success':
-            messages.error(request, "Payment not successful.")
+            messages.error(request, "Payment not successful!")
             return redirect('home')
 
         # SAFE metadata handling
@@ -853,13 +1072,13 @@ def success(request):
         order_id = metadata.get("order_id")
 
         if not order_id:
-            messages.error(request, "Order ID missing from payment.")
+            messages.error(request, "Order ID missing from payment!")
             return redirect('home')
 
         try:
             order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
-            messages.error(request, "Order not found.")
+            messages.error(request, "Order not found!")
             return redirect('home')
 
         # SAFE amount conversion
@@ -870,7 +1089,7 @@ def success(request):
         if amount != expected_amount:
             messages.error(
                 request,
-                "The payment amount does not match the order total."
+                "The payment amount does not match the order total!"
             )
             return redirect("home")
         
@@ -885,7 +1104,7 @@ def success(request):
         ):
             messages.error(
                 request,
-                "The payment email does not match this order."
+                "The payment email does not match this order!"
             )
             return redirect("home")
 

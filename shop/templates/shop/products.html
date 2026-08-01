@@ -1,7 +1,8 @@
 {% extends "shop/base.html" %}
+{% load humanize %}
 
 {% block title %}
-Shop All Products | Lily Beauty Bar
+Shop | Lily Beauty Bar
 {% endblock %}
 
 
@@ -11,42 +12,26 @@ Shop All Products | Lily Beauty Bar
         display: none !important;
     }
 
-    .shop-hero {
-        background:
-            radial-gradient(
-                circle at 78% 30%,
-                rgba(236, 43, 134, 0.18),
-                transparent 23%
-            ),
-            linear-gradient(
-                105deg,
-                #fff4f8 0%,
-                #ffe1ec 52%,
-                #fff7fa 100%
-            );
-    }
-
-    .filter-card {
-        border: 1px solid #f2edf0;
-        box-shadow: 0 12px 34px rgba(31, 20, 27, 0.055);
-    }
-
     .product-card {
-        border: 1px solid #f0ecef;
-        box-shadow: 0 8px 26px rgba(29, 18, 25, 0.06);
+        border: 1px solid #f1edf0;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 18px 42px rgba(29, 18, 25, 0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 14px 35px rgba(20, 12, 17, 0.1);
     }
 
     .product-image {
         aspect-ratio: 1 / 1;
     }
 
-    input[type="number"]::-webkit-inner-spin-button {
-        opacity: 1;
+    .hide-scrollbar {
+        scrollbar-width: none;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
     }
 </style>
 {% endblock %}
@@ -54,31 +39,27 @@ Shop All Products | Lily Beauty Bar
 
 {% block content %}
 
-<!-- Shop hero -->
-<section class="shop-hero overflow-hidden border-b border-pink-100">
+<main
+    class="bg-white"
+    x-data="{
+        filtersOpen: false,
+        gridView: true
+    }"
+>
 
-    <div
-        class="mx-auto grid max-w-7xl items-center gap-8 px-6 py-12
-               md:grid-cols-2 lg:px-8 lg:py-16"
-    >
+    <!-- PAGE HEADING -->
+    <section class="border-b border-pink-100 bg-pink-50">
+        <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 
-        <div>
-            <p
-                class="mb-3 text-sm font-semibold uppercase
-                       tracking-[0.22em] text-pink-600"
-            >
-                Premium beauty collection
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-pink-600">
+                Lily Beauty Bar
             </p>
 
-            <h1
-                class="font-display text-4xl font-bold text-gray-950
-                       sm:text-5xl"
-            >
+            <h1 class="mt-2 font-display text-4xl font-bold text-gray-950">
                 Shop All Products
             </h1>
 
-            <div class="mt-4 flex items-center gap-2 text-sm text-gray-600">
-
+            <div class="mt-3 flex items-center gap-2 text-sm text-gray-500">
                 <a
                     href="{% url 'home' %}"
                     class="transition hover:text-pink-600"
@@ -86,75 +67,26 @@ Shop All Products | Lily Beauty Bar
                     Home
                 </a>
 
-                <i
-                    class="fa-solid fa-chevron-right
-                           text-[10px] text-gray-400"
-                ></i>
+                <i class="fa-solid fa-chevron-right text-[9px]"></i>
 
                 <span>Shop</span>
-
             </div>
+
         </div>
-
-        <div
-            class="hidden justify-end md:flex"
-            aria-hidden="true"
-        >
-            <div class="relative h-48 w-full max-w-md">
-
-                <div
-                    class="absolute bottom-2 right-8 h-36 w-36
-                           rounded-full bg-pink-200/70 blur-sm"
-                ></div>
-
-                <i
-                    class="fa-solid fa-pump-soap absolute bottom-3
-                           right-44 rotate-[-8deg] text-[110px]
-                           text-pink-500 drop-shadow-xl"
-                ></i>
-
-                <i
-                    class="fa-solid fa-wand-magic-sparkles
-                           absolute bottom-12 right-8 rotate-12
-                           text-[92px] text-rose-400 drop-shadow-xl"
-                ></i>
-
-            </div>
-        </div>
-
-    </div>
-</section>
+    </section>
 
 
-<!-- Products section -->
-<section
-    class="bg-white py-12 lg:py-16"
-    x-data="{
-        filtersOpen: false,
-        gridView: true
-    }"
->
+    <!-- MOBILE CATEGORIES -->
+    <section
+        id="categories"
+        class="border-b border-gray-100 py-5 lg:hidden"
+    >
+        <div class="mx-auto max-w-7xl px-4 sm:px-6">
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-        <!-- MOBILE CATEGORIES -->
-        <section
-            id="categories"
-            class="mb-5 lg:hidden"
-        >
             <div class="mb-3 flex items-center justify-between">
-                <div>
-                    <p
-                        class="text-[11px] font-semibold uppercase
-                       tracking-[0.18em] text-pink-600"
-                    >
-                        Browse
-                    </p>
-
-                    <h2 class="text-lg font-bold text-gray-950">
-                        Shop by Category
-                    </h2>
-                </div>
+                <h2 class="font-bold text-gray-950">
+                    Categories
+                </h2>
 
                 {% if selected_category_id or selected_subcategory_id %}
                     <a
@@ -166,476 +98,111 @@ Shop All Products | Lily Beauty Bar
                 {% endif %}
             </div>
 
-            <div
-                class="-mx-4 flex gap-3 overflow-x-auto
-                    px-4 pb-3 scrollbar-hide"
-            >
-                <!-- All products -->
+            <div class="hide-scrollbar flex gap-3 overflow-x-auto pb-2">
+
                 <a
                     href="{% url 'products' %}#categories"
-                    class="flex min-w-[105px] shrink-0 flex-col
-                        items-center justify-center rounded-2xl
-                        border px-4 py-4 text-center transition
+                    class="shrink-0 rounded-full border px-4 py-2
+                    text-sm font-semibold transition
                     {% if not selected_category_id and not selected_subcategory_id %}
-                     border-pink-500 bg-pink-50 text-pink-600
+                        border-pink-600 bg-pink-600 text-white
                     {% else %}
-                     border-gray-200 bg-white text-gray-700
-                     hover:border-pink-300 hover:text-pink-600
+                        border-gray-200 bg-white text-gray-700
                     {% endif %}"
                 >
-                    <span
-                        class="mb-2 grid h-10 w-10 place-items-center
-                            rounded-full bg-pink-100 text-pink-600"
-                    >
-                        <i class="fa-solid fa-border-all"></i>
-                    </span>
-
-                    <span class="text-xs font-bold">
                     All
-                    </span>
                 </a>
 
-        {% for category in categories %}
-            <a
-                href="{% url 'products' %}?category={{ category.id }}#categories"
-                class="flex min-w-[105px] shrink-0 flex-col
-                       items-center justify-center rounded-2xl
-                       border px-4 py-4 text-center transition
-                {% if selected_category_id == category.id and not selected_subcategory_id %}
-                    border-pink-500 bg-pink-50 text-pink-600
-                {% else %}
-                    border-gray-200 bg-white text-gray-700
-                    hover:border-pink-300 hover:text-pink-600
-                {% endif %}"
-            >
-                <span
-                    class="mb-2 grid h-10 w-10 place-items-center
-                           rounded-full bg-pink-100 text-pink-600"
-                >
-                    {% if "hair" in category.name|lower %}
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                    {% elif "skin" in category.name|lower %}
-                        <i class="fa-solid fa-spa"></i>
-
-                    {% elif "makeup" in category.name|lower %}
-                        <i class="fa-solid fa-palette"></i>
-
-                    {% elif "perfume" in category.name|lower or "fragrance" in category.name|lower %}
-                        <i class="fa-solid fa-spray-can-sparkles"></i>
-
-                    {% elif "body" in category.name|lower %}
-                        <i class="fa-solid fa-heart"></i>
-
-                    {% else %}
-                        <i class="fa-solid fa-gem"></i>
-                    {% endif %}
-                </span>
-
-                <span class="line-clamp-2 text-xs font-bold">
-                    {{ category.name }}
-                </span>
-
-                <span class="mt-1 text-[10px] text-gray-400">
-                    {{ category.product_count }} items
-                </span>
-            </a>
-        {% endfor %}
-    </div>
-
-
-    <!-- Mobile subcategories -->
-    {% if selected_category_id %}
-        {% for category in categories %}
-            {% if selected_category_id == category.id %}
-
-                {% if category.subcategories.all %}
-                    <div class="mt-3 flex flex-wrap gap-2">
-
-                        <a
-                            href="{% url 'products' %}?category={{ category.id }}#categories"
-                            class="rounded-full border px-4 py-2
-                                   text-xs font-semibold transition
-                            {% if not selected_subcategory_id %}
-                                border-pink-500 bg-pink-600 text-white
-                            {% else %}
-                                border-gray-200 bg-white text-gray-600
-                            {% endif %}"
-                        >
-                            All {{ category.name }}
-                        </a>
-
-                        {% for subcategory in category.subcategories.all %}
-                            <a
-                                href="{% url 'products' %}?subcategory={{ subcategory.id }}#categories"
-                                class="rounded-full border px-4 py-2
-                                       text-xs font-semibold transition
-                                {% if selected_subcategory_id == subcategory.id %}
-                                    border-pink-500 bg-pink-600 text-white
-                                {% else %}
-                                    border-gray-200 bg-white text-gray-600
-                                    hover:border-pink-300
-                                    hover:text-pink-600
-                                {% endif %}"
-                            >
-                                {{ subcategory.name }}
-                            </a>
-                        {% endfor %}
-
-                    </div>
-                {% endif %}
-
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-</section>
-
-        <!-- MOBILE FILTER AND SEARCH ROW -->
-<div class="mb-6 flex items-stretch gap-3 lg:hidden">
-
-    <!-- Filter button -->
-    <button
-        @click="filtersOpen = !filtersOpen"
-        type="button"
-        class="flex shrink-0 items-center justify-center gap-2
-               rounded-xl border border-gray-200 bg-white
-               px-4 py-3 text-sm font-semibold shadow-sm
-               transition hover:border-pink-300
-               hover:text-pink-600"
-        :class="
-            filtersOpen
-            ? 'border-pink-500 bg-pink-50 text-pink-600'
-            : 'text-gray-800'
-        "
-    >
-        <i class="fa-solid fa-sliders text-pink-600"></i>
-
-        <span>Filter</span>
-
-        <i
-            class="fa-solid fa-chevron-down text-[10px] transition"
-            :class="filtersOpen && 'rotate-180'"
-        ></i>
-    </button>
-
-
-    <!-- Mobile search -->
-    <form
-        method="get"
-        class="relative min-w-0 flex-1"
-    >
-
-        {% if selected_category_id %}
-            <input
-                type="hidden"
-                name="category"
-                value="{{ selected_category_id }}"
-            >
-        {% endif %}
-
-        {% if selected_subcategory_id %}
-            <input
-                type="hidden"
-                name="subcategory"
-                value="{{ selected_subcategory_id }}"
-            >
-        {% endif %}
-
-        {% if min_price %}
-            <input
-                type="hidden"
-                name="min_price"
-                value="{{ min_price }}"
-            >
-        {% endif %}
-
-        {% if max_price %}
-            <input
-                type="hidden"
-                name="max_price"
-                value="{{ max_price }}"
-            >
-        {% endif %}
-
-        {% if availability %}
-            <input
-                type="hidden"
-                name="availability"
-                value="{{ availability }}"
-            >
-        {% endif %}
-
-        <input
-            type="hidden"
-            name="sort"
-            value="{{ sort }}"
-        >
-
-        <i
-            class="fa-solid fa-magnifying-glass
-                   pointer-events-none absolute left-4 top-1/2
-                   -translate-y-1/2 text-sm text-gray-400"
-        ></i>
-
-        <input
-            type="search"
-            name="q"
-            value="{{ search_query }}"
-            placeholder="Search products"
-            aria-label="Search products"
-            class="h-full min-h-[48px] w-full rounded-xl
-                   border border-gray-200 bg-white py-3
-                   pl-10 pr-11 text-sm outline-none shadow-sm
-                   transition placeholder:text-gray-400
-                   focus:border-pink-400
-                   focus:ring-2 focus:ring-pink-100"
-        >
-
-        <button
-            type="submit"
-            aria-label="Submit product search"
-            class="absolute right-1.5 top-1/2 grid h-9 w-9
-                   -translate-y-1/2 place-items-center
-                   rounded-lg bg-pink-600 text-white
-                   transition hover:bg-pink-700"
-        >
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-
-    </form>
-
-</div>
-
-
-        <div
-            class="grid gap-8
-                   lg:grid-cols-[280px_minmax(0,1fr)]"
-        >
-
-            <!-- Sidebar -->
-            <aside
-                :class="filtersOpen ? 'block' : 'hidden'"
-                class="space-y-5 lg:block"
-            >
-
-                <!-- DESKTOP SIDEBAR SEARCH -->
-<form
-    method="get"
-    class="filter-card hidden rounded-2xl bg-white p-5 lg:block"
->
-
-    {% if selected_category_id %}
-        <input
-            type="hidden"
-            name="category"
-            value="{{ selected_category_id }}"
-        >
-    {% endif %}
-
-    {% if selected_subcategory_id %}
-        <input
-            type="hidden"
-            name="subcategory"
-            value="{{ selected_subcategory_id }}"
-        >
-    {% endif %}
-
-    {% if min_price %}
-        <input
-            type="hidden"
-            name="min_price"
-            value="{{ min_price }}"
-        >
-    {% endif %}
-
-    {% if max_price %}
-        <input
-            type="hidden"
-            name="max_price"
-            value="{{ max_price }}"
-        >
-    {% endif %}
-
-    {% if availability %}
-        <input
-            type="hidden"
-            name="availability"
-            value="{{ availability }}"
-        >
-    {% endif %}
-
-    <input
-        type="hidden"
-        name="sort"
-        value="{{ sort }}"
-    >
-
-    <div class="relative">
-
-        <i
-            class="fa-solid fa-magnifying-glass
-                   pointer-events-none absolute left-3.5 top-1/2
-                   -translate-y-1/2 text-sm text-gray-400"
-        ></i>
-
-        <input
-            type="search"
-            name="q"
-            value="{{ search_query }}"
-            placeholder="Search products..."
-            class="w-full rounded-lg border border-gray-200
-                   py-3 pl-10 pr-3 text-sm outline-none
-                   transition placeholder:text-gray-400
-                   focus:border-pink-400
-                   focus:ring-2 focus:ring-pink-100"
-        >
-
-    </div>
-
-    <button
-        type="submit"
-        class="mt-3 w-full rounded-lg bg-pink-600
-               py-3 text-sm font-bold text-white
-               transition hover:bg-pink-700"
-    >
-        SEARCH
-    </button>
-
-    {% if search_query %}
-        <a
-            href="{% url 'products' %}{% if selected_category_id %}?category={{ selected_category_id }}{% endif %}"
-            class="mt-3 block text-center text-xs
-                   font-semibold text-gray-500
-                   hover:text-pink-600"
-        >
-            Clear search
-        </a>
-    {% endif %}
-
-</form>
-
-                <!-- Categories -->
-                <div class="filter-card hidden rounded-2xl bg-white p-5 lg:block">
-
-                    <div
-                        class="mb-4 flex items-center justify-between
-                               border-b border-gray-100 pb-3"
-                    >
-                        <h2 class="font-bold">
-                            CATEGORIES
-                        </h2>
-
-                        <i class="fa-solid fa-minus text-xs"></i>
-                    </div>
-
+                {% for category in categories %}
                     <a
-                        href="{% url 'products' %}"
-                        class="mb-3 block text-sm font-semibold
-                        {% if not selected_category_id %}
-                            text-pink-600
+                        href="{% url 'products' %}?category={{ category.id }}#categories"
+                        class="shrink-0 rounded-full border px-4 py-2
+                        text-sm font-semibold transition
+                        {% if selected_category_id == category.id %}
+                            border-pink-600 bg-pink-600 text-white
                         {% else %}
-                            text-gray-700 hover:text-pink-600
+                            border-gray-200 bg-white text-gray-700
+                            hover:border-pink-400 hover:text-pink-600
                         {% endif %}"
                     >
-                        All Products
+                        {{ category.name }}
                     </a>
+                {% endfor %}
 
-                    <div class="space-y-3">
+            </div>
 
-                        {% for category in categories %}
 
-                            <details
-                                {% if selected_category_id == category.id %}
-                                    open
-                                {% endif %}
-                                class="group"
-                            >
+            <!-- SELECTED CATEGORY SUBCATEGORIES -->
+            {% if selected_category_id %}
 
-                                <summary
-                                    class="flex cursor-pointer list-none
-                                           items-center justify-between
-                                           text-sm font-medium text-gray-800
-                                           hover:text-pink-600"
+                {% for category in categories %}
+
+                    {% if selected_category_id == category.id %}
+
+                        {% if category.subcategories.all %}
+                            <div class="mt-3 flex flex-wrap gap-2">
+
+                                <a
+                                    href="{% url 'products' %}?category={{ category.id }}#categories"
+                                    class="rounded-full border px-3 py-1.5
+                                    text-xs font-semibold
+                                    {% if not selected_subcategory_id %}
+                                        border-pink-500 bg-pink-50 text-pink-600
+                                    {% else %}
+                                        border-gray-200 text-gray-600
+                                    {% endif %}"
                                 >
+                                    All {{ category.name }}
+                                </a>
 
-                                    <span>
-                                        {{ category.name }}
-
-                                        <span class="text-gray-400">
-                                            ({{ category.product_count }})
-                                        </span>
-                                    </span>
-
-                                    <i
-                                        class="fa-solid fa-chevron-down
-                                               text-[10px] transition
-                                               group-open:rotate-180"
-                                    ></i>
-
-                                </summary>
-
-                                <div
-                                    class="mt-2 space-y-2 border-l
-                                           border-pink-100 pl-3"
-                                >
-
+                                {% for subcategory in category.subcategories.all %}
                                     <a
-                                        href="{% url 'products' %}?category={{ category.id }}"
-                                        class="block text-xs
-                                        {% if selected_category_id == category.id and not selected_subcategory_id %}
-                                            font-semibold text-pink-600
+                                        href="{% url 'products' %}?subcategory={{ subcategory.id }}#categories"
+                                        class="rounded-full border px-3 py-1.5
+                                        text-xs font-semibold
+                                        {% if selected_subcategory_id == subcategory.id %}
+                                            border-pink-500 bg-pink-50 text-pink-600
                                         {% else %}
-                                            text-gray-500 hover:text-pink-600
+                                            border-gray-200 text-gray-600
                                         {% endif %}"
                                     >
-                                        View all {{ category.name }}
+                                        {{ subcategory.name }}
                                     </a>
+                                {% endfor %}
 
-                                    {% for subcategory in category.subcategories.all %}
+                            </div>
+                        {% endif %}
 
-                                        <a
-                                            href="{% url 'products' %}?subcategory={{ subcategory.id }}"
-                                            class="block text-xs
-                                            {% if selected_subcategory_id == subcategory.id %}
-                                                font-semibold text-pink-600
-                                            {% else %}
-                                                text-gray-500 hover:text-pink-600
-                                            {% endif %}"
-                                        >
-                                            {{ subcategory.name }}
-                                        </a>
-
-                                    {% endfor %}
-
-                                </div>
-
-                            </details>
-
-                        {% empty %}
-
-                            <p class="text-sm text-gray-500">
-                                No categories yet.
-                            </p>
-
-                        {% endfor %}
-
-                    </div>
-                </div>
-
-
-                <!-- Price and stock filters -->
-                <form
-                    method="get"
-                    class="filter-card rounded-2xl bg-white p-5"
-                >
-
-                    {% if search_query %}
-                        <input
-                            type="hidden"
-                            name="q"
-                            value="{{ search_query }}"
-                        >
                     {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        </div>
+    </section>
+
+
+    <!-- PRODUCTS AREA -->
+    <section class="py-8 lg:py-12">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            <!-- MOBILE SEARCH AND FILTER BUTTON -->
+            <div class="mb-6 flex gap-3 lg:hidden">
+
+                <button
+                    type="button"
+                    @click="filtersOpen = !filtersOpen"
+                    class="flex items-center gap-2 rounded-xl border
+                           border-gray-200 bg-white px-4 py-3
+                           text-sm font-semibold"
+                >
+                    <i class="fa-solid fa-sliders text-pink-600"></i>
+                    Filter
+                </button>
+
+                <form method="get" class="relative flex-1">
 
                     {% if selected_category_id %}
                         <input
@@ -654,712 +221,856 @@ Shop All Products | Lily Beauty Bar
                     {% endif %}
 
                     <input
-                        type="hidden"
-                        name="sort"
-                        value="{{ sort }}"
+                        type="search"
+                        name="q"
+                        value="{{ search_query }}"
+                        placeholder="Search products"
+                        class="w-full rounded-xl border border-gray-200
+                               py-3 pl-4 pr-11 text-sm outline-none
+                               focus:border-pink-500"
                     >
-
-                    <div
-                        class="mb-4 flex items-center justify-between
-                               border-b border-gray-100 pb-3"
-                    >
-                        <h2 class="font-bold">
-                            PRICE RANGE
-                        </h2>
-
-                        <i class="fa-solid fa-minus text-xs"></i>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-
-                        <label class="text-xs text-gray-500">
-
-                            Minimum
-
-                            <input
-                                name="min_price"
-                                value="{{ min_price }}"
-                                type="number"
-                                min="0"
-                                placeholder="₦0"
-                                class="mt-1 w-full rounded-lg border
-                                       border-gray-200 px-3 py-2
-                                       text-sm outline-none
-                                       focus:border-pink-400"
-                            >
-
-                        </label>
-
-                        <label class="text-xs text-gray-500">
-
-                            Maximum
-
-                            <input
-                                name="max_price"
-                                value="{{ max_price }}"
-                                type="number"
-                                min="0"
-                                placeholder="₦50,000"
-                                class="mt-1 w-full rounded-lg border
-                                       border-gray-200 px-3 py-2
-                                       text-sm outline-none
-                                       focus:border-pink-400"
-                            >
-
-                        </label>
-
-                    </div>
-
-                    <div
-                        class="mt-5 border-t border-gray-100 pt-4"
-                    >
-
-                        <h3 class="mb-3 text-sm font-bold">
-                            AVAILABILITY
-                        </h3>
-
-                        <label
-                            class="mb-2 flex items-center gap-2
-                                   text-sm text-gray-600"
-                        >
-
-                            <input
-                                type="radio"
-                                name="availability"
-                                value=""
-                                {% if not availability %}
-                                    checked
-                                {% endif %}
-                                class="accent-pink-600"
-                            >
-
-                            All products
-
-                        </label>
-
-                        <label
-                            class="mb-2 flex items-center gap-2
-                                   text-sm text-gray-600"
-                        >
-
-                            <input
-                                type="radio"
-                                name="availability"
-                                value="in_stock"
-                                {% if availability == "in_stock" %}
-                                    checked
-                                {% endif %}
-                                class="accent-pink-600"
-                            >
-
-                            In stock
-
-                        </label>
-
-                        <label
-                            class="flex items-center gap-2
-                                   text-sm text-gray-600"
-                        >
-
-                            <input
-                                type="radio"
-                                name="availability"
-                                value="out_of_stock"
-                                {% if availability == "out_of_stock" %}
-                                    checked
-                                {% endif %}
-                                class="accent-pink-600"
-                            >
-
-                            Out of stock
-
-                        </label>
-
-                    </div>
 
                     <button
                         type="submit"
-                        class="mt-5 w-full rounded-lg bg-pink-600
-                               py-3 text-sm font-bold text-white
-                               transition hover:bg-pink-700"
+                        aria-label="Search"
+                        class="absolute right-2 top-1/2 grid h-9 w-9
+                               -translate-y-1/2 place-items-center
+                               rounded-lg bg-pink-600 text-white"
                     >
-                        FILTER
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
                     </button>
-
-                    <a
-                        href="{% url 'products' %}"
-                        class="mt-3 block text-center text-xs
-                               font-semibold text-gray-500
-                               hover:text-pink-600"
-                    >
-                        Clear all filters
-                    </a>
 
                 </form>
 
-            </aside>
+            </div>
 
 
-            <!-- Main products area -->
-            <div>
+            <div class="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
 
-                <!-- Results and sorting -->
-                <div
-                    class="mb-6 flex flex-col gap-4
-                           border-b border-gray-100 pb-5
-                           sm:flex-row sm:items-center
-                           sm:justify-between"
+                <!-- FILTER SIDEBAR -->
+                <aside
+                    x-cloak
+                    :class="filtersOpen ? 'block' : 'hidden'"
+                    class="space-y-5 lg:block"
                 >
 
-                    <p class="text-sm text-gray-600">
+                    <!-- DESKTOP SEARCH -->
+                    <form
+                        method="get"
+                        class="hidden rounded-2xl border border-gray-100
+                               bg-white p-5 shadow-sm lg:block"
+                    >
 
-                        {% if products.paginator.count %}
-
-                            Showing
-
-                            <strong>
-                                {{ products.start_index }}–{{ products.end_index }}
-                            </strong>
-
-                            of
-
-                            <strong>
-                                {{ products.paginator.count }}
-                            </strong>
-
-                            results
-
-                        {% else %}
-
-                            No products found
-
+                        {% if selected_category_id %}
+                            <input
+                                type="hidden"
+                                name="category"
+                                value="{{ selected_category_id }}"
+                            >
                         {% endif %}
 
-                    </p>
-
-                    <div class="flex items-center gap-2">
-
-                        <form method="get">
-
-                            {% if search_query %}
-                                <input
-                                    type="hidden"
-                                    name="q"
-                                    value="{{ search_query }}"
-                                >
-                            {% endif %}
-
-                            {% if selected_category_id %}
-                                <input
-                                    type="hidden"
-                                    name="category"
-                                    value="{{ selected_category_id }}"
-                                >
-                            {% endif %}
-
-                            {% if selected_subcategory_id %}
-                                <input
-                                    type="hidden"
-                                    name="subcategory"
-                                    value="{{ selected_subcategory_id }}"
-                                >
-                            {% endif %}
-
-                            {% if min_price %}
-                                <input
-                                    type="hidden"
-                                    name="min_price"
-                                    value="{{ min_price }}"
-                                >
-                            {% endif %}
-
-                            {% if max_price %}
-                                <input
-                                    type="hidden"
-                                    name="max_price"
-                                    value="{{ max_price }}"
-                                >
-                            {% endif %}
-
-                            {% if availability %}
-                                <input
-                                    type="hidden"
-                                    name="availability"
-                                    value="{{ availability }}"
-                                >
-                            {% endif %}
-
-                            <select
-                                name="sort"
-                                onchange="this.form.submit()"
-                                class="rounded-lg border border-gray-200
-                                       bg-white px-4 py-2.5 text-sm
-                                       outline-none focus:border-pink-400"
+                        {% if selected_subcategory_id %}
+                            <input
+                                type="hidden"
+                                name="subcategory"
+                                value="{{ selected_subcategory_id }}"
                             >
+                        {% endif %}
 
-                                <option
-                                    value="newest"
-                                    {% if sort == "newest" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    Sort by: Newest
-                                </option>
+                        {% if min_price %}
+                            <input
+                                type="hidden"
+                                name="min_price"
+                                value="{{ min_price }}"
+                            >
+                        {% endif %}
 
-                                <option
-                                    value="oldest"
-                                    {% if sort == "oldest" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    Oldest first
-                                </option>
+                        {% if max_price %}
+                            <input
+                                type="hidden"
+                                name="max_price"
+                                value="{{ max_price }}"
+                            >
+                        {% endif %}
 
-                                <option
-                                    value="price_low"
-                                    {% if sort == "price_low" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    Price: Low to high
-                                </option>
+                        {% if availability %}
+                            <input
+                                type="hidden"
+                                name="availability"
+                                value="{{ availability }}"
+                            >
+                        {% endif %}
 
-                                <option
-                                    value="price_high"
-                                    {% if sort == "price_high" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    Price: High to low
-                                </option>
+                        <input
+                            type="hidden"
+                            name="sort"
+                            value="{{ sort }}"
+                        >
 
-                                <option
-                                    value="name"
-                                    {% if sort == "name" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    Name: A–Z
-                                </option>
+                        <label class="mb-3 block text-sm font-bold">
+                            Search
+                        </label>
 
-                            </select>
-
-                        </form>
+                        <input
+                            type="search"
+                            name="q"
+                            value="{{ search_query }}"
+                            placeholder="Search products..."
+                            class="w-full rounded-xl border border-gray-200
+                                   px-4 py-3 text-sm outline-none
+                                   focus:border-pink-500"
+                        >
 
                         <button
-                            type="button"
-                            @click="gridView = true"
-                            :class="
-                                gridView
-                                ? 'border-pink-500 bg-pink-50 text-pink-600'
-                                : 'border-gray-200 text-gray-500'
-                            "
-                            class="grid h-10 w-10 place-items-center
-                                   rounded-lg border"
-                            aria-label="Grid view"
+                            type="submit"
+                            class="mt-3 w-full rounded-xl bg-pink-600
+                                   py-3 text-sm font-bold text-white
+                                   hover:bg-pink-700"
                         >
-                            <i class="fa-solid fa-border-all"></i>
+                            Search
                         </button>
 
-                        <button
-                            type="button"
-                            @click="gridView = false"
-                            :class="
-                                !gridView
-                                ? 'border-pink-500 bg-pink-50 text-pink-600'
-                                : 'border-gray-200 text-gray-500'
-                            "
-                            class="grid h-10 w-10 place-items-center
-                                   rounded-lg border"
-                            aria-label="List view"
+                    </form>
+
+
+                    <!-- DESKTOP CATEGORIES -->
+                    <div
+                        class="hidden rounded-2xl border border-gray-100
+                               bg-white p-5 shadow-sm lg:block"
+                    >
+
+                        <h2
+                            class="mb-4 border-b border-gray-100 pb-3
+                                   text-sm font-bold"
                         >
-                            <i class="fa-solid fa-list"></i>
-                        </button>
+                            Categories
+                        </h2>
 
-                    </div>
-                </div>
-
-
-                <!-- Product grid -->
-                <div
-                    :class="
-                        gridView
-                        ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
-                        : 'grid-cols-1'
-                    "
-                    class="grid gap-4 sm:gap-5"
-                >
-
-                    {% for product in products %}
-
-                        <article
-    class="product-card group relative flex h-full
-           flex-col overflow-hidden rounded-2xl bg-white
-           transition duration-300"
-    :class="
-        !gridView
-        && 'sm:grid sm:grid-cols-[220px_1fr]'
-    "
->
-
-    {% if product.is_on_sale %}
-
-        <span
-            class="absolute left-3 top-3 z-10
-                   rounded-full bg-pink-600
-                   px-3 py-1 text-[10px]
-                   font-bold text-white shadow"
-        >
-            SALE
-        </span>
-
-    {% endif %}
-
-    <a
-        href="{% url 'product_detail' product.pk %}"
-        class="product-image block overflow-hidden
-               rounded-t-2xl bg-[#fbf9fa]"
-    >
-
-        {% if product.image %}
-
-            <img
-                src="{{ product.image.url }}"
-                alt="{{ product.name }}"
-                loading="lazy"
-                class="h-full w-full rounded-t-2xl
-                       object-cover transition duration-500
-                       group-hover:scale-105"
-            >
-
-        {% else %}
-
-            <div
-                class="flex h-full items-center justify-center
-                       rounded-t-2xl text-4xl text-pink-200"
-            >
-                <i class="fa-solid fa-spa"></i>
-            </div>
-
-        {% endif %}
-
-    </a>
-
-    <div class="flex flex-1 flex-col p-3 sm:p-4">
-
-        <p
-            class="mb-0.5 text-[10px] font-semibold
-                   uppercase tracking-wider text-pink-500"
-        >
-            {{ product.category.name|default:"Beauty" }}
-        </p>
-
-        <h2
-            class="min-h-[40px] text-sm font-bold
-                   leading-5 text-gray-900 sm:text-base"
-        >
-            <a
-                href="{% url 'product_detail' product.pk %}"
-                class="line-clamp-2 transition hover:text-pink-600"
-            >
-                {{ product.name }}
-            </a>
-        </h2>
-
-        <div class="mt-1.5 flex flex-wrap items-center gap-2">
-
-            {% if product.is_on_sale %}
-
-                <strong class="text-base text-gray-950">
-                    ₦{{ product.current_price|floatformat:0 }}
-                </strong>
-
-                <span class="text-xs text-gray-400 line-through">
-                    ₦{{ product.price|floatformat:0 }}
-                </span>
-
-            {% else %}
-
-                <strong class="text-base text-pink-600">
-                    ₦{{ product.price|floatformat:0 }}
-                </strong>
-
-            {% endif %}
-
-        </div>
-
-        <p
-            x-show="!gridView"
-            x-cloak
-            class="mt-2 line-clamp-2 text-sm
-                   leading-5 text-gray-500"
-        >
-            {{ product.description|default:"A premium beauty essential selected for your self-care routine." }}
-        </p>
-        {% if product.stock <= 3 and product.stock > 0 %}
-
-    <p class="mt-1 flex items-center gap-1.5 text-xs font-bold text-orange-600">
-        <i class="fa-solid fa-fire"></i>
-
-        Only {{ product.stock }}
-        item{{ product.stock|pluralize }} left
-    </p>
-
-{% endif %}
-        {% if product.stock > 0 %}
-
-            <form
-                method="post"
-                action="{% url 'add_to_cart' product.id %}"
-                class="mt-auto pt-3 text-center"
-            >
-                {% csrf_token %}
-
-                <button
-                    type="submit"
-                    class="inline-flex items-center justify-center
-                           gap-2 rounded-lg bg-black px-5 py-2
-                           text-xs font-bold text-white transition
-                           hover:bg-pink-600"
-                >
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    ADD TO CART
-                </button>
-
-            </form>
-
-        {% else %}
-
-            <div class="mt-auto pt-3 text-center">
-
-                <button
-                    type="button"
-                    disabled
-                    class="inline-flex cursor-not-allowed items-center
-                           justify-center gap-2 rounded-lg bg-gray-300
-                           px-5 py-2 text-xs font-bold text-gray-500"
-                >
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    OUT OF STOCK
-                </button>
-
-            </div>
-
-        {% endif %}
-
-    </div>
-
-</article>
-
-                    {% empty %}
-
-                        <div
-                            class="col-span-full rounded-2xl border
-                                   border-dashed border-pink-200
-                                   bg-pink-50/50 px-6 py-20 text-center"
+                        <a
+                            href="{% url 'products' %}"
+                            class="mb-3 block text-sm font-semibold
+                            {% if not selected_category_id %}
+                                text-pink-600
+                            {% else %}
+                                text-gray-700 hover:text-pink-600
+                            {% endif %}"
                         >
+                            All Products
+                        </a>
 
-                            <i
-                                class="fa-solid fa-magnifying-glass
-                                       mb-4 text-4xl text-pink-300"
-                            ></i>
+                        <div class="space-y-3">
 
-                            <h3 class="text-xl font-bold">
-                                No products found
-                            </h3>
+                            {% for category in categories %}
 
-                            <p class="mt-2 text-gray-500">
-                                Try changing your search or filters.
-                            </p>
+                                <details
+                                    class="group"
+                                    {% if selected_category_id == category.id %}
+                                        open
+                                    {% endif %}
+                                >
 
-                            <a
-                                href="{% url 'products' %}"
-                                class="mt-5 inline-block rounded-lg
-                                       bg-pink-600 px-5 py-3 text-sm
-                                       font-semibold text-white"
-                            >
-                                View all products
-                            </a>
+                                    <summary
+                                        class="flex cursor-pointer list-none
+                                               items-center justify-between
+                                               text-sm font-medium text-gray-800"
+                                    >
+                                        <span>
+                                            {{ category.name }}
+
+                                            <span class="text-xs text-gray-400">
+                                                ({{ category.product_count }})
+                                            </span>
+                                        </span>
+
+                                        <i
+                                            class="fa-solid fa-chevron-down
+                                                   text-[9px] transition
+                                                   group-open:rotate-180"
+                                        ></i>
+                                    </summary>
+
+                                    <div
+                                        class="mt-2 space-y-2 border-l
+                                               border-pink-100 pl-3"
+                                    >
+
+                                        <a
+                                            href="{% url 'products' %}?category={{ category.id }}"
+                                            class="block text-xs
+                                            {% if selected_category_id == category.id and not selected_subcategory_id %}
+                                                font-bold text-pink-600
+                                            {% else %}
+                                                text-gray-500 hover:text-pink-600
+                                            {% endif %}"
+                                        >
+                                            View all
+                                        </a>
+
+                                        {% for subcategory in category.subcategories.all %}
+                                            <a
+                                                href="{% url 'products' %}?subcategory={{ subcategory.id }}"
+                                                class="block text-xs
+                                                {% if selected_subcategory_id == subcategory.id %}
+                                                    font-bold text-pink-600
+                                                {% else %}
+                                                    text-gray-500 hover:text-pink-600
+                                                {% endif %}"
+                                            >
+                                                {{ subcategory.name }}
+                                            </a>
+                                        {% endfor %}
+
+                                    </div>
+
+                                </details>
+
+                            {% empty %}
+
+                                <p class="text-sm text-gray-500">
+                                    No categories available.
+                                </p>
+
+                            {% endfor %}
 
                         </div>
 
-                    {% endfor %}
-
-                </div>
+                    </div>
 
 
-                <!-- Pagination -->
-                {% if products.paginator.num_pages > 1 %}
-
-                    <nav
-                        class="mt-10 flex flex-wrap items-center
-                               justify-center gap-2"
-                        aria-label="Product pagination"
+                    <!-- PRICE AND STOCK FILTER -->
+                    <form
+                        method="get"
+                        class="rounded-2xl border border-gray-100
+                               bg-white p-5 shadow-sm"
                     >
 
-                        {% if products.has_previous %}
-
-                            <a
-                                href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ products.previous_page_number }}"
-                                class="grid h-10 min-w-10
-                                       place-items-center rounded-lg
-                                       border border-gray-200 px-3
-                                       transition hover:border-pink-500
-                                       hover:text-pink-600"
-                                aria-label="Previous page"
+                        {% if search_query %}
+                            <input
+                                type="hidden"
+                                name="q"
+                                value="{{ search_query }}"
                             >
-                                <i
-                                    class="fa-solid fa-chevron-left text-xs"
-                                ></i>
-                            </a>
-
                         {% endif %}
 
+                        {% if selected_category_id %}
+                            <input
+                                type="hidden"
+                                name="category"
+                                value="{{ selected_category_id }}"
+                            >
+                        {% endif %}
 
-                        {% for num in products.paginator.page_range %}
+                        {% if selected_subcategory_id %}
+                            <input
+                                type="hidden"
+                                name="subcategory"
+                                value="{{ selected_subcategory_id }}"
+                            >
+                        {% endif %}
 
-                            {% if num == products.number %}
+                        <input
+                            type="hidden"
+                            name="sort"
+                            value="{{ sort }}"
+                        >
 
-                                <span
-                                    class="grid h-10 min-w-10
-                                           place-items-center rounded-lg
-                                           bg-pink-600 px-3
-                                           font-semibold text-white"
+                        <h2
+                            class="mb-4 border-b border-gray-100 pb-3
+                                   text-sm font-bold"
+                        >
+                            Filter Products
+                        </h2>
+
+                        <div class="grid grid-cols-2 gap-2">
+
+                            <label class="text-xs text-gray-500">
+                                Minimum
+
+                                <input
+                                    type="number"
+                                    name="min_price"
+                                    value="{{ min_price }}"
+                                    min="0"
+                                    placeholder="₦0"
+                                    class="mt-1 w-full rounded-lg border
+                                           border-gray-200 px-3 py-2
+                                           text-sm outline-none
+                                           focus:border-pink-500"
                                 >
-                                    {{ num }}
-                                </span>
+                            </label>
 
-                            {% elif num >= products.number|add:"-2" and num <= products.number|add:"2" %}
+                            <label class="text-xs text-gray-500">
+                                Maximum
 
+                                <input
+                                    type="number"
+                                    name="max_price"
+                                    value="{{ max_price }}"
+                                    min="0"
+                                    placeholder="₦50,000"
+                                    class="mt-1 w-full rounded-lg border
+                                           border-gray-200 px-3 py-2
+                                           text-sm outline-none
+                                           focus:border-pink-500"
+                                >
+                            </label>
+
+                        </div>
+
+                        <div class="mt-5 space-y-2">
+
+                            <p class="text-sm font-bold">
+                                Availability
+                            </p>
+
+                            <label class="flex items-center gap-2 text-sm text-gray-600">
+                                <input
+                                    type="radio"
+                                    name="availability"
+                                    value=""
+                                    class="accent-pink-600"
+                                    {% if not availability %}checked{% endif %}
+                                >
+                                All products
+                            </label>
+
+                            <label class="flex items-center gap-2 text-sm text-gray-600">
+                                <input
+                                    type="radio"
+                                    name="availability"
+                                    value="in_stock"
+                                    class="accent-pink-600"
+                                    {% if availability == "in_stock" %}checked{% endif %}
+                                >
+                                In stock
+                            </label>
+
+                            <label class="flex items-center gap-2 text-sm text-gray-600">
+                                <input
+                                    type="radio"
+                                    name="availability"
+                                    value="out_of_stock"
+                                    class="accent-pink-600"
+                                    {% if availability == "out_of_stock" %}checked{% endif %}
+                                >
+                                Out of stock
+                            </label>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="mt-5 w-full rounded-xl bg-pink-600
+                                   py-3 text-sm font-bold text-white
+                                   hover:bg-pink-700"
+                        >
+                            Apply Filter
+                        </button>
+
+                        <a
+                            href="{% url 'products' %}"
+                            class="mt-3 block text-center text-xs
+                                   font-semibold text-gray-500
+                                   hover:text-pink-600"
+                        >
+                            Clear filters
+                        </a>
+
+                    </form>
+
+                </aside>
+
+
+                <!-- PRODUCTS -->
+                <div>
+
+                    <!-- RESULT COUNT AND SORT -->
+                    <div
+                        class="mb-6 flex flex-col gap-4 border-b
+                               border-gray-100 pb-5 sm:flex-row
+                               sm:items-center sm:justify-between"
+                    >
+
+                        <p class="text-sm text-gray-600">
+
+                            {% if products.paginator.count %}
+                                Showing
+                                <strong>
+                                    {{ products.start_index }}–{{ products.end_index }}
+                                </strong>
+                                of
+                                <strong>
+                                    {{ products.paginator.count }}
+                                </strong>
+                                products
+                            {% else %}
+                                No products found
+                            {% endif %}
+
+                        </p>
+
+
+                        <div class="flex items-center gap-2">
+
+                            <form method="get">
+
+                                {% if search_query %}
+                                    <input
+                                        type="hidden"
+                                        name="q"
+                                        value="{{ search_query }}"
+                                    >
+                                {% endif %}
+
+                                {% if selected_category_id %}
+                                    <input
+                                        type="hidden"
+                                        name="category"
+                                        value="{{ selected_category_id }}"
+                                    >
+                                {% endif %}
+
+                                {% if selected_subcategory_id %}
+                                    <input
+                                        type="hidden"
+                                        name="subcategory"
+                                        value="{{ selected_subcategory_id }}"
+                                    >
+                                {% endif %}
+
+                                {% if min_price %}
+                                    <input
+                                        type="hidden"
+                                        name="min_price"
+                                        value="{{ min_price }}"
+                                    >
+                                {% endif %}
+
+                                {% if max_price %}
+                                    <input
+                                        type="hidden"
+                                        name="max_price"
+                                        value="{{ max_price }}"
+                                    >
+                                {% endif %}
+
+                                {% if availability %}
+                                    <input
+                                        type="hidden"
+                                        name="availability"
+                                        value="{{ availability }}"
+                                    >
+                                {% endif %}
+
+                                <select
+                                    name="sort"
+                                    onchange="this.form.submit()"
+                                    class="rounded-lg border border-gray-200
+                                           bg-white px-3 py-2.5 text-sm
+                                           outline-none"
+                                >
+                                    <option
+                                        value="newest"
+                                        {% if sort == "newest" %}selected{% endif %}
+                                    >
+                                        Newest
+                                    </option>
+
+                                    <option
+                                        value="oldest"
+                                        {% if sort == "oldest" %}selected{% endif %}
+                                    >
+                                        Oldest
+                                    </option>
+
+                                    <option
+                                        value="price_low"
+                                        {% if sort == "price_low" %}selected{% endif %}
+                                    >
+                                        Price: Low to High
+                                    </option>
+
+                                    <option
+                                        value="price_high"
+                                        {% if sort == "price_high" %}selected{% endif %}
+                                    >
+                                        Price: High to Low
+                                    </option>
+
+                                    <option
+                                        value="name"
+                                        {% if sort == "name" %}selected{% endif %}
+                                    >
+                                        Name: A–Z
+                                    </option>
+                                </select>
+
+                            </form>
+
+
+                            <button
+                                type="button"
+                                @click="gridView = true"
+                                :class="
+                                    gridView
+                                    ? 'border-pink-500 bg-pink-50 text-pink-600'
+                                    : 'border-gray-200 text-gray-500'
+                                "
+                                class="grid h-10 w-10 place-items-center
+                                       rounded-lg border"
+                                aria-label="Grid view"
+                            >
+                                <i class="fa-solid fa-border-all"></i>
+                            </button>
+
+                            <button
+                                type="button"
+                                @click="gridView = false"
+                                :class="
+                                    !gridView
+                                    ? 'border-pink-500 bg-pink-50 text-pink-600'
+                                    : 'border-gray-200 text-gray-500'
+                                "
+                                class="grid h-10 w-10 place-items-center
+                                       rounded-lg border"
+                                aria-label="List view"
+                            >
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRODUCT GRID -->
+                    <div
+                        :class="
+                            gridView
+                            ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+                            : 'grid-cols-1'
+                        "
+                        class="grid gap-4 sm:gap-5"
+                    >
+
+                        {% for product in products %}
+
+                            <article
+                                class="product-card group relative flex
+                                       h-full flex-col overflow-hidden
+                                       rounded-2xl bg-white"
+                                :class="
+                                    !gridView
+                                    && 'sm:grid sm:grid-cols-[210px_1fr]'
+                                "
+                            >
+
+                                <!-- SALE BADGE -->
+                                {% if product.is_on_sale %}
+                                    <span
+                                        class="absolute left-3 top-3 z-20
+                                               rounded-full bg-pink-600
+                                               px-3 py-1 text-[10px]
+                                               font-bold uppercase text-white
+                                               shadow-md"
+                                    >
+                                        Sale
+                                    </span>
+                                {% endif %}
+
+
+                                <!-- PRODUCT IMAGE -->
                                 <a
-                                    href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}"
-                                    class="grid h-10 min-w-10
-                                           place-items-center rounded-lg
-                                           border border-gray-200 px-3
-                                           transition hover:border-pink-500
-                                           hover:text-pink-600"
+                                    href="{% url 'product_detail' product.pk %}"
+                                    class="product-image block overflow-hidden
+                                           bg-gray-50"
                                 >
-                                    {{ num }}
+
+                                    {% if product.image %}
+                                        <img
+                                            src="{{ product.image.url }}"
+                                            alt="{{ product.name }}"
+                                            loading="lazy"
+                                            class="h-full w-full object-contain
+                                                   p-2 transition duration-500
+                                                   group-hover:scale-105"
+                                        >
+                                    {% else %}
+                                        <div
+                                            class="grid h-full place-items-center
+                                                   bg-pink-50 text-4xl
+                                                   text-pink-200"
+                                        >
+                                            <i class="fa-solid fa-spa"></i>
+                                        </div>
+                                    {% endif %}
+
                                 </a>
 
-                            {% endif %}
+
+                                <!-- PRODUCT INFORMATION -->
+                                <div class="flex flex-1 flex-col p-3 sm:p-4">
+
+                                    <p
+                                        class="mb-1 text-[10px] font-semibold
+                                               uppercase tracking-wider
+                                               text-pink-500"
+                                    >
+                                        {{ product.category.name|default:"Beauty" }}
+                                    </p>
+
+                                    <h2
+                                        class="min-h-[40px] text-sm font-bold
+                                               leading-5 text-gray-900
+                                               sm:text-base"
+                                    >
+                                        <a
+                                            href="{% url 'product_detail' product.pk %}"
+                                            class="line-clamp-2 transition
+                                                   hover:text-pink-600"
+                                        >
+                                            {{ product.name }}
+                                        </a>
+                                    </h2>
+
+
+                                    <!-- SALE PRICE -->
+                                    <div class="mt-2 flex flex-wrap items-center gap-2">
+
+                                        {% if product.is_on_sale %}
+
+                                            <strong
+                                                class="text-base text-pink-600"
+                                            >
+                                                ₦{{ product.current_price|floatformat:0|intcomma }}
+                                            </strong>
+
+                                            <span
+                                                class="text-xs text-gray-400
+                                                       line-through"
+                                            >
+                                                ₦{{ product.price|floatformat:0|intcomma }}
+                                            </span>
+
+                                            {% if product.discount_percentage %}
+                                                <span
+                                                    class="rounded-full
+                                                           bg-pink-100
+                                                           px-2 py-1
+                                                           text-[9px]
+                                                           font-bold
+                                                           text-pink-600"
+                                                >
+                                                    -{{ product.discount_percentage }}%
+                                                </span>
+                                            {% endif %}
+
+                                        {% else %}
+
+                                            <strong
+                                                class="text-base text-pink-600"
+                                            >
+                                                ₦{{ product.price|floatformat:0|intcomma }}
+                                            </strong>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <!-- DESCRIPTION IN LIST VIEW -->
+                                    <p
+                                        x-show="!gridView"
+                                        x-cloak
+                                        class="mt-2 line-clamp-2 text-sm
+                                               leading-6 text-gray-500"
+                                    >
+                                        {{ product.description|default:"A premium beauty essential from Lily Beauty Bar." }}
+                                    </p>
+
+
+                                    <!-- LOW STOCK -->
+                                    {% if product.stock > 0 and product.stock <= 3 %}
+                                        <p
+                                            class="mt-2 flex items-center gap-1
+                                                   text-xs font-bold
+                                                   text-orange-600"
+                                        >
+                                            <i class="fa-solid fa-fire"></i>
+
+                                            Only {{ product.stock }}
+                                            item{{ product.stock|pluralize }}
+                                            left
+                                        </p>
+                                    {% endif %}
+
+
+                                    <!-- CART BUTTON -->
+                                    {% if product.stock > 0 %}
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'add_to_cart' product.id %}"
+                                            class="mt-auto pt-4"
+                                        >
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="hidden"
+                                                name="quantity"
+                                                value="1"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="inline-flex w-full
+                                                       items-center justify-center
+                                                       gap-2 rounded-xl
+                                                       bg-gray-950 px-4 py-2.5
+                                                       text-xs font-bold
+                                                       text-white transition
+                                                       hover:bg-pink-600"
+                                            >
+                                                <i class="fa-solid fa-bag-shopping"></i>
+                                                Add to Cart
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="mt-auto w-full
+                                                   cursor-not-allowed
+                                                   rounded-xl bg-gray-200
+                                                   px-4 py-2.5 text-xs
+                                                   font-bold text-gray-500"
+                                        >
+                                            Out of Stock
+                                        </button>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </article>
+
+                        {% empty %}
+
+                            <div
+                                class="col-span-full rounded-2xl border
+                                       border-dashed border-pink-200
+                                       bg-pink-50 px-6 py-16 text-center"
+                            >
+
+                                <i
+                                    class="fa-solid fa-magnifying-glass
+                                           text-4xl text-pink-300"
+                                ></i>
+
+                                <h3 class="mt-4 text-xl font-bold">
+                                    No products found
+                                </h3>
+
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Try changing your search or filters.
+                                </p>
+
+                                <a
+                                    href="{% url 'products' %}"
+                                    class="mt-5 inline-flex rounded-xl
+                                           bg-pink-600 px-5 py-3
+                                           text-sm font-semibold text-white"
+                                >
+                                    View all products
+                                </a>
+
+                            </div>
 
                         {% endfor %}
 
-
-                        {% if products.has_next %}
-
-                            <a
-                                href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ products.next_page_number }}"
-                                class="grid h-10 min-w-10
-                                       place-items-center rounded-lg
-                                       border border-gray-200 px-3
-                                       transition hover:border-pink-500
-                                       hover:text-pink-600"
-                                aria-label="Next page"
-                            >
-                                <i
-                                    class="fa-solid fa-chevron-right text-xs"
-                                ></i>
-                            </a>
-
-                        {% endif %}
-
-                    </nav>
-
-                {% endif %}
-
-            </div>
-        </div>
-    </div>
-</section>
+                    </div>
 
 
-<!-- Store benefits -->
-<section class="border-y border-pink-100 bg-[#fff5f8]">
+                    <!-- PAGINATION -->
+                    {% if products.paginator.num_pages > 1 %}
 
-    <div
-        class="mx-auto grid max-w-7xl gap-6 px-6 py-8
-               sm:grid-cols-2 lg:grid-cols-4 lg:px-8"
-    >
+                        <nav
+                            class="mt-10 flex flex-wrap items-center
+                                   justify-center gap-2"
+                            aria-label="Product pagination"
+                        >
 
-        <div class="flex items-center gap-4">
+                            {% if products.has_previous %}
+                                <a
+                                    href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ products.previous_page_number }}"
+                                    class="grid h-10 min-w-10 place-items-center
+                                           rounded-lg border border-gray-200
+                                           px-3 hover:border-pink-500
+                                           hover:text-pink-600"
+                                >
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </a>
+                            {% endif %}
 
-            <i
-                class="fa-solid fa-truck-fast
-                       text-2xl text-pink-600"
-            ></i>
 
-            <div>
-                <h3 class="text-sm font-bold">
-                    RELIABLE DELIVERY
-                </h3>
+                            {% for num in products.paginator.page_range %}
 
-                <p class="text-xs text-gray-500">
-                    Carefully packaged orders
-                </p>
-            </div>
+                                {% if num == products.number %}
 
-        </div>
+                                    <span
+                                        class="grid h-10 min-w-10
+                                               place-items-center rounded-lg
+                                               bg-pink-600 px-3
+                                               font-semibold text-white"
+                                    >
+                                        {{ num }}
+                                    </span>
 
-        <div class="flex items-center gap-4">
+                                {% elif num >= products.number|add:"-2" and num <= products.number|add:"2" %}
 
-            <i
-                class="fa-solid fa-shield-halved
-                       text-2xl text-pink-600"
-            ></i>
+                                    <a
+                                        href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}"
+                                        class="grid h-10 min-w-10
+                                               place-items-center rounded-lg
+                                               border border-gray-200 px-3
+                                               hover:border-pink-500
+                                               hover:text-pink-600"
+                                    >
+                                        {{ num }}
+                                    </a>
 
-            <div>
-                <h3 class="text-sm font-bold">
-                    SECURE PAYMENT
-                </h3>
+                                {% endif %}
 
-                <p class="text-xs text-gray-500">
-                    Protected checkout
-                </p>
-            </div>
+                            {% endfor %}
 
-        </div>
 
-        <div class="flex items-center gap-4">
+                            {% if products.has_next %}
+                                <a
+                                    href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ products.next_page_number }}"
+                                    class="grid h-10 min-w-10 place-items-center
+                                           rounded-lg border border-gray-200
+                                           px-3 hover:border-pink-500
+                                           hover:text-pink-600"
+                                >
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </a>
+                            {% endif %}
 
-            <i
-                class="fa-solid fa-award
-                       text-2xl text-pink-600"
-            ></i>
+                        </nav>
 
-            <div>
-                <h3 class="text-sm font-bold">
-                    QUALITY PRODUCTS
-                </h3>
+                    {% endif %}
 
-                <p class="text-xs text-gray-500">
-                    Premium and authentic
-                </p>
+                </div>
+
             </div>
 
         </div>
 
-        <div class="flex items-center gap-4">
+    </section>
 
-            <i
-                class="fa-solid fa-headset
-                       text-2xl text-pink-600"
-            ></i>
-
-            <div>
-                <h3 class="text-sm font-bold">
-                    CUSTOMER SUPPORT
-                </h3>
-
-                <p class="text-xs text-gray-500">
-                    We are here to help
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-</section>
+</main>
 
 {% endblock %}

@@ -189,87 +189,51 @@
           tabindex="0"
         >
           {% for product in products %}
-            <article
-                class="featured-product-card group/card overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-
-                <!-- Product image: approximately two-thirds of the card -->
-                <a
-                    href="{% url 'product_detail' product.id %}"
-                    class="relative block overflow-hidden rounded-t-3xl bg-gray-50"
-                >
-                    {% if product.is_on_sale %}
-                        <span
-                            class="absolute left-3 top-3 z-10 rounded-full bg-pink-600 px-3 py-1 text-xs font-bold text-white shadow"
-                        >
-                            SALE
-                        </span>
-                    {% endif %}
-
-                    {% if product.image %}
-                        <img
-                            src="{{ product.image.url }}"
-                            alt="{{ product.name }}"
-                            loading="lazy"
-                            class="h-56 w-full object-cover transition duration-500 group-hover/card:scale-105"
-                        >
-                    {% else %}
-                        <div
-                            class="grid h-56 w-full place-items-center bg-pink-50 text-sm text-gray-400"
-                        >
-                            No product image
-                        </div>
-                    {% endif %}
-                </a>
-
-                <!-- Product information: compact lower section -->
-                <div class="px-5 py-3 text-center">
-
-                    <h3 class="line-clamp-1 text-base font-semibold leading-tight text-gray-900">
-                        <a
-                            href="{% url 'product_detail' product.id %}"
-                            class="transition hover:text-pink-600"
-                        >
-                            {{ product.name }}
-                        </a>
-                    </h3>
-
-                    <!-- Price moved closer to product name -->
-                    <div class="mt-1">
-                        {% if product.is_on_sale %}
-                            <span class="mr-2 text-sm text-gray-400 line-through">
-                                ₦{{ product.price }}
-                            </span>
-
-                            <span class="text-lg font-bold text-pink-600">
-                                ₦{{ product.current_price }}
-                            </span>
-                        {% else %}
-                            <span class="text-lg font-bold text-pink-600">
-                                ₦{{ product.price }}
-                            </span>
-                        {% endif %}
-                    </div>
-
-                    <!-- Real Add to Cart form -->
-                    <form
-                        method="POST"
-                        action="{% url 'add_to_cart' product.id %}"
-                        class="mt-3"
-                    >
-                        {% csrf_token %}
-
-                        <input type="hidden" name="quantity" value="1">
-
-                        <button
-                            type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-pink-600"
-                        >
-                            Add to Cart
-                        </button>
-                    </form>
-
+            <article class="featured-product-card group/card overflow-hidden
+                       rounded-3xl border border-gray-100 bg-white
+                       shadow-md transition duration-300
+                       hover:-translate-y-1 hover:shadow-xl">
+              <a href="{% url 'product_detail' product.id %}" class="relative block overflow-hidden
+                           rounded-t-3xl bg-gray-50">
+                {% include "shop/includes/sale_badge.html" %}
+            
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" class="h-56 w-full object-cover
+                                   transition duration-500
+                                   group-hover/card:scale-105">
+                {% else %}
+                <div class="grid h-56 w-full place-items-center
+                                   bg-pink-50 text-sm text-gray-400">
+                  No product image
                 </div>
+                {% endif %}
+              </a>
+            
+              <div class="px-5 py-3 text-center">
+                <h3 class="line-clamp-1 text-base font-semibold
+                               leading-tight text-gray-900">
+                  <a href="{% url 'product_detail' product.id %}" class="transition hover:text-pink-600">
+                    {{ product.name }}
+                  </a>
+                </h3>
+            
+                <div class="mt-1 flex justify-center">
+                  {% include "shop/includes/product_price.html" %}
+                </div>
+            
+                <form method="POST" action="{% url 'add_to_cart' product.id %}" class="mt-3">
+                  {% csrf_token %}
+            
+                  <input type="hidden" name="quantity" value="1">
+            
+                  <button type="submit" class="inline-flex items-center justify-center
+                                   rounded-xl bg-gray-900 px-6 py-3
+                                   text-sm font-semibold text-white
+                                   transition hover:bg-pink-600">
+                    Add to Cart
+                  </button>
+                </form>
+              </div>
             </article>
           {% endfor %}
         </div>

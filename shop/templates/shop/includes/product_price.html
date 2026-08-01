@@ -1,0 +1,30 @@
+{% load humanize %}
+
+<div class="flex flex-wrap items-center gap-2">
+    {% if product.is_on_sale %}
+
+        <span class="text-lg font-bold text-pink-600">
+            ₦{{ product.current_price|floatformat:0|intcomma }}
+        </span>
+
+        <span class="text-sm text-gray-400 line-through">
+            ₦{{ product.price|floatformat:0|intcomma }}
+        </span>
+
+        {% if product.discount_percentage %}
+            <span
+                class="rounded-full bg-pink-100 px-2 py-1
+                       text-[10px] font-bold text-pink-600"
+            >
+                -{{ product.discount_percentage }}%
+            </span>
+        {% endif %}
+
+    {% else %}
+
+        <span class="text-lg font-bold text-pink-600">
+            ₦{{ product.price|floatformat:0|intcomma }}
+        </span>
+
+    {% endif %}
+</div>

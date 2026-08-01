@@ -9,13 +9,15 @@ urlpatterns = [
     path('products/', views.product, name='products'),
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
     path('orders/', views.orders, name='orders'),
+    path("orders/<int:order_id>/", views.order_detail, name="order_detail",),
+    path("orders/<int:order_id>/buy-again/", views.buy_again, name="buy_again",),
     path('cart/', views.cart, name='cart'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('remove-from-cart/<str:cart_key>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<str:cart_key>/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
-    
 
+    
     # Dashboard (API)
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
     path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),
