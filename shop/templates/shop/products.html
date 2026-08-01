@@ -783,7 +783,7 @@ Shop | Lily Beauty Bar
                                 <a
                                     href="{% url 'product_detail' product.pk %}"
                                     class="product-image block overflow-hidden
-                                           bg-gray-50"
+                                           rounded-t-2xl bg-gray-50"
                                 >
 
                                     {% if product.image %}
@@ -791,9 +791,8 @@ Shop | Lily Beauty Bar
                                             src="{{ product.image.url }}"
                                             alt="{{ product.name }}"
                                             loading="lazy"
-                                            class="h-full w-full object-contain
-                                                   p-2 transition duration-500
-                                                   group-hover:scale-105"
+                                            class="h-full w-full rounded-t-2xl object-cover
+                                                   transition duration-500 group-hover:scale-105"
                                         >
                                     {% else %}
                                         <div
@@ -939,15 +938,11 @@ Shop | Lily Beauty Bar
 
                                     {% else %}
 
-                                        <button
-                                            type="button"
-                                            disabled
-                                            class="mt-auto w-full
-                                                   cursor-not-allowed
-                                                   rounded-xl bg-gray-200
-                                                   px-4 py-2.5 text-xs
-                                                   font-bold text-gray-500"
-                                        >
+                                        <button type="button" disabled class="mt-auto inline-flex w-full cursor-not-allowed
+                                                   items-center justify-center gap-2 rounded-xl
+                                                   bg-gray-200 px-4 py-2.5 text-xs
+                                                   font-bold text-gray-500">
+                                            <i class="fa-solid fa-bag-shopping"></i>
                                             Out of Stock
                                         </button>
 
