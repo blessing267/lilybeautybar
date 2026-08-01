@@ -197,17 +197,22 @@ export default function Products({ onLogout }) {
       image: null,
       image_url: product.image_url,
 
-      variants:
-        product.variants?.length
-          ? product.variants
-          : [
-              {
-                colour: "",
-                product_type: "",
-                price: "",
-                stock: "",
-              },
-            ],
+      variants: product.variants?.length
+        ? product.variants.map((variant) => ({
+          ...variant,
+          image: null,
+          image_url: variant.image_url,
+        }))
+        : [
+          {
+            colour: "",
+            product_type: "",
+            price: "",
+            stock: "",
+            image: null,
+            image_url: "",
+          },
+        ],
     });
 
     setShowModal(true);

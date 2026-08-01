@@ -108,7 +108,7 @@ export default function ProductModal({
         variant.stock
       );
 
-      if (variant.image) {
+      if (variant.image instanceof File) {
         formData.append(
           `variants[${index}][image]`,
           variant.image
@@ -294,6 +294,14 @@ export default function ProductModal({
       }}
       className="border px-3 py-2 rounded"
     />
+
+    {variant.image_url && !variant.image && (
+      <img
+        src={variant.image_url}
+        alt="Current variant"
+        className="h-24 w-24 rounded object-contain border mb-2"
+      />
+    )}
 
     <input
       type="file"
