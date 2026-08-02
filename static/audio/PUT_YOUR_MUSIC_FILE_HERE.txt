@@ -1,1 +1,0 @@
-Add a licensed MP3 named lily-theme.mp3 in this folder. Browsers may block autoplay until the visitor interacts with the page.

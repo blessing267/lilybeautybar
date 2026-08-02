@@ -1,87 +1,155 @@
 {% extends "shop/base.html" %}
+{% load static %}
 {% block title %}Contact Us • Lily Beauty Bar{% endblock %}
 
 {% block content %}
 
-<section class="bg-gradient-to-b from-pink-50 via-white to-pink-100 min-h-screen py-20">
+<section class="min-h-screen bg-gradient-to-b from-pink-50 via-white to-pink-100 py-20">
 
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="mx-auto max-w-6xl px-6">
 
         <!-- Header -->
-        <div class="text-center mb-14">
+        <div class="mb-14 text-center">
 
-            <span class="inline-flex items-center px-4 py-2 rounded-full bg-pink-100 text-pink-600 text-sm font-medium">
+            <span class="inline-flex items-center rounded-full bg-pink-100 px-4 py-2 text-sm font-medium text-pink-600">
                 💕 Get In Touch
             </span>
 
-            <h1 class="mt-5 text-5xl font-bold text-gray-900">
+            <h1 class="mt-5 text-4xl font-bold text-gray-900 md:text-5xl">
                 Contact Lily Beauty Bar
             </h1>
 
-            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto leading-8">
-                We’re here to help with bookings, orders, beauty enquiries,
-                and product support. Our team is always happy to assist you.
+            <p class="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+                We'd love to hear from you. If you have questions about
+                our products, orders or beauty services, our team is here to help.
             </p>
 
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div class="grid items-start gap-12 lg:grid-cols-2">
 
-            <!-- LEFT SIDE -->
-            <div class="bg-white rounded-[35px] shadow-xl p-10 border border-pink-100">
+            <!-- LEFT -->
+            <div class="rounded-[35px] border border-pink-100 bg-white p-10 shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
 
                 <h2 class="text-3xl font-bold text-gray-900">
                     Let's Talk Beauty ✨
                 </h2>
 
-                <p class="mt-4 text-gray-600 leading-8">
-                    Welcome to Lily Beauty Bar — your go-to destination
-                    for luxury beauty services and premium beauty products.
-                    We specialise in enhancing natural beauty while
-                    delivering a relaxing, premium experience.
+                <p class="mt-4 leading-8 text-gray-600">
+                    Welcome to Lily Beauty Bar — your destination for premium
+                    beauty products and exceptional customer service.
+                    We're always happy to help with enquiries before or after
+                    your purchase.
                 </p>
 
-                <!-- Contact Info -->
-                <div class="mt-8 space-y-6">
+                <div class="mt-8 space-y-7">
 
+                    <!-- Email -->
                     <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-pink-100 text-2xl">
                             📧
                         </div>
 
                         <div>
+
                             <h4 class="font-semibold text-lg">
                                 Email
                             </h4>
-                            <p class="text-gray-500">
+
+                            <a
+                                href="mailto:lilybeautybar11@gmail.com"
+                                class="text-gray-500 transition hover:text-pink-600 hover:underline"
+                            >
                                 lilybeautybar11@gmail.com
-                            </p>
+                            </a>
+
                         </div>
+
                     </div>
 
+                    <!-- Phone -->
                     <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-pink-100 text-2xl">
                             📞
                         </div>
 
                         <div>
+
                             <h4 class="font-semibold text-lg">
                                 Phone
                             </h4>
-                            <p class="text-gray-500">
+
+                            <a
+                                href="tel:+2349012180451"
+                                class="text-gray-500 transition hover:text-pink-600 hover:underline"
+                            >
                                 +234 901 218 0451
-                            </p>
+                            </a>
+
                         </div>
+
+                    </div>
+
+                    <!-- WhatsApp -->
+                    <div class="flex items-start gap-4">
+
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
+                            <img src="{% static 'img/whatsapp-logo-png.webp' %}" alt="WhatsApp" class="h-8 w-8 object-contain">
+                        </div>
+
+                        <div>
+
+                            <h4 class="font-semibold text-lg">
+                                WhatsApp
+                            </h4>
+
+                            <a
+                                href="https://wa.me/2349012180451"
+                                target="_blank"
+                                class="text-gray-500 transition hover:text-green-600 hover:underline"
+                            >
+                                Chat with us
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Business Hours -->
+                    <div class="flex items-start gap-4">
+
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-pink-100 text-2xl">
+                            🕒
+                        </div>
+
+                        <div>
+
+                            <h4 class="font-semibold text-lg">
+                                Business Hours
+                            </h4>
+
+                            <p class="text-gray-500">
+                                Monday – Sunday
+                            </p>
+
+                            <p class="text-gray-500">
+                                9:00 AM – 6:00 PM
+                            </p>
+
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- CONTACT FORM -->
-            <div class="bg-white rounded-[35px] shadow-xl p-10 border border-pink-100">
+            <!-- FORM -->
+            <div class="rounded-[35px] border border-pink-100 bg-white p-10 shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
 
-                <h2 class="text-3xl font-bold mb-8">
+                <h2 class="mb-8 text-3xl font-bold">
                     Send Us A Message
                 </h2>
 
@@ -89,35 +157,75 @@
 
                     {% csrf_token %}
 
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Your Name"
-                        required
-                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    >
+                    <div>
 
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Your Email"
-                        required
-                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    >
+                        <label class="mb-2 block font-medium text-gray-700">
+                            Full Name
+                        </label>
 
-                    <textarea
-                        name="message"
-                        rows="6"
-                        placeholder="Your Message"
-                        required
-                        class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
-                    ></textarea>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            placeholder="Enter your full name"
+                            class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                        >
+
+                    </div>
+
+                    <div>
+                    
+                        <label class="mb-2 block font-medium text-gray-700">
+                            Phone Number
+                        </label>
+                    
+                        <input type="tel" name="phone" placeholder="0701 234 5678" autocomplete="tel" required
+                            class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    
+                    </div>
+
+                    <div>
+
+                        <label class="mb-2 block font-medium text-gray-700">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            placeholder="Enter your email"
+                            class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <label class="mb-2 block font-medium text-gray-700">
+                            Enter Message
+                        </label>
+
+                        <textarea
+                            name="message"
+                            rows="6"
+                            required
+                            placeholder="How can we help you?"
+                            class="w-full rounded-2xl border border-pink-200 bg-pink-50 px-5 py-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                        ></textarea>
+
+                    </div>
 
                     <button
-                        class="w-full py-4 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-semibold text-lg shadow-lg transition duration-300"
+                        type="submit"
+                        class="w-full rounded-2xl bg-pink-500 py-4 text-lg font-semibold text-white shadow-lg transition duration-300 hover:bg-pink-600"
                     >
-                        Send Message
+                        Send Enquiry
                     </button>
+
+                    <p class="text-center text-sm text-gray-500">
+                        We usually respond within 24 hours.
+                    </p>
 
                 </form>
 

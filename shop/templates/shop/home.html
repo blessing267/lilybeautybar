@@ -369,33 +369,156 @@
     </div>
 </section>
 
-<!-- WHY CHOOSE US -->
-<section class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-900">Why Choose Lily Beauty Bar?</h2>
-            <p class="text-gray-500 mt-3">Luxury beauty products and quality materials.</p>
+<!-- FEEDBACKS & REVIEWS GALLERY -->
+<section class="bg-white py-10 sm:py-10">
+    <div class="mx-auto max-w-7xl px-6">
+
+        <div class="mb-7 text-center">
+            <h2 class="font-display text-3xl font-bold text-gray-900 sm:text-4xl">
+                FEEDBACKS & REVIEWS
+            </h2>
+
+            <p class="mt-3 -pb-5 text-gray-500">
+                Feedback from our customers ✨
+            </p>
         </div>
 
-        <div class="grid gap-8 md:grid-cols-3">
-            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
-                <div class="text-5xl mb-4">💎</div>
-                <h3 class="text-xl font-semibold">Premium Quality</h3>
-                <p class="text-gray-500 mt-3">Carefully selected beauty products to help professionals deliver great results always.</p>
-            </div>
+        <div class="relative px-5 sm:px-7">
 
-            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
-                <div class="text-5xl mb-4">🚚</div>
-                <h3 class="text-xl font-semibold">Fast Delivery</h3>
-                <p class="text-gray-500 mt-3">Get your beauty essentials delivered quickly and safely.</p>
-            </div>
+        <!-- Previous arrow -->
+        <button
+          id="review-previous"
+          type="button"
+          aria-label="Show previous review images"
+          class="absolute -left-6 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
 
-            <div class="bg-pink-200 rounded-3xl p-8 shadow-md hover:shadow-xl transition duration-300 text-center">
-                <div class="text-5xl mb-4">💕</div>
-                <h3 class="text-xl font-semibold">Customer Satisfaction</h3>
-                <p class="text-gray-500 mt-3">Trusted by customers who love quality beauty experiences.</p>
+        <!-- Review slider viewport -->
+        <div class="overflow-hidden py-3">
+
+          <div
+            id="review-slider"
+            class="flex transition-transform duration-500 ease-in-out"
+          >
+          {% for review in review_images %}
+            <article
+              class="review-slide w-full shrink-0 px-2 sm:w-1/2 lg:w-1/4"
+            >
+              <div
+                class="group/review h-[320px] w-full sm:h-[350px] overflow-hidden rounded-3xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <img
+                    src="{{ review.image.url }}"
+                    alt="Customer feedback screenshot"
+                    loading="lazy"
+                    class="h-full w-full object-cover transition duration-700 group-hover/review:scale-105"
+                >
+              </div>
+            </article>
+          {% empty %}
+            <div class="w-full py-12 text-center text-gray-500">
+              Customer feedback images will appear here.
             </div>
+          {% endfor %}
         </div>
+
+      </div>
+
+      <!-- Next arrow -->
+      <button
+        id="review-next"
+        type="button"
+        aria-label="Show next review images"
+        class="absolute -right-5 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT LILY BEAUTY BAR -->
+<section
+    id="about"
+    class="scroll-mt-24 overflow-hidden bg-[#fff5f8]"
+>
+    <div class="grid min-h-[390px] md:grid-cols-2">
+
+        <!-- MOBILE HEADING: displays before the image -->
+        <div class="px-6 pb-6 pt-10 sm:px-10 md:hidden">
+
+            <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
+                About Us
+            </span>
+
+            <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900">
+                Quality Beauty Essentials for Professionals Who Care About Results
+            </h2>
+
+            <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
+
+        </div>
+
+        <!-- IMAGE -->
+        <div class="w-full overflow-hidden"">
+
+            <img
+                src="{% static 'img/about.png' %}"
+                alt="Lily Beauty Bar professional beauty products"
+                loading="lazy"
+                class="w-full h-auto block"
+            >
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex items-center px-6 py-10 sm:px-10 md:px-12 lg:px-16">
+
+            <div class="max-w-xl">
+
+                <!-- DESKTOP HEADING -->
+                <div class="hidden md:block">
+
+                    <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
+                        About Us
+                    </span>
+
+                    <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
+                        Quality Beauty Essentials for Professionals Who Care About Results
+                    </h2>
+
+                    <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
+
+                </div>
+
+                <p class="text-base leading-8 text-gray-600 md:mt-6">
+                    Lily Beauty Bar was created for beauty
+                    professionals and beauty lovers to enable easy access to quality products, all in one convenient place.
+                </p>
+
+                <p class="mt-4 text-base leading-8 text-gray-600">
+                    We understand that exquisite results begin with the right
+                    products. This is why our products includes sales of quality
+                    essentials for
+                    <span class="font-semibold text-gray-900">
+                        lashes, brows, nails, waxing, pedicure and other items you can ask for.
+                    </span>
+                </p>
+
+                <p class="mt-4 text-base leading-8 text-gray-600">
+                    Every product is selected with performance, ease of use and
+                    customer satisfaction in mind, helping professionals work
+                    confidently while giving their clients an experience they
+                    will remember.
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
 </section>
 
@@ -549,159 +672,6 @@
 
     </div>
 
-</section>
-
-<!-- FEEDBACKS & REVIEWS GALLERY -->
-<section class="bg-white py-10 sm:py-10">
-    <div class="mx-auto max-w-7xl px-6">
-
-        <div class="mb-7 text-center">
-            <h2 class="font-display text-3xl font-bold text-gray-900 sm:text-4xl">
-                FEEDBACKS & REVIEWS
-            </h2>
-
-            <p class="mt-3 -pb-5 text-gray-500">
-                Feedback from our customers ✨
-            </p>
-        </div>
-
-        <div class="relative px-5 sm:px-7">
-
-        <!-- Previous arrow -->
-        <button
-          id="review-previous"
-          type="button"
-          aria-label="Show previous review images"
-          class="absolute -left-6 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-
-        <!-- Review slider viewport -->
-        <div class="overflow-hidden py-3">
-
-          <div
-            id="review-slider"
-            class="flex transition-transform duration-500 ease-in-out"
-          >
-          {% for review in review_images %}
-            <article
-              class="review-slide w-full shrink-0 px-2 sm:w-1/2 lg:w-1/4"
-            >
-              <div
-                class="group/review h-[320px] w-full sm:h-[350px] overflow-hidden rounded-3xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
-                <img
-                    src="{{ review.image.url }}"
-                    alt="Customer feedback screenshot"
-                    loading="lazy"
-                    class="h-full w-full object-cover transition duration-700 group-hover/review:scale-105"
-                >
-              </div>
-            </article>
-          {% empty %}
-            <div class="w-full py-12 text-center text-gray-500">
-              Customer feedback images will appear here.
-            </div>
-          {% endfor %}
-        </div>
-
-      </div>
-
-      <!-- Next arrow -->
-      <button
-        id="review-next"
-        type="button"
-        aria-label="Show next review images"
-        class="absolute -right-5 top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-pink-500 text-white shadow-lg transition hover:scale-110 hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-pink-200 disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT LILY BEAUTY BAR -->
-<section
-    id="about"
-    class="scroll-mt-24 overflow-hidden bg-[#fff5f8]"
->
-    <div class="grid min-h-[390px] md:grid-cols-2">
-
-        <!-- MOBILE HEADING: displays before the image -->
-        <div class="px-6 pb-6 pt-10 sm:px-10 md:hidden">
-
-            <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
-                About Us
-            </span>
-
-            <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900">
-                Quality Beauty Essentials for Professionals Who Care About Results
-            </h2>
-
-            <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
-
-        </div>
-
-        <!-- IMAGE -->
-        <div class="w-full overflow-hidden"">
-
-            <img
-                src="{% static 'img/about.png' %}"
-                alt="Lily Beauty Bar professional beauty products"
-                loading="lazy"
-                class="w-full h-auto block"
-            >
-
-        </div>
-
-        <!-- CONTENT -->
-        <div class="flex items-center px-6 py-10 sm:px-10 md:px-12 lg:px-16">
-
-            <div class="max-w-xl">
-
-                <!-- DESKTOP HEADING -->
-                <div class="hidden md:block">
-
-                    <span class="text-sm font-bold uppercase tracking-[0.25em] text-pink-600">
-                        About Us
-                    </span>
-
-                    <h2 class="font-display mt-3 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
-                        Quality Beauty Essentials for Professionals Who Care About Results
-                    </h2>
-
-                    <div class="mt-5 h-1 w-14 rounded-full bg-pink-500"></div>
-
-                </div>
-
-                <p class="text-base leading-8 text-gray-600 md:mt-6">
-                    Lily Beauty Bar was created for beauty
-                    professionals and beauty lovers to enable easy access to quality products, all in one convenient place.
-                </p>
-
-                <p class="mt-4 text-base leading-8 text-gray-600">
-                    We understand that exquisite results begin with the right
-                    products. This is why our products includes sales of quality
-                    essentials for
-                    <span class="font-semibold text-gray-900">
-                        lashes, brows, nails, waxing, pedicure and other items you can ask for.
-                    </span>
-                </p>
-
-                <p class="mt-4 text-base leading-8 text-gray-600">
-                    Every product is selected with performance, ease of use and
-                    customer satisfaction in mind, helping professionals work
-                    confidently while giving their clients an experience they
-                    will remember.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
 </section>
 
 {% endblock content %}

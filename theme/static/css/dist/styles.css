@@ -287,6 +287,92 @@
 }
 @layer utilities {
   @layer daisyui.l1.l2.l3 {
+    .fab {
+      pointer-events: none;
+      position: fixed;
+      inset-inline-end: calc(0.25rem * 4);
+      bottom: calc(0.25rem * 4);
+      z-index: 999;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+      gap: calc(0.25rem * 2);
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+      white-space: nowrap;
+    }
+    .fab > * {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: calc(0.25rem * 2);
+    }
+    .fab > *:hover, .fab > *:has(:focus-visible) {
+      z-index: 1;
+    }
+    .fab > [tabindex]:first-child {
+      position: relative;
+      display: grid;
+      transition-property: opacity, visibility, rotate;
+      transition-duration: 0.2s;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fab .fab-close {
+      position: absolute;
+      inset-inline-end: calc(0.25rem * 0);
+      bottom: calc(0.25rem * 0);
+    }
+    .fab .fab-main-action {
+      position: absolute;
+      inset-inline-end: calc(0.25rem * 0);
+      bottom: calc(0.25rem * 0);
+    }
+    .fab:focus-within:has(.fab-close) > [tabindex], .fab:focus-within:has(.fab-main-action) > [tabindex] {
+      rotate: 90deg;
+      opacity: 0%;
+    }
+    .fab:focus-within > [tabindex]:first-child {
+      pointer-events: none;
+    }
+    .fab:focus-within > :nth-child(n + 2) {
+      visibility: visible;
+      --tw-scale-x: 100%;
+      --tw-scale-y: 100%;
+      --tw-scale-z: 100%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+      opacity: 100%;
+    }
+    .fab > :nth-child(n + 2) {
+      visibility: hidden;
+      --tw-scale-x: 80%;
+      --tw-scale-y: 80%;
+      --tw-scale-z: 80%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+      opacity: 0%;
+      transition-property: opacity, scale, visibility;
+      transition-duration: 0.2s;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fab > :nth-child(n + 2).fab-main-action, .fab > :nth-child(n + 2).fab-close {
+      --tw-scale-x: 100%;
+      --tw-scale-y: 100%;
+      --tw-scale-z: 100%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+    .fab > :nth-child(3) {
+      transition-delay: 30ms;
+    }
+    .fab > :nth-child(4) {
+      transition-delay: 60ms;
+    }
+    .fab > :nth-child(5) {
+      transition-delay: 90ms;
+    }
+    .fab > :nth-child(6) {
+      transition-delay: 120ms;
+    }
+  }
+  @layer daisyui.l1.l2.l3 {
     .menu {
       display: flex;
       width: fit-content;
@@ -2440,6 +2526,11 @@
     margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
     margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
   }
+  :where(.space-y-7 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 7) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 7) * calc(1 - var(--tw-space-y-reverse)));
+  }
   :where(.space-y-8 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * 8) * var(--tw-space-y-reverse));
@@ -3682,6 +3773,11 @@
     }
   }
   @media (hover: hover) {
+    .hover\:text-green-600:hover {
+      color: var(--color-green-600);
+    }
+  }
+  @media (hover: hover) {
     .hover\:text-pink-400:hover {
       color: var(--color-pink-400);
     }
@@ -3704,6 +3800,12 @@
   @media (hover: hover) {
     .hover\:underline:hover {
       text-decoration-line: underline;
+    }
+  }
+  @media (hover: hover) {
+    .hover\:shadow-2xl:hover {
+      --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
   }
   @media (hover: hover) {

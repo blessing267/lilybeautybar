@@ -427,6 +427,106 @@
   <!-- Main Content -->
   <main class="min-h-screen">{% block content %}{% endblock %}</main>
 
+  <!-- ======================================================
+       SHOPPING BENEFITS
+  ====================================================== -->
+  <section class="bg-[#fff3f7]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 py-8
+                 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+  
+      <div class="flex items-center gap-4">
+        <i class="fa-solid fa-truck-fast text-3xl text-pink-600"></i>
+  
+        <div>
+          <h3 class="font-bold text-gray-900">Reliable Delivery</h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Carefully packaged orders
+          </p>
+        </div>
+      </div>
+  
+  
+      <div class="flex items-center gap-4">
+        <i class="fa-solid fa-shield-halved text-3xl text-pink-600"></i>
+  
+        <div>
+          <h3 class="font-bold text-gray-900">Secure Payment</h3>
+          <p class="mt-1 text-sm text-gray-600">
+            100% secure checkout
+          </p>
+        </div>
+      </div>
+  
+  
+      <div class="flex items-center gap-4">
+        <i class="fa-solid fa-award text-3xl text-pink-600"></i>
+  
+        <div>
+          <h3 class="font-bold text-gray-900">Quality Products</h3>
+          <p class="mt-1 text-sm text-gray-600">
+            Premium and authentic
+          </p>
+        </div>
+      </div>
+  
+  
+      <div class="flex items-center gap-4">
+        <i class="fa-solid fa-headset text-3xl text-pink-600"></i>
+  
+        <div>
+          <h3 class="font-bold text-gray-900">Customer Support</h3>
+          <p class="mt-1 text-sm text-gray-600">
+            We are here to help
+          </p>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  
+
+  <!-- ======================================================
+       NEWSLETTER
+  ====================================================== -->
+  <section class="bg-gradient-to-r from-pink-600 to-pink-500">
+    <div class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10
+                 sm:px-6 lg:flex-row lg:items-center
+                 lg:justify-between lg:px-8">
+  
+      <div class="max-w-2xl text-white">
+        <h2 class="font-display text-3xl font-bold sm:text-4xl">
+          Get Special Offers &amp; Updates
+        </h2>
+  
+        <p class="mt-3 leading-7 text-pink-50">
+          Subscribe to our newsletter and be the first to know about
+          new arrivals, exclusive deals and beauty tips.
+        </p>
+      </div>
+  
+  
+      <form action="#" method="POST" class="flex w-full max-w-lg flex-col gap-3 sm:flex-row">
+        {% csrf_token %}
+  
+        <label for="newsletter-email" class="sr-only">
+          Email address
+        </label>
+  
+        <input id="newsletter-email" type="email" name="email" required placeholder="Enter your email" class="min-h-13 flex-1 rounded-lg border-0 bg-white
+                         px-5 py-4 text-gray-900 outline-none
+                         placeholder:text-gray-400 focus:ring-4
+                         focus:ring-pink-200">
+  
+        <button type="submit" class="rounded-lg border-2 border-white px-7 py-4
+                         text-sm font-bold uppercase text-white transition
+                         hover:bg-white hover:text-pink-600">
+          Subscribe
+        </button>
+      </form>
+  
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="bg-[#050305] text-white">
     <div class="mx-auto grid max-w-7xl gap-10 px-6 py-16 text-center sm:grid-cols-2 lg:grid-cols-4 lg:text-left">
@@ -472,34 +572,38 @@
           <i class="fa-brands fa-facebook-f"></i>
         </a>
       </div></div>
-      <div><h3 class="font-bold">QUICK LINKS</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="{% url 'products' %}" class="hover:text-pink-400">Shop</a><a href="#about" class="hover:text-pink-400">About Us</a><a href="{% url 'contact' %}" class="hover:text-pink-400">Contact</a><a href="{% url 'orders' %}" class="hover:text-pink-400">Track Orders</a></div></div>
-      <div><h3 class="font-bold">CUSTOMER SERVICE</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="#faqs" class="hover:text-pink-400">FAQs</a><a href="#ship" class="hover:text-pink-400">Shipping & Delivery</a><a href="#terms" class="hover:text-pink-400">Terms & Conditions</a><a href="#privacy" class="hover:text-pink-400">Privacy Policy</a></div></div>
+      <div><h3 class="font-bold">QUICK LINKS</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="{% url 'products' %}" class="hover:text-pink-400">Shop</a><a href="{% url 'home' %}#about" class="hover:text-pink-400">About Us</a><a href="{% url 'contact' %}" class="hover:text-pink-400">Contact Us</a><a href="{% url 'orders' %}" class="hover:text-pink-400">Track Orders</a></div></div>
+      <div><h3 class="font-bold">CUSTOMER SERVICE</h3><div class="mt-5 flex flex-col gap-3 text-sm text-gray-400"><a href="#faqs" class="hover:text-pink-400">FAQs</a><a href="{% url 'home' %}#ship" class="hover:text-pink-400">Shipping & Delivery</a><a href="#terms" class="hover:text-pink-400">Terms & Conditions</a><a href="#privacy" class="hover:text-pink-400">Privacy Policy</a></div></div>
       <div><h3 class="font-bold">VISIT US</h3><p class="mt-5 text-sm leading-7 text-gray-400">122 Ujoelen Road<br>Ekpoma, Edo State<br>Nigeria</p><p class="mt-3 text-sm text-gray-400">Mon–Sun:</p><p class="mt-3 text-sm text-gray-400">9am–6pm</p></div>
     </div>
     <div class="border-t border-white/10 px-6 py-5 text-center text-xs text-gray-500">© {% now "Y" %} Lily Beauty Bar. All rights reserved.</div>
   </footer>
 
   <div class="fixed bottom-6 left-6 z-50">
-    <button id="music-toggle" type="button" class="rounded-full bg-white px-4 py-3 text-sm font-semibold text-pink-600 shadow-lg border border-pink-100" aria-label="Play or pause background music">▶ Play music</button>
-    <audio id="site-music" loop preload="metadata"><source src="{% static 'audio/lily-theme.mp3' %}" type="audio/mpeg"></audio>
+    <button id="music-toggle" type="button"
+      class="rounded-full border border-pink-100 bg-white px-4 py-3 text-sm font-semibold text-pink-600 shadow-lg"
+      aria-label="Play or pause background music">
+      <span id="music-icon">&#9654;&#65038;</span>
+      <span id="music-text">Play music</span>
+    </button>
+    <audio id="site-music" loop preload="auto"><source src="{% static 'audio/The Fate of Ophelia.mp3' %}" type="audio/mpeg"></audio>
   </div>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     // GLOBAL DJANGO MESSAGES
     document.querySelectorAll(".global-message").forEach((message) => {
-      setTimeout(() => {
-        message.classList.add(
-          "opacity-0",
-          "translate-x-4"
-        );
-
         setTimeout(() => {
-          message.remove();
-        }, 300);
-      }, 4000);
-    });
+            message.classList.add(
+                "opacity-0",
+                "translate-x-4"
+            );
 
+            setTimeout(() => {
+                message.remove();
+            }, 300);
+        }, 4000);
+    });
 
     // WEBSITE MUSIC
     const audio = document.getElementById("site-music");
@@ -509,40 +613,90 @@
 
     audio.volume = 0.25;
 
+    // Restore previous position
+    const savedTime = Number(
+        localStorage.getItem("lilyMusicTime") || 0
+    );
+
+    if (savedTime > 0) {
+        audio.currentTime = savedTime;
+    }
+
     const updateButton = () => {
-      button.textContent = audio.paused
-        ? "▶ Play music"
-        : "⏸ Pause music";
+        button.innerHTML = audio.paused
+            ? '<span>&#9654;&#65038;</span> Play music'
+            : '<span>&#10074;&#10074;</span> Pause music';
     };
 
-    button.addEventListener("click", async () => {
-      if (audio.paused) {
-        try {
-          await audio.play();
-          localStorage.setItem("lilyMusicPlaying", "true");
-        } catch {
-          localStorage.setItem("lilyMusicPlaying", "false");
-        }
-      } else {
-        audio.pause();
-        localStorage.setItem("lilyMusicPlaying", "false");
-      }
-
-      updateButton();
+    // Save current position
+    audio.addEventListener("timeupdate", () => {
+        localStorage.setItem(
+            "lilyMusicTime",
+            audio.currentTime
+        );
     });
 
-    if (
-      localStorage.getItem("lilyMusicPlaying") === "true"
-    ) {
-      audio.play()
-        .catch(() => {
-          localStorage.setItem("lilyMusicPlaying", "false");
+    // Play / Pause button
+    button.addEventListener("click", async () => {
+        if (audio.paused) {
+            try {
+                await audio.play();
+                localStorage.setItem(
+                    "lilyMusicPlaying",
+                    "true"
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            audio.pause();
+            localStorage.setItem(
+                "lilyMusicPlaying",
+                "false"
+            );
+        }
+
+        updateButton();
+    });
+
+    // Try autoplay
+    audio.play()
+        .then(() => {
+            localStorage.setItem(
+                "lilyMusicPlaying",
+                "true"
+            );
+            updateButton();
         })
-        .finally(updateButton);
-    } else {
-      updateButton();
-    }
-  });
+        .catch(() => {
+            // Browser blocked autoplay.
+            // Start music after the first click anywhere.
+            document.addEventListener(
+                "click",
+                async function firstInteraction() {
+                    if (
+                        localStorage.getItem("lilyMusicPlaying")
+                        === "false"
+                    ) {
+                        return;
+                    }
+
+                    try {
+                        await audio.play();
+                        updateButton();
+                    } catch (error) {}
+
+                    document.removeEventListener(
+                        "click",
+                        firstInteraction
+                    );
+                },
+                { once: true }
+            );
+
+            updateButton();
+        });
+});
 </script>
 
 {% block extra_js %}{% endblock extra_js %}
