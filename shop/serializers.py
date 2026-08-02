@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from .models import Product, ReviewGallery, ProductVariant
+from copy import copy
 
 class ProductVariantSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
@@ -50,7 +51,7 @@ class ProductSerializer(serializers.ModelSerializer):
         - clearing dates removes the sale schedule;
         - DRF does not reject an empty decimal or datetime.
         """
-        data = data.copy()
+        data = copy(data)
 
         nullable_sale_fields = ["sale_price", "sale_starts_at", "sale_ends_at",]
 

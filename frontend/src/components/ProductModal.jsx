@@ -165,11 +165,51 @@ export default function ProductModal({
             required
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input name="sale_price" type="number" placeholder="Sale Price (optional)" value={form.sale_price || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
-            <input name="sale_starts_at" type="datetime-local" value={form.sale_starts_at || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
-            <input name="sale_ends_at" type="datetime-local" value={form.sale_ends_at || ""} onChange={handleChange} className="border px-3 py-2 rounded" />
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium">
+                Sale Price
+              </label>
+
+              <input
+                name="sale_price"
+                type="number"
+                placeholder="Optional"
+                value={form.sale_price || ""}
+                onChange={handleChange}
+                className="w-full rounded border px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium">
+                Sale Start Date
+              </label>
+
+              <input
+                name="sale_starts_at"
+                type="datetime-local"
+                value={form.sale_starts_at || ""}
+                onChange={handleChange}
+                className="w-full rounded border px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium">
+                Sale End Date
+              </label>
+
+              <input
+                name="sale_ends_at"
+                type="datetime-local"
+                value={form.sale_ends_at || ""}
+                onChange={handleChange}
+                className="w-full rounded border px-3 py-2"
+              />
+            </div>
           </div>
+          
           <p className="text-xs text-gray-500">Leave sale price blank to restore the original price immediately.</p>
 
           {/* Stock */}
