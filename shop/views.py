@@ -565,38 +565,43 @@ def remove_from_cart(
 
     return redirect("cart")
 
-def update_cart(
-    request,
-    cart_key
-):
-    if request.method == "POST":
+def update_cart(request, cart_key):
+    if request.method != "POST":
+        return redirect("cart")
 
-        quantity = int(
-            request.POST.get(
-                "quantity",
-                1
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (TypeError, ValueError):
+        quantity = 1
+
+    quantity = max(1, min(quantity, 99))
+
+    cart = request.session.get("cart", {})
+
+    if cart_key not in cart:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "This product is no longer in your cart.",
+                },
+                status=404,
             )
+
+        return redirect("cart")
+
+    cart[cart_key]["quantity"] = quantity
+
+    request.session["cart"] = cart
+    request.session.modified = True
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse(
+            {
+                "success": True,
+                "quantity": quantity,
+            }
         )
-
-        cart = request.session.get(
-            "cart",
-            {}
-        )
-
-        if cart_key in cart:
-
-            if quantity > 0:
-                cart[cart_key][
-                    "quantity"
-                ] = quantity
-            else:
-                del cart[cart_key]
-
-        request.session[
-            "cart"
-        ] = cart
-
-        request.session.modified = True
 
     return redirect("cart")
 

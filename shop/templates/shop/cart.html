@@ -96,9 +96,9 @@
 
                     {% for item in cart_items %}
 
-                    <article class="grid gap-5 px-5 py-6 sm:px-7
-                                       md:grid-cols-[minmax(300px,1.8fr)_0.65fr_0.9fr_0.75fr_0.4fr]
-                                       md:items-center md:gap-4">
+                    <article class="cart-item-row grid gap-5 px-5 py-6 sm:px-7
+                               md:grid-cols-[minmax(300px,1.8fr)_0.65fr_0.9fr_0.75fr_0.4fr]
+                               md:items-center md:gap-4" data-unit-price="{{ item.price }}">
 
                         <!-- PRODUCT -->
                         <div class="flex items-center gap-4">
@@ -210,7 +210,9 @@
                                 Item total
                             </p>
 
-                            <span class="font-bold text-gray-900">
+                            <span class="item-subtotal font-bold text-gray-900"
+                                data-subtotal="{{ item.subtotal }}"
+                            >
                                 ₦{{ item.subtotal|floatformat:0|intcomma }}
                             </span>
 
@@ -274,11 +276,12 @@
                             <span class="text-gray-600">
                                 Subtotal
                                 <span class="text-sm">
-                                    ({{ cart_count }} item{{ cart_count|pluralize }})
+                                    (<span id="cart-count">{{ cart_count }}</span>
+                                    <span id="cart-count-label">item{{ cart_count|pluralize }}</span>)
                                 </span>
                             </span>
 
-                            <span class="font-bold text-gray-900">
+                            <span id="cart-subtotal" class="font-bold text-gray-900">
                                 ₦{{ total|floatformat:0|intcomma }}
                             </span>
                         </div>
@@ -293,7 +296,7 @@
                             Total
                         </span>
 
-                        <span class="text-xl font-extrabold text-pink-600">
+                        <span id="cart-total" class="text-xl font-extrabold text-pink-600">
                             ₦{{ total|floatformat:0|intcomma }}
                         </span>
 
@@ -486,99 +489,120 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    /*
-     * Free-shipping progress bar
-     */
-    const progressBar = document.querySelector(
-        ".free-shipping-progress"
-    );
+    const quantityForms = document.querySelectorAll(".quantity-form");
+    const cartSubtotal = document.getElementById("cart-subtotal");
+    const cartTotal = document.getElementById("cart-total");
+    const cartCount = document.getElementById("cart-count");
+    const cartCountLabel = document.getElementById("cart-count-label");
 
-    if (progressBar) {
-        const progress = Number(
-            progressBar.dataset.progress || 0
-        );
-
-        progressBar.style.width =
-            `${Math.min(Math.max(progress, 0), 100)}%`;
+    function formatNaira(value) {
+        return "₦" + Math.round(value).toLocaleString("en-NG");
     }
 
+    function recalculateCart() {
+        let totalAmount = 0;
+        let totalQuantity = 0;
 
-    /*
-     * Quantity controls
-     *
-     * The form submits automatically after the customer
-     * increases, decreases or manually changes a quantity.
-     */
-    const quantityForms = document.querySelectorAll(
-        ".quantity-form"
-    );
+        document.querySelectorAll(".cart-item-row").forEach(function (row) {
+            const input = row.querySelector(".quantity-input");
+            const subtotalElement = row.querySelector(".item-subtotal");
+
+            const quantity = parseInt(input.value, 10) || 1;
+            const unitPrice = parseFloat(row.dataset.unitPrice) || 0;
+            const subtotal = quantity * unitPrice;
+
+            totalAmount += subtotal;
+            totalQuantity += quantity;
+
+            if (subtotalElement) {
+                subtotalElement.textContent = formatNaira(subtotal);
+            }
+        });
+
+        if (cartSubtotal) {
+            cartSubtotal.textContent = formatNaira(totalAmount);
+        }
+
+        if (cartTotal) {
+            cartTotal.textContent = formatNaira(totalAmount);
+        }
+
+        if (cartCount) {
+            cartCount.textContent = totalQuantity;
+        }
+
+        if (cartCountLabel) {
+            cartCountLabel.textContent =
+                totalQuantity === 1 ? "item" : "items";
+        }
+    }
 
     quantityForms.forEach(function (form) {
         const input = form.querySelector(".quantity-input");
         const minusButton = form.querySelector(".quantity-minus");
         const plusButton = form.querySelector(".quantity-plus");
 
-        let isSubmitting = false;
-        let changeTimer = null;
+        let saveTimer;
 
+        async function saveQuantity() {
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
 
-        function submitQuantityForm() {
-            if (isSubmitting) {
-                return;
+                if (!response.ok) {
+                    throw new Error("Unable to update cart");
+                }
+            } catch (error) {
+                console.error(error);
+                window.location.reload();
             }
-
-            isSubmitting = true;
-
-            minusButton.disabled = true;
-            plusButton.disabled = true;
-            input.readOnly = true;
-
-            form.submit();
         }
 
+        function changeQuantity(newQuantity) {
+            newQuantity = Math.max(1, Math.min(newQuantity, 99));
+
+            input.value = newQuantity;
+
+            // Update prices immediately
+            recalculateCart();
+
+            // Save quietly in the background
+            clearTimeout(saveTimer);
+
+            saveTimer = setTimeout(function () {
+                saveQuantity();
+            }, 250);
+        }
 
         minusButton.addEventListener("click", function () {
             const currentQuantity =
                 parseInt(input.value, 10) || 1;
 
-            if (currentQuantity > 1) {
-                input.value = currentQuantity - 1;
-                submitQuantityForm();
-            }
+            changeQuantity(currentQuantity - 1);
         });
-
 
         plusButton.addEventListener("click", function () {
             const currentQuantity =
                 parseInt(input.value, 10) || 1;
 
-            if (currentQuantity < 99) {
-                input.value = currentQuantity + 1;
-                submitQuantityForm();
-            }
+            changeQuantity(currentQuantity + 1);
         });
 
-
         input.addEventListener("input", function () {
-            clearTimeout(changeTimer);
-
-            let quantity =
+            const quantity =
                 parseInt(input.value, 10) || 1;
 
-            quantity = Math.max(
-                1,
-                Math.min(quantity, 99)
-            );
+            changeQuantity(quantity);
+        });
 
-            input.value = quantity;
-
-            /*
-             * Wait briefly so the form does not submit
-             * while the customer is still typing.
-             */
-            changeTimer = setTimeout(function () {
-                submitQuantityForm();
-            }, 700);
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            saveQuantity();
         });
     });
 });
