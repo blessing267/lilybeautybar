@@ -2114,9 +2114,6 @@
   .min-h-\[260px\] {
     min-height: 260px;
   }
-  .min-h-\[300px\] {
-    min-height: 300px;
-  }
   .min-h-\[390px\] {
     min-height: 390px;
   }
@@ -2315,11 +2312,24 @@
   .cursor-pointer {
     cursor: pointer;
   }
+  .touch-pan-x {
+    --tw-pan-x: pan-x;
+    touch-action: var(--tw-pan-x,) var(--tw-pan-y,) var(--tw-pinch-zoom,);
+  }
   .resize {
     resize: both;
   }
   .resize-none {
     resize: none;
+  }
+  .snap-x {
+    scroll-snap-type: x var(--tw-scroll-snap-strictness);
+  }
+  .snap-mandatory {
+    --tw-scroll-snap-strictness: mandatory;
+  }
+  .snap-start {
+    scroll-snap-align: start;
   }
   .scroll-mt-24 {
     scroll-margin-top: calc(var(--spacing) * 24);
@@ -3804,11 +3814,6 @@
     }
   }
   @media (width >= 40rem) {
-    .sm\:min-h-\[380px\] {
-      min-height: 380px;
-    }
-  }
-  @media (width >= 40rem) {
     .sm\:min-h-\[500px\] {
       min-height: 500px;
     }
@@ -4045,11 +4050,6 @@
   @media (width >= 48rem) {
     .md\:max-h-none {
       max-height: none;
-    }
-  }
-  @media (width >= 48rem) {
-    .md\:min-h-\[520px\] {
-      min-height: 520px;
     }
   }
   @media (width >= 48rem) {
@@ -4570,6 +4570,23 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-pan-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-pan-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-pinch-zoom {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-scroll-snap-strictness {
+  syntax: "*";
+  inherits: false;
+  initial-value: proximity;
+}
 @property --tw-space-y-reverse {
   syntax: "*";
   inherits: false;
@@ -4842,6 +4859,10 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-pan-x: initial;
+      --tw-pan-y: initial;
+      --tw-pinch-zoom: initial;
+      --tw-scroll-snap-strictness: proximity;
       --tw-space-y-reverse: 0;
       --tw-space-x-reverse: 0;
       --tw-divide-y-reverse: 0;

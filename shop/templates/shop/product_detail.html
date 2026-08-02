@@ -13,6 +13,15 @@
         display: none !important;
     }
 
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
     .thumbnail {
         transition: border-color 0.2s ease, transform 0.2s ease;
     }
@@ -183,12 +192,12 @@
                     <!-- THUMBNAILS -->
                     {% if product.image or product.variants.exists %}
 
-                        <div class="mt-4 flex gap-3 overflow-x-auto pb-2">
+                        <div class="mt-4 flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide touch-pan-x">
 
                             {% if product.image %}
                                 <button
                                     type="button"
-                                    class="thumbnail active h-20 w-20 shrink-0
+                                    class="thumbnail active h-20 w-20 shrink-0 snap-start
                                            overflow-hidden rounded-xl border-2
                                            border-pink-500 bg-pink-50 p-1"
                                     data-image="{{ product.image.url }}"
@@ -206,7 +215,7 @@
                                 {% if variant.image %}
                                     <button
                                         type="button"
-                                        class="thumbnail h-20 w-20 shrink-0
+                                        class="thumbnail h-20 w-20 shrink-0 snap-start
                                                overflow-hidden rounded-xl
                                                border-2 border-gray-200
                                                bg-pink-50 p-1"
