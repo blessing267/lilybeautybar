@@ -11,6 +11,7 @@
     --color-red-50: oklch(97.1% 0.013 17.38);
     --color-red-100: oklch(93.6% 0.032 17.717);
     --color-red-200: oklch(88.5% 0.062 18.334);
+    --color-red-300: oklch(80.8% 0.114 19.571);
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
@@ -285,201 +286,6 @@
   }
 }
 @layer utilities {
-  @layer daisyui.l1.l2.l3 {
-    .\!menu {
-      display: flex !important;
-      width: fit-content !important;
-      flex-direction: column !important;
-      flex-wrap: wrap !important;
-      padding: calc(0.25rem * 2) !important;
-      --menu-active-fg: var(--color-neutral-content) !important;
-      --menu-active-bg: var(--color-neutral) !important;
-      font-size: 0.875rem !important;
-    }
-    .\!menu :where(li ul) {
-      position: relative !important;
-      margin-inline-start: calc(0.25rem * 4) !important;
-      padding-inline-start: calc(0.25rem * 2) !important;
-      white-space: nowrap !important;
-    }
-    .\!menu :where(li ul):before {
-      position: absolute !important;
-      inset-inline-start: calc(0.25rem * 0) !important;
-      top: calc(0.25rem * 3) !important;
-      bottom: calc(0.25rem * 3) !important;
-      background-color: var(--color-base-content) !important;
-      opacity: 10% !important;
-      width: var(--border) !important;
-      content: "" !important;
-    }
-    .\!menu :where(li > .menu-dropdown:not(.menu-dropdown-show)) {
-      display: none !important;
-    }
-    .\!menu :where(li:not(.menu-title) > *:not(ul, details, .menu-title, .btn)), .\!menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
-      display: grid !important;
-      grid-auto-flow: column !important;
-      align-content: flex-start !important;
-      align-items: center !important;
-      gap: calc(0.25rem * 2) !important;
-      border-radius: var(--radius-field) !important;
-      padding-inline: calc(0.25rem * 3) !important;
-      padding-block: calc(0.25rem * 1.5) !important;
-      text-align: start !important;
-      transition-property: color, background-color, box-shadow !important;
-      transition-duration: 0.2s !important;
-      transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
-      grid-auto-columns: minmax(auto, max-content) auto max-content !important;
-      text-wrap: balance !important;
-      user-select: none !important;
-    }
-    .\!menu :where(li > details > summary) {
-      --tw-outline-style: none !important;
-      outline-style: none !important;
-    }
-    @media (forced-colors: active) {
-      .\!menu :where(li > details > summary) {
-        outline: 2px solid transparent !important;
-        outline-offset: 2px !important;
-      }
-    }
-    .\!menu :where(li > details > summary)::-webkit-details-marker {
-      display: none !important;
-    }
-    .\!menu :where(li > details > summary):after, .\!menu :where(li > .menu-dropdown-toggle):after {
-      justify-self: flex-end !important;
-      display: block !important;
-      height: 0.375rem !important;
-      width: 0.375rem !important;
-      rotate: -135deg !important;
-      translate: 0 -1px !important;
-      transition-property: rotate, translate !important;
-      transition-duration: 0.2s !important;
-      content: "" !important;
-      transform-origin: 50% 50% !important;
-      box-shadow: 2px 2px inset !important;
-      pointer-events: none !important;
-    }
-    .\!menu details {
-      overflow: hidden !important;
-      interpolate-size: allow-keywords !important;
-    }
-    .\!menu details::details-content {
-      block-size: 0 !important;
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .\!menu details::details-content {
-        transition-behavior: allow-discrete !important;
-        transition-property: block-size, content-visibility !important;
-        transition-duration: 0.2s !important;
-        transition-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
-      }
-    }
-    .\!menu details[open]::details-content {
-      block-size: auto !important;
-    }
-    .\!menu :where(li > details[open] > summary):after, .\!menu :where(li > .menu-dropdown-toggle.menu-dropdown-show):after {
-      rotate: 45deg !important;
-      translate: 0 1px !important;
-    }
-    .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn).menu-focus, .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn):focus-visible {
-      cursor: pointer !important;
-      background-color: var(--color-base-content) !important;
-    }
-    @supports (color: color-mix(in lab, red, red)) {
-      .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn).menu-focus, .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn):focus-visible {
-        background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent) !important;
-      }
-    }
-    .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn).menu-focus, .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn):focus-visible {
-      color: var(--color-base-content) !important;
-      --tw-outline-style: none !important;
-      outline-style: none !important;
-    }
-    @media (forced-colors: active) {
-      .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn).menu-focus, .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title), li:not(.menu-title, .disabled) > details > summary:not(.menu-title) ):not(.menu-active, :active, .btn):focus-visible {
-        outline: 2px solid transparent !important;
-        outline-offset: 2px !important;
-      }
-    }
-    .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title):not(.menu-active, :active, .btn):hover, li:not(.menu-title, .disabled) > details > summary:not(.menu-title):not(.menu-active, :active, .btn):hover ) {
-      cursor: pointer !important;
-      background-color: var(--color-base-content) !important;
-    }
-    @supports (color: color-mix(in lab, red, red)) {
-      .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title):not(.menu-active, :active, .btn):hover, li:not(.menu-title, .disabled) > details > summary:not(.menu-title):not(.menu-active, :active, .btn):hover ) {
-        background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent) !important;
-      }
-    }
-    .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title):not(.menu-active, :active, .btn):hover, li:not(.menu-title, .disabled) > details > summary:not(.menu-title):not(.menu-active, :active, .btn):hover ) {
-      --tw-outline-style: none !important;
-      outline-style: none !important;
-    }
-    @media (forced-colors: active) {
-      .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title):not(.menu-active, :active, .btn):hover, li:not(.menu-title, .disabled) > details > summary:not(.menu-title):not(.menu-active, :active, .btn):hover ) {
-        outline: 2px solid transparent !important;
-        outline-offset: 2px !important;
-      }
-    }
-    .\!menu :where( li:not(.menu-title, .disabled) > *:not(ul, details, .menu-title):not(.menu-active, :active, .btn):hover, li:not(.menu-title, .disabled) > details > summary:not(.menu-title):not(.menu-active, :active, .btn):hover ) {
-      box-shadow: 0 1px oklch(0% 0 0 / 0.01) inset, 0 -1px oklch(100% 0 0 / 0.01) inset !important;
-    }
-    .\!menu :where(li:empty) {
-      background-color: var(--color-base-content) !important;
-      opacity: 10% !important;
-      margin: 0.5rem 1rem !important;
-      height: 1px !important;
-    }
-    .\!menu :where(li) {
-      position: relative !important;
-      display: flex !important;
-      flex-shrink: 0 !important;
-      flex-direction: column !important;
-      flex-wrap: wrap !important;
-      align-items: stretch !important;
-    }
-    .\!menu :where(li) .badge {
-      justify-self: flex-end !important;
-    }
-    .\!menu :where(li) > *:not(ul, .menu-title, details, .btn):active, .\!menu :where(li) > *:not(ul, .menu-title, details, .btn).menu-active, .\!menu :where(li) > details > summary:active {
-      --tw-outline-style: none !important;
-      outline-style: none !important;
-    }
-    @media (forced-colors: active) {
-      .\!menu :where(li) > *:not(ul, .menu-title, details, .btn):active, .\!menu :where(li) > *:not(ul, .menu-title, details, .btn).menu-active, .\!menu :where(li) > details > summary:active {
-        outline: 2px solid transparent !important;
-        outline-offset: 2px !important;
-      }
-    }
-    .\!menu :where(li) > *:not(ul, .menu-title, details, .btn):active, .\!menu :where(li) > *:not(ul, .menu-title, details, .btn).menu-active, .\!menu :where(li) > details > summary:active {
-      color: var(--menu-active-fg) !important;
-      background-color: var(--menu-active-bg) !important;
-      background-size: auto, calc(var(--noise) * 100%) !important;
-      background-image: none, var(--fx-noise) !important;
-    }
-    .\!menu :where(li) > *:not(ul, .menu-title, details, .btn):active:not(.\!menu :where(li) > *:not(ul, .menu-title, details, .btn):active:active), .\!menu :where(li) > *:not(ul, .menu-title, details, .btn).menu-active:not(.\!menu :where(li) > *:not(ul, .menu-title, details, .btn).menu-active:active), .\!menu :where(li) > details > summary:active:not(.\!menu :where(li) > details > summary:active:active) {
-      box-shadow: 0 2px calc(var(--depth) * 3px) -2px var(--menu-active-bg) !important;
-    }
-    .\!menu :where(li).menu-disabled {
-      pointer-events: none !important;
-      color: var(--color-base-content) !important;
-    }
-    @supports (color: color-mix(in lab, red, red)) {
-      .\!menu :where(li).menu-disabled {
-        color: color-mix(in oklab, var(--color-base-content) 20%, transparent) !important;
-      }
-    }
-    .\!menu .dropdown:focus-within .menu-dropdown-toggle:after {
-      rotate: 45deg !important;
-      translate: 0 1px !important;
-    }
-    .\!menu .dropdown-content {
-      margin-top: calc(0.25rem * 2) !important;
-      padding: calc(0.25rem * 2) !important;
-    }
-    .\!menu .dropdown-content:before {
-      display: none !important;
-    }
-  }
   @layer daisyui.l1.l2.l3 {
     .menu {
       display: flex;
@@ -2793,6 +2599,9 @@
   .border-red-200 {
     border-color: var(--color-red-200);
   }
+  .border-red-300 {
+    border-color: var(--color-red-300);
+  }
   .border-rose-100 {
     border-color: var(--color-rose-100);
   }
@@ -3770,6 +3579,11 @@
   @media (hover: hover) {
     .hover\:border-pink-500:hover {
       border-color: var(--color-pink-500);
+    }
+  }
+  @media (hover: hover) {
+    .hover\:border-red-500:hover {
+      border-color: var(--color-red-500);
     }
   }
   @media (hover: hover) {

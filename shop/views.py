@@ -11,6 +11,7 @@ from django.db.models import F, Count, Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
@@ -601,14 +602,16 @@ def update_cart(
 
 @login_required
 def orders(request):
-    
-    selected_status = request.GET.get("status", "all").lower()
+    selected_status = request.GET.get(
+        "status",
+        "all",
+    ).lower()
 
     allowed_statuses = {
         "all",
         "pending",
         "paid",
-        "failed",
+        "cancelled",
     }
 
     if selected_status not in allowed_statuses:
@@ -631,20 +634,23 @@ def orders(request):
 
     counts = {
         "all": customer_orders.count(),
+
         "pending": customer_orders.filter(
-            status="pending"
+            status="pending",
         ).count(),
+
         "paid": customer_orders.filter(
-            status="paid"
+            status="paid",
         ).count(),
-        "failed": customer_orders.filter(
-            status="failed"
+
+        "cancelled": customer_orders.filter(
+            status="cancelled",
         ).count(),
     }
 
     if selected_status != "all":
         customer_orders = customer_orders.filter(
-            status=selected_status
+            status=selected_status,
         )
 
     paginator = Paginator(
@@ -656,10 +662,14 @@ def orders(request):
         request.GET.get("page")
     )
 
-    orders_list = list(page_obj.object_list)
+    orders_list = list(
+        page_obj.object_list
+    )
 
     for order in orders_list:
-        payments = list(order.payments.all())
+        payments = list(
+            order.payments.all()
+        )
 
         order.latest_payment = (
             max(
@@ -827,6 +837,76 @@ def buy_again(request, order_id):
         "order_detail",
         order_id=order.id,
     )
+
+@login_required
+@transaction.atomic
+def cancel_order(request, order_id):
+    """
+    Allow a customer to cancel only their own pending order.
+    """
+
+    if request.method != "POST":
+        messages.error(
+            request,
+            "Invalid cancellation request.",
+        )
+        return redirect(
+            "order_detail",
+            order_id=order_id,
+        )
+
+    order = get_object_or_404(
+        Order.objects
+        .select_for_update()
+        .filter(
+            Q(user=request.user)
+            | Q(email__iexact=request.user.email)
+        ),
+        id=order_id,
+    )
+
+    if order.status == "paid":
+        messages.error(
+            request,
+            "This order has already been paid and cannot be cancelled.",
+        )
+        return redirect(
+            "order_detail",
+            order_id=order.id,
+        )
+
+    if order.status == "cancelled":
+        messages.info(
+            request,
+            "This order has already been cancelled.",
+        )
+        return redirect(
+            "order_detail",
+            order_id=order.id,
+        )
+
+    if order.status != "pending":
+        messages.error(
+            request,
+            "Only pending orders can be cancelled.",
+        )
+        return redirect(
+            "order_detail",
+            order_id=order.id,
+        )
+
+    order.status = "cancelled"
+    order.save(update_fields=["status"])
+
+    messages.success(
+        request,
+        f"Order #LBB-{order.id:04d} has been cancelled.",
+    )
+
+    return redirect(
+        f"{reverse('orders')}?status=cancelled"
+    )
+
 # -------------------------------
 # Payment Method
 # -------------------------------

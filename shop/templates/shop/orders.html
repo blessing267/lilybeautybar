@@ -622,18 +622,18 @@
 
 
                     <a
-                        href="?status=failed"
+                        href="?status=cancelled"
                         class="border-b-2
                                px-3 py-3
                                text-sm font-semibold
-                               {% if selected_status == 'failed' %}
+                               {% if selected_status == 'cancelled' %}
                                    border-pink-500 text-pink-600
                                {% else %}
                                    border-transparent text-gray-500
                                    hover:text-pink-600
                                {% endif %}"
                     >
-                        Cancelled ({{ counts.failed }})
+                        Cancelled ({{ counts.cancelled }})
                     </a>
 
                 </div>
@@ -869,6 +869,25 @@
 
                                 </form>
 
+                                {% if order.status == "pending" %}
+                                
+                                <form method="post" action="{% url 'cancel_order' order.id %}" class="cancel-order-form">
+                                    {% csrf_token %}
+                                
+                                    <button type="submit" class="w-full rounded-lg
+                                                       border border-red-200
+                                                       px-3 py-2
+                                                       text-sm font-bold
+                                                       text-red-600
+                                                       transition
+                                                       hover:border-red-500
+                                                       hover:bg-red-50">
+                                        Cancel Order
+                                    </button>
+                                </form>
+                                
+                                {% endif %}
+
                             </div>
 
                         </div>
@@ -1061,89 +1080,57 @@
 
 <!-- MOBILE DRAWER SCRIPT -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const openButton = document.getElementById(
-            "open-account-menu"
-        );
+document.addEventListener("DOMContentLoaded", function () {
 
-        const closeButton = document.getElementById(
-            "close-account-menu"
-        );
+    // ==========================
+    // Mobile Account Menu
+    // ==========================
+    const openButton = document.getElementById("open-account-menu");
+    const closeButton = document.getElementById("close-account-menu");
+    const menu = document.getElementById("mobile-account-menu");
+    const overlay = document.getElementById("account-menu-overlay");
 
-        const menu = document.getElementById(
-            "mobile-account-menu"
-        );
-
-        const overlay = document.getElementById(
-            "account-menu-overlay"
-        );
-
-        if (!openButton || !closeButton || !menu || !overlay) {
-            return;
-        }
+    if (openButton && closeButton && menu && overlay) {
 
         function openMenu() {
             menu.classList.remove("-translate-x-full");
             overlay.classList.remove("hidden");
-
-            menu.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-
-            openButton.setAttribute(
-                "aria-expanded",
-                "true"
-            );
-
-            document.body.classList.add(
-                "overflow-hidden"
-            );
+            document.body.classList.add("overflow-hidden");
         }
 
         function closeMenu() {
             menu.classList.add("-translate-x-full");
             overlay.classList.add("hidden");
-
-            menu.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-            openButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-            document.body.classList.remove(
-                "overflow-hidden"
-            );
+            document.body.classList.remove("overflow-hidden");
         }
 
-        openButton.addEventListener(
-            "click",
-            openMenu
-        );
+        openButton.addEventListener("click", openMenu);
+        closeButton.addEventListener("click", closeMenu);
+        overlay.addEventListener("click", closeMenu);
 
-        closeButton.addEventListener(
-            "click",
-            closeMenu
-        );
-
-        overlay.addEventListener(
-            "click",
-            closeMenu
-        );
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-                if (event.key === "Escape") {
-                    closeMenu();
-                }
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+                closeMenu();
             }
-        );
+        });
+    }
+
+    // ==========================
+    // Cancel Order Confirmation
+    // ==========================
+    document.querySelectorAll(".cancel-order-form").forEach(function(form){
+
+        form.addEventListener("submit", function(e){
+
+            if (!confirm("Are you sure you want to cancel this order?")) {
+                e.preventDefault();
+            }
+
+        });
+
     });
+
+});
 </script>
 
 {% endblock %}

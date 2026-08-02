@@ -322,6 +322,12 @@
                             Paid
                         </span>
 
+                    {% elif order.status == "cancelled" %}
+
+                        <span class="font-semibold text-gray-600">
+                            Cancelled
+                        </span>
+
                     {% else %}
 
                         <span class="font-semibold text-amber-600">
@@ -415,6 +421,23 @@
             </button>
         </form>
 
+        {% if order.status == "pending" %}
+        
+        <form method="post" action="{% url 'cancel_order' order.id %}" class="cancel-order-form mt-3">
+            {% csrf_token %}
+        
+            <button type="submit" class="w-full rounded-xl
+                           border border-red-300
+                           px-5 py-3.5
+                           font-bold text-red-600
+                           transition
+                           hover:border-red-500
+                           hover:bg-red-50">
+                Cancel Order
+            </button>
+        </form>
+        
+        {% endif %}
 
         <a
             href="{% url 'contact' %}"
@@ -433,5 +456,29 @@
     </aside>
 
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cancelForms = document.querySelectorAll(
+            ".cancel-order-form"
+        );
+
+        cancelForms.forEach(function (form) {
+            form.addEventListener(
+                "submit",
+                function (event) {
+                    const confirmed = window.confirm(
+                        "Are you sure you want to cancel this order? " +
+                        "This action cannot be undone."
+                    );
+
+                    if (!confirmed) {
+                        event.preventDefault();
+                    }
+                }
+            );
+        });
+    });
+</script>
 
 {% endblock %}

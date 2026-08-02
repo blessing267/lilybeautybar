@@ -112,7 +112,7 @@ class Order(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("paid", "Paid"),
-        ("failed", "Failed"),
+        ("cancelled", "cancelled"),
     ]
 
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
