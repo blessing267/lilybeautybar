@@ -825,39 +825,57 @@
 
                         <!-- PROFILE PICTURE -->
                         <div class="sm:col-span-2">
-                        
-                            <label for="{{ form.image.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                            <label for="{{ profile_form.image.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
                                 Profile picture
                             </label>
                         
-                            <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <div class="rounded-2xl border border-gray-200 bg-gray-50/70 p-4">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                                    {% if request.user.profile.image %}
+                                    <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.username }}"
+                                        class="h-24 w-24 shrink-0 rounded-full border-4 border-white object-cover shadow-sm">
+                                    {% else %}
+                                    <div
+                                        class="grid h-24 w-24 shrink-0 place-items-center rounded-full border-4 border-white bg-pink-100 text-3xl font-bold text-pink-600 shadow-sm">
+                                        {{ request.user.username|first|upper }}
+                                    </div>
+                                    {% endif %}
+                        
+                                    <div class="min-w-0 flex-1">
+                                        <label for="{{ profile_form.image.id_for_label }}"
+                                            class="inline-flex cursor-pointer items-center justify-center rounded-xl border border-pink-200 bg-white px-4 py-2.5 text-sm font-semibold text-pink-600 transition hover:bg-pink-50">
+                                            Choose profile picture
+                                        </label>
+                                    
+                                        <div class="hidden">
+                                            {{ profile_form.image }}
+                                        </div>
+                                    
+                                        {% for error in profile_form.image.errors %}
+                                        <p class="mt-1 text-xs text-red-600">
+                                            {{ error }}
+                                        </p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                         
                                 {% if request.user.profile.image %}
-                                <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.username }}"
-                                    class="h-20 w-20 shrink-0 rounded-full border border-pink-100 object-cover">
-                                {% else %}
-                                <div
-                                    class="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-pink-100 text-2xl font-bold text-pink-600">
-                                    {{ request.user.username|first|upper }}
-                                </div>
+                                <label class="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border border-red-100 bg-white px-4 py-3">
+                                    <input type="checkbox" name="remove_profile_image" value="true"
+                                        class="h-4 w-4 rounded border-gray-300 text-pink-500 focus:ring-pink-400">
+                        
+                                    <span>
+                                        <span class="block text-sm font-semibold text-red-600">
+                                            Remove profile picture
+                                        </span>
+                        
+                                        <span class="block text-xs text-gray-500">
+                                            Your initial will display instead.
+                                        </span>
+                                    </span>
+                                </label>
                                 {% endif %}
-                        
-                                <div class="min-w-0 flex-1">
-                                    {{ form.image }}
-                        
-                                    <p class="mt-2 text-xs text-gray-500">
-                                        Upload a JPG, PNG or WebP profile picture.
-                                    </p>
-                        
-                                    {% for error in form.image.errors %}
-                                    <p class="mt-1 text-xs text-red-600">
-                                        {{ error }}
-                                    </p>
-                                    {% endfor %}
-                                </div>
-                        
                             </div>
-                        
                         </div>
             
                     </div>
