@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .dashboard_order_api import (admin_orders_api, admin_order_detail_api,)
+from .dashboard_stats_api import dashboard_stats_api
+from .order_notifications_api import order_notifications_api
 
 urlpatterns = [
     # Public shop pages
@@ -12,16 +15,19 @@ urlpatterns = [
     path("orders/<int:order_id>/", views.order_detail, name="order_detail",),
     path("orders/<int:order_id>/buy-again/", views.buy_again, name="buy_again",),
     path("orders/<int:order_id>/cancel/", views.cancel_order, name="cancel_order",),
+    path("order-notifications/", order_notifications_api, name="order_notifications_api",),
     path('cart/', views.cart, name='cart'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('remove-from-cart/<str:cart_key>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<str:cart_key>/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
-
     
     # Dashboard (API)
+    path("admin-orders/", admin_orders_api, name="admin_orders_api",),
+    path("admin-orders/<int:pk>/", admin_order_detail_api, name="admin_order_detail_api",),
     path('dashboard-api/', views.dashboard_api, name='dashboard_api'),
     path('dashboard-api/<int:pk>/', views.dashboard_api_detail, name='dashboard_api_detail'),
+    path("dashboard-stats/", dashboard_stats_api, name="dashboard_stats_api",),
     path("categories/", views.categories_api, name="categories_api"),
     path("categories/<int:pk>/", views.categories_api, name="category_detail_api"),
     path("subcategories/", views.subcategories_api, name="subcategories_api"),

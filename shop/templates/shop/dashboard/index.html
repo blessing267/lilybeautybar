@@ -1,17 +1,29 @@
 {% load static %}
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/static/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-    <script type="module" crossorigin src="/static/assets/index-CYmzoY9U.js"></script>
-    <link rel="stylesheet" crossorigin href="/static/assets/index-DnxcGZXT.css">
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Lily Beauty Bar Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'assets/dashboard.css' %}"
+    >
+</head>
+
+<body>
     <div id="root"></div>
-  </body>
+
+    <script
+        type="module"
+        src="{% static 'assets/dashboard.js' %}"
+    ></script>
+</body>
 </html>
-
-

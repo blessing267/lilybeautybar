@@ -5,54 +5,48 @@ import Header from "../components/Header";
 export default function DashboardLayout({
   children,
   onLogout,
+  username,
+  title = "Dashboard",
+  subtitle,
+  actionLabel,
+  onAction,
+  notificationCount = 0,
 }) {
-  const [sidebarOpen, setSidebarOpen] =
-    useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-rose-50 flex">
-      {/* Mobile Overlay */}
+    <div className="flex min-h-screen bg-gray-50">
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-          onClick={() =>
-            setSidebarOpen(false)
-          }
+        <button
+          type="button"
+          aria-label="Close menu"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <div
-        className={`
-          fixed lg:static top-0 left-0 h-screen
-          z-50 transition-transform duration-300
-          ${
-            sidebarOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }
-          lg:translate-x-0
-        `}
+        className={`fixed bottom-0 left-0 top-0 z-50 transition-transform duration-200 lg:static lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <Sidebar
-          onClose={() =>
-            setSidebarOpen(false)
-          }
+          username={username}
+          onLogout={onLogout}
+          onClose={() => setSidebarOpen(false)}
         />
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 w-full min-w-0">
+      <div className="min-w-0 flex-1">
         <Header
-          onLogout={onLogout}
-          onMenuClick={() =>
-            setSidebarOpen(true)
-          }
+          title={title}
+          subtitle={subtitle}
+          actionLabel={actionLabel}
+          onAction={onAction}
+          onMenuClick={() => setSidebarOpen(true)}
+          notificationCount={notificationCount}
         />
-
-        <main className="p-4 md:p-6 lg:p-8">
-          {children}
-        </main>
+        <main className="p-4 md:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

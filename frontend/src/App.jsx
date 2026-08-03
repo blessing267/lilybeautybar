@@ -8,7 +8,7 @@ import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import ReviewGallery from "./pages/ReviewGallery";
-
+import Settings from "./pages/Settings";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
@@ -16,39 +16,27 @@ export default function App() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const data = await checkSession();
-        setLoggedIn(data.authenticated === true);
-      } catch (error) {
-        console.error("Session check failed:", error);
-        setLoggedIn(false);
-      } finally {
-        setCheckingSession(false);
-      }
-    };
-
-    loadSession();
+    checkSession()
+      .then((data) => setLoggedIn(data.authenticated === true))
+      .catch(() => setLoggedIn(false))
+      .finally(() => setCheckingSession(false));
   }, []);
 
   const handleLogout = async () => {
     try {
       await logoutUser();
-    } catch (error) {
-      console.error("Logout failed:", error);
     } finally {
       setLoggedIn(false);
     }
   };
 
-  const protect = (component) => {
-    return loggedIn ? component : <Navigate to="/login" replace />;
-  };
+  const protect = (component) =>
+    loggedIn ? component : <Navigate to="/login" replace />;
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading dashboard...</p>
+      <div className="grid min-h-screen place-items-center text-sm text-gray-500">
+        Loading dashboard…
       </div>
     );
   }
@@ -56,63 +44,18 @@ export default function App() {
   return (
     <>
       <Toaster position="top-right" />
-
       <Routes>
-        <Route
-          path="/"
-          element={protect(
-            <Dashboard onLogout={handleLogout} />
-          )}
-        />
-
-        <Route
-          path="/products"
-          element={protect(
-            <Products onLogout={handleLogout} />
-          )}
-        />
-
-        <Route
-          path="/categories"
-          element={protect(
-            <Categories onLogout={handleLogout} />
-          )}
-        />
-
-        <Route
-          path="/orders"
-          element={protect(
-            <Orders onLogout={handleLogout} />
-          )}
-        />
-
-        <Route
-          path="/review-gallery"
-          element={protect(
-            <ReviewGallery onLogout={handleLogout} />
-          )}
-        />
-
+        <Route path="/" element={protect(<Dashboard onLogout={handleLogout} />)} />
+        <Route path="/products" element={protect(<Products onLogout={handleLogout} />)} />
+        <Route path="/categories" element={protect(<Categories onLogout={handleLogout} />)} />
+        <Route path="/orders" element={protect(<Orders onLogout={handleLogout} />)} />
+        <Route path="/review-gallery" element={protect(<ReviewGallery onLogout={handleLogout} />)} />
+        <Route path="/settings" element={protect(<Settings onLogout={handleLogout} />)} />
         <Route
           path="/login"
-          element={
-            loggedIn ? (
-              <Navigate to="/" replace />
-            ) : (
-              <Login onLogin={() => setLoggedIn(true)} />
-            )
-          }
+          element={loggedIn ? <Navigate to="/" replace /> : <Login onLogin={() => setLoggedIn(true)} />}
         />
-
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={loggedIn ? "/" : "/login"}
-              replace
-            />
-          }
-        />
+        <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} replace />} />
       </Routes>
     </>
   );

@@ -2,12 +2,14 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 from . import views
 from users import views
+from .profile_api import profile_api
 
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),
+    path("profile-api/", profile_api, name="profile-api",),
     path("session/status/", views.session_status, name="session-status"),
     path("session/login/", views.session_login, name="session-login"),
     path("session/logout/", views.session_logout, name="session-logout"),
