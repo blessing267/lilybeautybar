@@ -240,3 +240,25 @@ class UserUpdateForm(forms.ModelForm):
             profile.save()
 
         return user
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["phone", "image"]
+
+        widgets = {
+            "phone": forms.TextInput(
+                attrs={
+                    "class":
+                    "w-full rounded-xl border px-4 py-3",
+                }
+            ),
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "accept":
+                    "image/jpeg,image/png,image/webp",
+                    "class":
+                    "w-full rounded-xl border px-4 py-3",
+                }
+            ),
+        }

@@ -7,6 +7,7 @@ import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
+import Customers from "./pages/Customers";
 import ReviewGallery from "./pages/ReviewGallery";
 import Settings from "./pages/Settings";
 import { Toaster } from "react-hot-toast";
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/" element={protect(<Dashboard onLogout={handleLogout} />)} />
         <Route path="/products" element={protect(<Products onLogout={handleLogout} />)} />
         <Route path="/categories" element={protect(<Categories onLogout={handleLogout} />)} />
+        <Route path="/customers"element={protect(<Customers onLogout={handleLogout} />)}/>
         <Route path="/orders" element={protect(<Orders onLogout={handleLogout} />)} />
         <Route path="/review-gallery" element={protect(<ReviewGallery onLogout={handleLogout} />)} />
         <Route path="/settings" element={protect(<Settings onLogout={handleLogout} />)} />

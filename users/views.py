@@ -3,11 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
-
+from .models import Profile
 # Create your views here.
 
 def register(request):
@@ -62,14 +62,28 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    profile_object, _ = Profile.objects.get_or_create(
+        user=request.user
+    )
+
     if request.method == "POST":
-        form = UserUpdateForm(
+        user_form = UserUpdateForm(
             request.POST,
             instance=request.user,
         )
 
-        if form.is_valid():
-            form.save()
+        profile_form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=profile_object,
+        )
+
+        if (
+            user_form.is_valid()
+            and profile_form.is_valid()
+        ):
+            user_form.save()
+            profile_form.save()
 
             messages.success(
                 request,
@@ -79,15 +93,20 @@ def profile(request):
             return redirect("profile")
 
     else:
-        form = UserUpdateForm(
+        user_form = UserUpdateForm(
             instance=request.user,
+        )
+
+        profile_form = ProfileUpdateForm(
+            instance=profile_object,
         )
 
     return render(
         request,
         "users/profile.html",
         {
-            "form": form,
+            "form": user_form,
+            "profile_form": profile_form,
         },
     )
 

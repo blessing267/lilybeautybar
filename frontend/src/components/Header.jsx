@@ -130,7 +130,6 @@ export default function Header({
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                   <div>
                     <p className="font-semibold text-gray-900">New orders</p>
-                    <p className="text-xs text-gray-500">Pending, paid and cancelled orders</p>
                   </div>
                   {unread.length > 0 && (
                     <button type="button" onClick={markAllRead} className="inline-flex items-center gap-1 text-xs font-semibold" style={{ color: BRAND_PINK }}>

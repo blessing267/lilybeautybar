@@ -315,7 +315,7 @@ export default function CategoryManager({
           <button
             type="button"
             onClick={() => openAddSubcategory()}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-pink-700 transition hover:bg-rose-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-pink-700 transition hover:bg-pink-50"
           >
             <FolderPlus size={17} />
             Add Subcategory
@@ -324,7 +324,7 @@ export default function CategoryManager({
 
         {sortedCategories.length === 0 ? (
           <div className="px-6 py-16 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 text-rose-600">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pink-50 text-rose-600">
               <Plus size={22} />
             </div>
 
@@ -337,7 +337,7 @@ export default function CategoryManager({
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-rose-100">
+          <div className="divide-y divide-gray-100">
             {sortedCategories.map((category) => {
               const subcategories = [
                 ...(category.subcategories || []),
@@ -350,103 +350,104 @@ export default function CategoryManager({
                 expandedCategories[category.id];
 
               return (
-                <article
-                  key={category.id}
-                  className="px-4 py-4 sm:px-6"
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        toggleCategory(category.id)
-                      }
-                      className="flex min-w-0 items-center gap-3 text-left"
-                    >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
-                        {isExpanded ? (
-                          <ChevronDown size={18} />
-                        ) : (
-                          <ChevronRight size={18} />
-                        )}
-                      </span>
-
-                      <span className="min-w-0">
-                        <span className="block truncate font-semibold text-gray-900">
-                          {category.name}
+                <article key={category.id}>
+                  <div className="overflow-x-auto">
+                    <div className="flex min-w-max items-center justify-between gap-6 px-4 py-4 sm:px-6">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          toggleCategory(category.id)
+                        }
+                        className="flex shrink-0 items-center gap-3 text-left"
+                      >
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-pink-50 text-pink-600">
+                          {isExpanded ? (
+                            <ChevronDown size={18} />
+                          ) : (
+                            <ChevronRight size={18} />
+                          )}
                         </span>
 
-                        <span className="text-sm text-gray-500">
-                          {subcategories.length}{" "}
-                          {subcategories.length === 1
-                            ? "subcategory"
-                            : "subcategories"}
+                        <span className="shrink-0">
+                          <span className="block whitespace-nowrap font-semibold text-gray-900">
+                            {category.name}
+                          </span>
+
+                          <span className="whitespace-nowrap text-sm text-gray-500">
+                            {subcategories.length}{" "}
+                            {subcategories.length === 1
+                              ? "subcategory"
+                              : "subcategories"}
+                          </span>
                         </span>
-                      </span>
-                    </button>
+                      </button>
 
-                    <div className="flex flex-wrap gap-2">
-                      <ActionButton
-                        onClick={() =>
-                          openEditCategory(category)
-                        }
-                      >
-                        <Edit3 size={15} />
-                        Edit
-                      </ActionButton>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <ActionButton
+                          onClick={() =>
+                            openEditCategory(category)
+                          }
+                        >
+                          <Edit3 size={15} />
+                          Edit
+                        </ActionButton>
 
-                      <ActionButton
-                        danger
-                        onClick={() =>
-                          handleDeleteCategory(category)
-                        }
-                      >
-                        <Trash2 size={15} />
-                        Delete
-                      </ActionButton>
+                        <ActionButton
+                          danger
+                          onClick={() =>
+                            handleDeleteCategory(category)
+                          }
+                        >
+                          <Trash2 size={15} />
+                          Delete
+                        </ActionButton>
+                      </div>
                     </div>
                   </div>
 
                   {isExpanded && (
-                    <div className="ml-0 mt-4 space-y-2 sm:ml-12">
+                    <div className="space-y-2 border-t border-gray-100 bg-gray-50 px-4 py-4 sm:px-6">
                       {subcategories.length === 0 ? (
-                        <p className="rounded-2xl bg-gray-50 px-4 py-4 text-sm text-gray-500">
+                        <p className="rounded-2xl bg-white px-4 py-4 text-sm text-gray-500">
                           No subcategories under this category.
                         </p>
                       ) : (
                         subcategories.map((subcategory) => (
                           <div
                             key={subcategory.id}
-                            className="flex flex-col gap-3 rounded-2xl bg-gray-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                            className="overflow-x-auto rounded-2xl bg-white"
                           >
-                            <span className="text-sm font-medium text-gray-700">
-                              {subcategory.name}
-                            </span>
+                            <div className="flex min-w-max items-center justify-between gap-6 px-4 py-3">
+                              <span className="shrink-0 whitespace-nowrap text-sm font-medium text-gray-700">
+                                {subcategory.name}
+                              </span>
 
-                            <div className="flex gap-2">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  openEditSubcategory(
-                                    subcategory,
-                                    category
-                                  )
-                                }
-                                className="rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-white hover:text-rose-700"
-                              >
-                                Edit
-                              </button>
+                              <div className="flex shrink-0 items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    openEditSubcategory(
+                                      subcategory,
+                                      category
+                                    )
+                                  }
+                                  className="rounded-lg px-3 py-1.5 text-sm font-medium text-pink-600 transition hover:bg-pink-50"
+                                >
+                                  Edit
+                                </button>
 
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleDeleteSubcategory(
-                                    subcategory
-                                  )
-                                }
-                                className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
-                              >
-                                Delete
-                              </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteSubcategory(
+                                      subcategory
+                                    )
+                                  }
+                                  className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             </div>
                           </div>
                         ))
@@ -487,7 +488,7 @@ function ActionButton({
       className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold transition ${
         danger
           ? "bg-red-50 text-red-600 hover:bg-red-100"
-          : "bg-rose-50 text-rose-700 hover:bg-rose-100"
+          : "bg-pink-50 text-pink-700 hover:bg-pink-100"
       }`}
     >
       {children}

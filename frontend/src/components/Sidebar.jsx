@@ -8,10 +8,12 @@ import {
   Settings,
   ExternalLink,
   LogOut,
+  Users,
 } from "lucide-react";
 
 const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/customers", label: "Customers", icon: Users,},
   { to: "/products", label: "Products", icon: ShoppingBag },
   { to: "/categories", label: "Categories", icon: FolderTree },
   { to: "/orders", label: "Orders", icon: ReceiptText },

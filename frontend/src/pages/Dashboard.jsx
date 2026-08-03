@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Banknote,
-  Box,
   ChevronLeft,
   ChevronRight,
   PackageCheck,
   ShoppingBag,
   TrendingDown,
   TrendingUp,
+  Users,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -104,10 +104,6 @@ export default function Dashboard({ onLogout }) {
 
   useEffect(() => setProductPage(1), [productSort]);
 
-  const inventoryValue = useMemo(() => products.reduce(
-    (total, product) => total + Number(product.current_price || product.price || 0) * Number(product.stock || 0),
-    0,
-  ), [products]);
   const lowStock = useMemo(() => products.filter((product) => Number(product.stock || 0) <= 5).length, [products]);
   const rankedProducts = useMemo(() => {
     const items = [...(stats.product_performance || [])];
@@ -138,10 +134,8 @@ export default function Dashboard({ onLogout }) {
   const summary = stats.summary || {};
   const cards = [
     {
-      title: periodDetails.salesLabel,
-      value: money(summary.period_sales),
-      change: summary.period_sales_change,
-      comparisonLabel: "from previous period",
+      title: "Total Sales",
+      value: money(summary.total_sales),
       icon: Banknote,
       iconClass: "bg-pink-50 text-pink-600",
     },
@@ -153,7 +147,12 @@ export default function Dashboard({ onLogout }) {
       icon: ShoppingBag,
       iconClass: "bg-violet-50 text-violet-600",
     },
-    { title: "Inventory Value", value: money(inventoryValue), icon: Box, iconClass: "bg-orange-50 text-orange-500" },
+    {
+      title: "Total Customers",
+      value: summary.total_customers || 0,
+      icon: Users,
+      iconClass: "bg-orange-50 text-orange-500",
+    },
     { title: "Low Stock", value: lowStock, icon: PackageCheck, iconClass: "bg-emerald-50 text-emerald-600" },
   ];
 
@@ -174,7 +173,7 @@ export default function Dashboard({ onLogout }) {
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="font-bold text-slate-900">Sales Overview</h2>
-                <p className="text-xs text-slate-400">{periodDetails.salesLabel} from paid orders</p>
+                <p className="text-xs text-slate-400">Total sales</p>
               </div>
               <select
                 value={period}
