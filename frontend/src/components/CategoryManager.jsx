@@ -299,8 +299,8 @@ export default function CategoryManager({
 
   return (
     <>
-      <section className="overflow-hidden rounded-3xl border border-rose-100 bg-white shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-rose-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <section className="overflow-hidden rounded-3xl border bg-white shadow-sm">
+        <div className="flex flex-col gap-4 border-b px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-bold text-gray-900">
               Category list
@@ -315,7 +315,7 @@ export default function CategoryManager({
           <button
             type="button"
             onClick={() => openAddSubcategory()}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold text-pink-700 transition hover:bg-rose-50"
           >
             <FolderPlus size={17} />
             Add Subcategory
@@ -385,15 +385,6 @@ export default function CategoryManager({
                     </button>
 
                     <div className="flex flex-wrap gap-2">
-                      <ActionButton
-                        onClick={() =>
-                          openAddSubcategory(category)
-                        }
-                      >
-                        <Plus size={15} />
-                        Subcategory
-                      </ActionButton>
-
                       <ActionButton
                         onClick={() =>
                           openEditCategory(category)
@@ -581,7 +572,7 @@ function CategoryModal({
                     category: event.target.value,
                   }))
                 }
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 outline-none transition focus:border-pink-400 focus:ring-2 focus:ring-rose-100"
               >
                 <option value="">
                   Select category
