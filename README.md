@@ -29,7 +29,7 @@ The project was designed with usability and maintainability in mind, providing c
 ![Homepage](/static/img/home.PNG)
 <br>
 ### 🛍️ Shop Page
-(/static/img/shop.PNG)
+![shop Page](/static/img/shop.PNG)
 <br>
 ### 🛒 Shopping Cart
 ![cart Page](/static/img/cart.PNG)
