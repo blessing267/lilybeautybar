@@ -133,7 +133,14 @@ def profile_api(request):
         "",
     ).strip()
 
-    if request.FILES.get("image"):
+    remove_image = (
+        request.POST.get("remove_image") == "true"
+    )
+
+    if remove_image:
+        profile.image = None
+
+    elif request.FILES.get("image"):
         profile.image = request.FILES["image"]
 
     profile.save()

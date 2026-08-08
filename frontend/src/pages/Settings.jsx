@@ -3,6 +3,7 @@ import {
   Camera,
   Save,
   ShieldCheck,
+  Trash2,
   UserRound,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -25,6 +26,7 @@ const emptyProfile = {
 export default function Settings({ onLogout }) {
   const [form, setForm] = useState(emptyProfile);
   const [profileImage, setProfileImage] = useState(null);
+  const [removeImage, setRemoveImage] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -90,7 +92,14 @@ export default function Settings({ onLogout }) {
     }
 
     setProfileImage(file);
+    setRemoveImage(false);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeProfilePicture = () => {
+    setProfileImage(null);
+    setImagePreview("");
+    setRemoveImage(true);
   };
 
   const submit = async (event) => {
@@ -105,7 +114,9 @@ export default function Settings({ onLogout }) {
     formData.append("email", form.email || "");
     formData.append("phone", form.phone || "");
 
-    if (profileImage) {
+    if (removeImage) {
+      formData.append("remove_image", "true");
+    } else if (profileImage) {
       formData.append("image", profileImage);
     }
 
@@ -118,7 +129,25 @@ export default function Settings({ onLogout }) {
       });
 
       setProfileImage(null);
-      setImagePreview(data.profile_image || "");
+      setRemoveImage(false);
+
+      const savedImage = data.profile_image
+        ? `${data.profile_image}${data.profile_image.includes("?") ? "&" : "?"
+        }v=${Date.now()}`
+        : "";
+
+      setImagePreview(savedImage);
+
+      window.dispatchEvent(
+        new CustomEvent("admin-profile-updated", {
+          detail: {
+            username: data.username,
+            first_name: data.first_name,
+            profile_image: savedImage,
+          },
+        })
+      );
+
       toast.success("Profile updated");
     } catch (error) {
       toast.error(
@@ -182,29 +211,46 @@ export default function Settings({ onLogout }) {
                     )}
                   </div>
 
-                  <div>
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-pink-200 px-4 py-2.5 text-sm font-semibold text-pink-600 hover:bg-pink-50">
-                      <Camera size={17} />
-                      Choose picture
+                    <div>
+                      <div className="flex flex-wrap gap-2">
+                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-pink-200 px-4 py-2.5 text-sm font-semibold text-pink-600 transition hover:bg-pink-50">
+                          <Camera size={17} />
 
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={changeImage}
-                        className="hidden"
-                      />
-                    </label>
+                          Choose picture
 
-                    <p className="mt-2 text-xs text-gray-500">
-                      JPG, PNG or WebP. Maximum size: 5MB.
-                    </p>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={changeImage}
+                            className="hidden"
+                          />
+                        </label>
 
-                    {profileImage && (
-                      <p className="mt-1 max-w-xs truncate text-xs font-medium text-gray-600">
-                        {profileImage.name}
-                      </p>
-                    )}
-                  </div>
+                        {imagePreview && (
+                          <button
+                            type="button"
+                            onClick={removeProfilePicture}
+                            className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                          >
+                            <Trash2 size={17} />
+
+                            Remove picture
+                          </button>
+                        )}
+                      </div>
+
+                      {profileImage && (
+                        <p className="mt-1 max-w-xs truncate text-xs font-medium text-gray-600">
+                          Selected: {profileImage.name}
+                        </p>
+                      )}
+
+                      {removeImage && (
+                        <p className="mt-1 text-xs font-medium text-red-500">
+                          Profile picture will be removed when you save.
+                        </p>
+                      )}
+                    </div>
                 </div>
               </div>
 

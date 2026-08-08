@@ -712,197 +712,269 @@
                     {% endif %}
             
             
-                    <div class="grid gap-5 sm:grid-cols-2">
-            
-                        <!-- FIRST NAME -->
+                    <div class="p-5 sm:p-6">
+                    
+                        <!-- BASIC DETAILS -->
                         <div>
-            
-                            <label for="{{ form.first_name.id_for_label }}" class="mb-2 block
-                                       text-sm font-semibold
-                                       text-gray-700">
-                                First name
-                            </label>
-            
-                            {{ form.first_name }}
-            
-                            {% for error in form.first_name.errors %}
-            
-                            <p class="mt-1 text-xs text-red-600">
-                                {{ error }}
-                            </p>
-            
-                            {% endfor %}
-            
+                    
+                            <div class="mb-5">
+                                <h3 class="font-bold text-gray-950">
+                                    Basic details
+                                </h3>
+                    
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Tell us how we should identify and contact you.
+                                </p>
+                            </div>
+                    
+                    
+                            <div class="grid gap-5 sm:grid-cols-2">
+                    
+                                <!-- FIRST NAME -->
+                                <div>
+                    
+                                    <label for="{{ form.first_name.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                                        First name
+                                    </label>
+                    
+                                    {{ form.first_name }}
+                    
+                                    {% for error in form.first_name.errors %}
+                                    <p class="mt-1 text-xs text-red-600">
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                    
+                                </div>
+                    
+                    
+                                <!-- LAST NAME -->
+                                <div>
+                    
+                                    <label for="{{ form.last_name.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                                        Last name
+                                    </label>
+                    
+                                    {{ form.last_name }}
+                    
+                                    {% for error in form.last_name.errors %}
+                                    <p class="mt-1 text-xs text-red-600">
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                    
+                                </div>
+                    
+                    
+                                <!-- USERNAME -->
+                                <div>
+                    
+                                    <label for="{{ form.username.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                                        Username
+                                    </label>
+                    
+                                    {{ form.username }}
+                    
+                                    {% for error in form.username.errors %}
+                                    <p class="mt-1 text-xs text-red-600">
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                    
+                                </div>
+                    
+                    
+                                <!-- PHONE -->
+                                <div>
+                    
+                                    <label for="{{ form.phone.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                                        Phone number
+                                    </label>
+                    
+                                    {{ form.phone }}
+                    
+                                    {% for error in form.phone.errors %}
+                                    <p class="mt-1 text-xs text-red-600">
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                    
+                                </div>
+                    
+                    
+                                <!-- EMAIL -->
+                                <div class="sm:col-span-2">
+                    
+                                    <label for="{{ form.email.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                                        Email address
+                                    </label>
+                    
+                                    {{ form.email }}
+                    
+                                    {% for error in form.email.errors %}
+                                    <p class="mt-1 text-xs text-red-600">
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                    
+                                </div>
+                    
+                            </div>
+                    
                         </div>
-            
-            
-                        <!-- LAST NAME -->
-                        <div>
-            
-                            <label for="{{ form.last_name.id_for_label }}" class="mb-2 block
-                                       text-sm font-semibold
-                                       text-gray-700">
-                                Last name
-                            </label>
-            
-                            {{ form.last_name }}
-            
-                            {% for error in form.last_name.errors %}
-            
-                            <p class="mt-1 text-xs text-red-600">
-                                {{ error }}
-                            </p>
-            
-                            {% endfor %}
-            
-                        </div>
-            
-            
-                        <!-- USERNAME -->
-                        <div>
-            
-                            <label for="{{ form.username.id_for_label }}" class="mb-2 block
-                                       text-sm font-semibold
-                                       text-gray-700">
-                                Username
-                            </label>
-            
-                            {{ form.username }}
-            
-                            {% for error in form.username.errors %}
-            
-                            <p class="mt-1 text-xs text-red-600">
-                                {{ error }}
-                            </p>
-            
-                            {% endfor %}
-            
-                        </div>
-            
-            
-                        <!-- EMAIL -->
-                        <div>
-            
-                            <label for="{{ form.email.id_for_label }}" class="mb-2 block
-                                       text-sm font-semibold
-                                       text-gray-700">
-                                Email address
-                            </label>
-            
-                            {{ form.email }}
-            
-                            {% for error in form.email.errors %}
-            
-                            <p class="mt-1 text-xs text-red-600">
-                                {{ error }}
-                            </p>
-            
-                            {% endfor %}
-            
-                        </div>
-            
-            
-                        <!-- PHONE NUMBER -->
-                        <div>
-            
-                            <label for="{{ form.phone.id_for_label }}" class="mb-2 block
-                                       text-sm font-semibold
-                                       text-gray-700">
-                                Phone number
-                            </label>
-            
-                            {{ form.phone }}
-            
-                            {% for error in form.phone.errors %}
-            
-                            <p class="mt-1 text-xs text-red-600">
-                                {{ error }}
-                            </p>
-            
-                            {% endfor %}
-            
-                        </div>
-
+                    
+                    
+                        <!-- DIVIDER -->
+                        <div class="my-7 border-t border-gray-100"></div>
+                    
+                    
                         <!-- PROFILE PICTURE -->
                         <div class="sm:col-span-2">
-                            <label for="{{ profile_form.image.id_for_label }}" class="mb-2 block text-sm font-semibold text-gray-700">
+                        
+                            <label class="mb-2 block text-sm font-semibold text-gray-700">
                                 Profile picture
                             </label>
                         
-                            <div class="rounded-2xl border border-gray-200 bg-gray-50/70 p-4">
-                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                                    {% if request.user.profile.image %}
-                                    <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.username }}"
-                                        class="h-24 w-24 shrink-0 rounded-full border-4 border-white object-cover shadow-sm">
-                                    {% else %}
-                                    <div
-                                        class="grid h-24 w-24 shrink-0 place-items-center rounded-full border-4 border-white bg-pink-100 text-3xl font-bold text-pink-600 shadow-sm">
-                                        {{ request.user.username|first|upper }}
-                                    </div>
-                                    {% endif %}
+                            <div class="rounded-2xl
+                                       border border-pink-100
+                                       bg-gradient-to-br
+                                       from-pink-50/70 to-white
+                                       p-5">
                         
-                                    <div class="min-w-0 flex-1">
-                                        <label for="{{ profile_form.image.id_for_label }}"
-                                            class="inline-flex cursor-pointer items-center justify-center rounded-xl border border-pink-200 bg-white px-4 py-2.5 text-sm font-semibold text-pink-600 transition hover:bg-pink-50">
-                                            Choose profile picture
-                                        </label>
-                                    
-                                        <div class="hidden">
-                                            {{ profile_form.image }}
+                                <div class="flex flex-col gap-5
+                                           sm:flex-row
+                                           sm:items-center">
+                        
+                                    <!-- IMAGE PREVIEW -->
+                                    <div class="shrink-0">
+                        
+                                        <img id="customer-profile-preview" {% if request.user.profile.image %}
+                                            src="{{ request.user.profile.image.url }}" {% endif %} alt="Profile preview" class="
+                                                h-24 w-24
+                                                rounded-full
+                                                border-4 border-white
+                                                object-cover
+                                                shadow-md
+                        
+                                                {% if not request.user.profile.image %}
+                                                    hidden
+                                                {% endif %}
+                                            ">
+                        
+                        
+                                        <div id="customer-profile-initial" class="
+                                                grid h-24 w-24
+                                                place-items-center
+                                                rounded-full
+                                                border-4 border-white
+                                                bg-pink-100
+                                                text-3xl font-bold
+                                                text-pink-600
+                                                shadow-md
+                        
+                                                {% if request.user.profile.image %}
+                                                    hidden
+                                                {% endif %}
+                                            ">
+                                            {{ request.user.username|first|upper }}
                                         </div>
-                                    
+                        
+                                    </div>
+                        
+                        
+                                    <!-- UPLOAD -->
+                                    <div class="min-w-0 flex-1">
+                        
+                                        <p class="font-semibold text-gray-900">
+                                            Upload a profile photo
+                                        </p>
+                        
+                                        <p class="mt-1 text-sm text-gray-500">
+                                            JPG, PNG or WebP. Maximum size 5MB.
+                                        </p>
+                        
+                        
+                                        <div class="mt-4">
+                        
+                                            <label for="{{ profile_form.image.id_for_label }}" class="
+                                                    inline-flex cursor-pointer
+                                                    items-center justify-center
+                                                    rounded-xl
+                                                    bg-pink-500
+                                                    px-4 py-2.5
+                                                    text-sm font-bold
+                                                    text-white
+                                                    transition
+                                                    hover:bg-pink-600
+                                                ">
+                                                Choose photo
+                                            </label>
+                        
+                        
+                                            <div class="hidden">
+                                                {{ profile_form.image }}
+                                            </div>
+                        
+                                        </div>
+                        
+                        
+                                        <p id="selected-profile-file" class="mt-3 hidden text-sm font-medium text-pink-600"></p>
+                        
+                        
                                         {% for error in profile_form.image.errors %}
-                                        <p class="mt-1 text-xs text-red-600">
+                                        <p class="mt-2 text-xs text-red-600">
                                             {{ error }}
                                         </p>
                                         {% endfor %}
+                        
                                     </div>
+                        
                                 </div>
                         
-                                {% if request.user.profile.image %}
-                                <label class="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border border-red-100 bg-white px-4 py-3">
-                                    <input type="checkbox" name="remove_profile_image" value="true"
-                                        class="h-4 w-4 rounded border-gray-300 text-pink-500 focus:ring-pink-400">
-                        
-                                    <span>
-                                        <span class="block text-sm font-semibold text-red-600">
-                                            Remove profile picture
-                                        </span>
-                        
-                                        <span class="block text-xs text-gray-500">
-                                            Your initial will display instead.
-                                        </span>
-                                    </span>
-                                </label>
-                                {% endif %}
                             </div>
+                        
                         </div>
-            
-                    </div>
-            
-            
-                    <div class="mt-6 flex flex-col gap-3
-                               border-t border-gray-100
-                               pt-5
-                               sm:flex-row
-                               sm:items-center
-                               sm:justify-between">
-                        <p class="text-sm text-gray-500">
-                            Keep your details updated for easy checkout.
-                        </p>
-            
-                        <button type="submit" class="rounded-xl
-                                   bg-pink-500
-                                   px-6 py-3
-                                   text-sm font-bold
-                                   text-white
-                                   transition
-                                   hover:bg-pink-600
-                                   focus:outline-none
-                                   focus:ring-4
-                                   focus:ring-pink-200">
-                            Save Changes
-                        </button>
+                    
+                    
+                        <!-- SAVE AREA -->
+                        <div class="mt-7 flex flex-col gap-4
+                                   border-t border-gray-100
+                                   pt-6
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between">
+                    
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800">
+                                    Ready to save?
+                                </p>
+                    
+                                <p class="mt-1 text-xs text-gray-500">
+                                    Your updated information will be used during checkout.
+                                </p>
+                            </div>
+                    
+                    
+                            <button type="submit" class="
+                                    inline-flex items-center
+                                    justify-center
+                                    rounded-xl
+                                    bg-pink-500
+                                    px-6 py-3
+                                    text-sm font-bold
+                                    text-white
+                                    shadow-sm
+                                    transition
+                                    hover:bg-pink-600
+                                    focus:outline-none
+                                    focus:ring-4
+                                    focus:ring-pink-200
+                                ">
+                                Save Changes
+                            </button>
+                    
+                        </div>
+                    
                     </div>
             
                 </form>
@@ -961,9 +1033,14 @@
 </section>
 
 
-<!-- MOBILE DRAWER SCRIPT -->
+<!-- MOBILE DRAWER + PROFILE IMAGE PREVIEW SCRIPT -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        // -----------------------------
+        // MOBILE ACCOUNT DRAWER
+        // -----------------------------
+
         const openButton = document.getElementById(
             "open-account-menu"
         );
@@ -980,33 +1057,178 @@
             "account-menu-overlay"
         );
 
+
         if (openButton && closeButton && menu && overlay) {
+
             function openMenu() {
                 menu.classList.remove("-translate-x-full");
                 overlay.classList.remove("hidden");
-                menu.setAttribute("aria-hidden", "false");
-                openButton.setAttribute("aria-expanded", "true");
-                document.body.classList.add("overflow-hidden");
+
+                menu.setAttribute(
+                    "aria-hidden",
+                    "false"
+                );
+
+                openButton.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+
+                document.body.classList.add(
+                    "overflow-hidden"
+                );
             }
+
 
             function closeMenu() {
                 menu.classList.add("-translate-x-full");
                 overlay.classList.add("hidden");
-                menu.setAttribute("aria-hidden", "true");
-                openButton.setAttribute("aria-expanded", "false");
-                document.body.classList.remove("overflow-hidden");
+
+                menu.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                openButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                document.body.classList.remove(
+                    "overflow-hidden"
+                );
             }
 
-            openButton.addEventListener("click", openMenu);
-            closeButton.addEventListener("click", closeMenu);
-            overlay.addEventListener("click", closeMenu);
 
-            document.addEventListener("keydown", function (event) {
-                if (event.key === "Escape") {
-                    closeMenu();
+            openButton.addEventListener(
+                "click",
+                openMenu
+            );
+
+            closeButton.addEventListener(
+                "click",
+                closeMenu
+            );
+
+            overlay.addEventListener(
+                "click",
+                closeMenu
+            );
+
+
+            document.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (event.key === "Escape") {
+                        closeMenu();
+                    }
+
                 }
-            });
+            );
         }
+
+
+        // -----------------------------
+        // CUSTOMER PROFILE IMAGE PREVIEW
+        // -----------------------------
+
+        const profileInput = document.getElementById(
+            "{{ profile_form.image.id_for_label }}"
+        );
+
+        const profilePreview = document.getElementById(
+            "customer-profile-preview"
+        );
+
+        const profileInitial = document.getElementById(
+            "customer-profile-initial"
+        );
+
+        const selectedFile = document.getElementById(
+            "selected-profile-file"
+        );
+
+
+        if (
+            profileInput &&
+            profilePreview &&
+            profileInitial &&
+            selectedFile
+        ) {
+
+            profileInput.addEventListener(
+                "change",
+                function () {
+
+                    const file = this.files?.[0];
+
+                    if (!file) {
+                        return;
+                    }
+
+
+                    const allowedTypes = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp",
+                    ];
+
+
+                    // Validate file type
+                    if (!allowedTypes.includes(file.type)) {
+
+                        alert(
+                            "Please choose a JPG, PNG or WebP image."
+                        );
+
+                        this.value = "";
+
+                        return;
+                    }
+
+
+                    // Validate file size: 5MB maximum
+                    if (file.size > 5 * 1024 * 1024) {
+
+                        alert(
+                            "Profile picture must be smaller than 5MB."
+                        );
+
+                        this.value = "";
+
+                        return;
+                    }
+
+
+                    // Create temporary local preview
+                    const previewUrl =
+                        URL.createObjectURL(file);
+
+
+                    profilePreview.src = previewUrl;
+
+                    profilePreview.classList.remove(
+                        "hidden"
+                    );
+
+                    profileInitial.classList.add(
+                        "hidden"
+                    );
+
+
+                    // Display selected filename
+                    selectedFile.textContent =
+                        `Selected: ${file.name}`;
+
+                    selectedFile.classList.remove(
+                        "hidden"
+                    );
+
+                }
+            );
+        }
+
     });
 </script>
 

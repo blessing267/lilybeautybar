@@ -516,82 +516,119 @@
       const audio = document.getElementById("site-music");
       const button = document.getElementById("music-toggle");
 
-      if (!audio || !button) return;
+      if (audio && button) {
+        audio.volume = 0.25;
 
-      audio.volume = 0.25;
+        const updateButton = () => {
+          button.innerHTML = audio.paused
+            ? '<span>&#9654;&#65038;</span> Play music'
+            : '<span>&#10074;&#10074;</span> Pause music';
+        };
 
-      const updateButton = () => {
-        button.innerHTML = audio.paused
-          ? '<span>&#9654;&#65038;</span> Play music'
-          : '<span>&#10074;&#10074;</span> Pause music';
-      };
+        const saveMusicState = () => {
+          localStorage.setItem(
+            "lilyMusicTime",
+            String(audio.currentTime || 0)
+          );
 
-      const saveMusicState = () => {
-        localStorage.setItem(
-          "lilyMusicTime",
-          String(audio.currentTime || 0)
-        );
+          localStorage.setItem(
+            "lilyMusicPlaying",
+            audio.paused ? "false" : "true"
+          );
+        };
 
-        localStorage.setItem(
-          "lilyMusicPlaying",
-          audio.paused ? "false" : "true"
-        );
-      };
+        const restoreMusicPosition = () => {
+          const savedTime = Number(
+            localStorage.getItem("lilyMusicTime") || 0
+          );
 
-      const restoreMusicPosition = () => {
-        const savedTime = Number(
-          localStorage.getItem("lilyMusicTime") || 0
-        );
-
-        if (savedTime > 0 && Number.isFinite(savedTime)) {
-          audio.currentTime = savedTime;
-        }
-      };
-
-      // Restore music position when the audio is ready
-      if (audio.readyState >= 1) {
-        restoreMusicPosition();
-      } else {
-        audio.addEventListener(
-          "loadedmetadata",
-          restoreMusicPosition,
-          { once: true }
-        );
-      }
-
-      // Save music position while playing and before leaving page
-      audio.addEventListener("timeupdate", saveMusicState);
-      window.addEventListener("pagehide", saveMusicState);
-
-      // Play / Pause button
-      button.addEventListener("click", async () => {
-        if (audio.paused) {
-          try {
-            await audio.play();
-          } catch (error) {
-            console.log("Music could not play:", error);
+          if (savedTime > 0 && Number.isFinite(savedTime)) {
+            audio.currentTime = savedTime;
           }
+        };
+
+        if (audio.readyState >= 1) {
+          restoreMusicPosition();
         } else {
-          audio.pause();
+          audio.addEventListener(
+            "loadedmetadata",
+            restoreMusicPosition,
+            { once: true }
+          );
         }
 
-        saveMusicState();
-        updateButton();
-      });
+        // Save position before navigating to another page
+        window.addEventListener("pagehide", () => {
+          localStorage.setItem(
+            "lilyMusicTime",
+            String(audio.currentTime || 0)
+          );
+        });
 
-      // Try autoplay
-      if (
-        localStorage.getItem("lilyMusicPlaying") !== "false"
-      ) {
-        audio.play()
-          .then(() => {
-            saveMusicState();
-            updateButton();
-          })
-          .catch(() => {
-            updateButton();
-          });
-      } else {
+        // Music button
+        button.addEventListener("click", async (event) => {
+          event.stopPropagation();
+
+          if (audio.paused) {
+            try {
+              await audio.play();
+              localStorage.setItem("lilyMusicPlaying", "true");
+            } catch (error) {
+              console.log("Music could not play:", error);
+            }
+          } else {
+            audio.pause();
+            localStorage.setItem("lilyMusicPlaying", "false");
+          }
+
+          updateButton();
+        });
+
+        // Try to start automatically
+        const tryAutoplay = async () => {
+          if (
+            localStorage.getItem("lilyMusicPlaying") !== "false"
+          ) {
+            try {
+              await audio.play();
+              localStorage.setItem("lilyMusicPlaying", "true");
+            } catch (error) {
+              // Browser blocked autoplay.
+              // First user interaction will start it instead.
+            }
+          }
+
+          updateButton();
+        };
+
+        tryAutoplay();
+
+        // If autoplay was blocked, start after first interaction
+        const startAfterInteraction = async () => {
+          if (
+            audio.paused &&
+            localStorage.getItem("lilyMusicPlaying") !== "false"
+          ) {
+            try {
+              await audio.play();
+              localStorage.setItem("lilyMusicPlaying", "true");
+              updateButton();
+            } catch (error) {
+              // Keep manual Play Music button available
+            }
+          }
+
+          document.removeEventListener(
+            "click",
+            startAfterInteraction
+          );
+        };
+
+        document.addEventListener(
+          "click",
+          startAfterInteraction
+        );
+
         updateButton();
       }
     });

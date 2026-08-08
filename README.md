@@ -42,11 +42,12 @@ I developed the entire application.
 ---
 
 ## 📸 Screenshots  
-![Homepage](/static/img/Homepage.PNG)
-![Product Page](/static/img/shop.PNG)
-![Product Page](/static/img/lbb.jpeg)
-![Product Page](/static/img/Homepage.PNG)
-![Product Page](/static/img/shop.PNG)
+![Homepage](/static/img/lilybeautybar.PNG)
+![Shop Page](/static/img/shop.PNG)
+![product Detail Page](/static/img/detail.PNG)
+![Dashboard Page](/static/img/dashboard.jpeg)
+![cart Page](/static/img/cart.PNG)
+![Admin Product Page](/static/img/product.PNG)
 ---
 
 ## 📚 Learnings  
@@ -59,5 +60,5 @@ This project helped me strengthen my skills in:
 ---
 
 ## 🔗 Related Projects  
-- FarmMarket – MSc Dissertation Project: https://github.com/blessing267/repo.git  
-- AHU Student Portal – Group Project: https://github.com/Blessing1-dev/django-app.git
+- FarmMarket Web App: https://github.com/blessing267/repo.git  
+- AHU Web App: https://github.com/blessing267/django-app.git
