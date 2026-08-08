@@ -172,7 +172,7 @@ export default function Dashboard({ onLogout }) {
           <article className="min-w-0 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm md:p-6">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="font-bold text-slate-900">Sales Overview</h2>
+                <h2 className="font-bold text-slate-900">Sales Overview Chart</h2>
                 <p className="text-xs text-slate-400">Total sales</p>
               </div>
               <select
