@@ -557,6 +557,14 @@
           );
         }
 
+        // Keep the current music position saved
+        audio.addEventListener("timeupdate", () => {
+          localStorage.setItem(
+            "lilyMusicTime",
+            String(audio.currentTime || 0)
+          );
+        });
+
         // Save position before navigating to another page
         window.addEventListener("pagehide", () => {
           localStorage.setItem(

@@ -3283,10 +3283,6 @@
     font-size: var(--text-5xl);
     line-height: var(--tw-leading, var(--text-5xl--line-height));
   }
-  .text-7xl {
-    font-size: var(--text-7xl);
-    line-height: var(--tw-leading, var(--text-7xl--line-height));
-  }
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
@@ -3505,14 +3501,6 @@
   }
   .text-pink-200 {
     color: var(--color-pink-200);
-  }
-  .text-pink-200\/60 {
-    color: color-mix(in srgb, oklch(89.9% 0.061 343.231) 60%, transparent);
-  }
-  @supports (color: color-mix(in lab, red, red)) {
-    .text-pink-200\/60 {
-      color: color-mix(in oklab, var(--color-pink-200) 60%, transparent);
-    }
   }
   .text-pink-300 {
     color: var(--color-pink-300);
@@ -4210,6 +4198,12 @@
     .sm\:text-5xl {
       font-size: var(--text-5xl);
       line-height: var(--tw-leading, var(--text-5xl--line-height));
+    }
+  }
+  @media (width >= 40rem) {
+    .sm\:text-7xl {
+      font-size: var(--text-7xl);
+      line-height: var(--tw-leading, var(--text-7xl--line-height));
     }
   }
   @media (width >= 40rem) {
