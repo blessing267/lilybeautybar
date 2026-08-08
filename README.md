@@ -18,7 +18,8 @@ The project was designed with usability and maintainability in mind, providing c
 - **Frontend:** React, Vite, TailwindCSS
 - **API / Data Fetching:** REST APIs, Axios 
 - **Payments:** Paystack API 
-- **Database:** PostgreSQL   
+- **Database:** PostgreSQL  
+- **Media Storage:** Cloudinary 
 - **Deployment:** Render  
 - **Version Control:** Git & GitHub  
 
