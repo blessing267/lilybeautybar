@@ -1,7 +1,7 @@
 # 🌸 Lily Beauty Bar – E-Commerce Web App  
 
 
-**Live Demo:** https://lilybeautybar.onrender.com  
+**Live:** https://lilybeautybar.onrender.com  
 **GitHub Repo:** https://github.com/blessing267/lilybeautybar
 
 ---
@@ -10,6 +10,38 @@
 Lily Beauty Bar is a full-stack e-commerce web application designed for browsing and purchasing beauty products online.
 The application combines a Django backend with a responsive storefront and a custom React administration dashboard. It supports guest checkout, Paystack payment integration, and API-driven management.
 The project was designed with usability and maintainability in mind, providing customers with a mobile-friendly shopping experience while giving administrators a dedicated interface for managing the store.  
+
+---
+
+## 🛠️ Technologies Used  
+- **Backend:** Python, Django, Django REST Framework  
+- **Frontend:** React, Vite, TailwindCSS
+- **API / Data Fetching:** REST APIs, Axios 
+- **Payments:** Paystack API 
+- **Database:** PostgreSQL   
+- **Deployment:** Render  
+- **Version Control:** Git & GitHub  
+
+---
+
+## 📸 Screenshots 
+### 🏠 Homepage 
+![Homepage](/static/img/home.PNG)
+<br>
+### 🛍️ Shop Page
+(/static/img/shop.PNG)
+<br>
+### 🛒 Shopping Cart
+![cart Page](/static/img/cart.PNG)
+<br>
+### 📦 Admin Order Management
+![Admin Order Page](/static/img/order.PNG)
+<br>
+### 📊 Admin Dashboard
+![Admin Dashboard Page](/static/img/dashboard.png)
+<br>
+### 🛍️Admin Product Management
+![Admin Product Page](/static/img/product.PNG)
 
 ---
 
@@ -25,37 +57,7 @@ The project was designed with usability and maintainability in mind, providing c
 
 ---
 
-## 🛠️ Technologies Used  
-- **Backend:** Python, Django, Django REST Framework  
-- **Frontend:** React, Vite, TailwindCSS
-- **API / Data Fetching:** REST APIs, Axios 
-- **Payments:** Paystack API 
-- **Database:** PostgreSQL   
-- **Deployment:** Render  
-- **Version Control:** Git & GitHub  
-
----
-
-## 👩🏽‍💻 My Role  
-- Built the Django backend and REST API endpoints    
-- Developed a custom React admin dashboard
-- Implemented product, category, customer and order management  
-- Integrated paystack checkout for online payment processing
-- Built the public Django storefront and responsive UI
-- Deployed to Render for public access  
-
----
-
-## 📸 Screenshots  
-![Homepage](/static/img/home.PNG)
-![Shop Page](/static/img/shop.PNG)
-![cart Page](/static/img/cart.PNG)
-![Admin Order Page](/static/img/order.PNG)
-![Admin Dashboard Page](/static/img/dashboard.png)
-![Admin Product Page](/static/img/product.PNG)
-
----
-
 ## 🔗 Related Projects  
 - FarmMarket Web App: https://github.com/blessing267/repo.git  
 - AHU Web App: https://github.com/blessing267/django-app.git
+- Dessert Affairs: https://github.com/blessing267/dessert-affairs.git
