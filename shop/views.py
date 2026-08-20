@@ -29,6 +29,7 @@ import hmac
 import hashlib
 import json
 import uuid
+import requests
 
 # -------------------------------
 # Dashboard
@@ -1558,4 +1559,110 @@ def subcategories_api(request, pk=None):
         subcategory.delete()
         return Response(status=204)
 
+def newsletter_subscribe(request):
+    if request.method != "POST":
+        return redirect("home")
 
+    email = request.POST.get(
+        "email",
+        ""
+    ).strip().lower()
+
+    consent = request.POST.get(
+        "newsletter_consent"
+    )
+
+    if not email:
+        messages.error(
+            request,
+            "Please enter your email address."
+        )
+
+        return redirect(
+            request.META.get(
+                "HTTP_REFERER",
+                reverse("home")
+            )
+        )
+
+    if not consent:
+        messages.error(
+            request,
+            "Please confirm that you would like "
+            "to receive Lily Beauty Bar updates."
+        )
+
+        return redirect(
+            request.META.get(
+                "HTTP_REFERER",
+                reverse("home")
+            )
+        )
+
+    if not settings.BREVO_API_KEY:
+        messages.error(
+            request,
+            "Newsletter subscriptions are "
+            "temporarily unavailable."
+        )
+
+        return redirect(
+            request.META.get(
+                "HTTP_REFERER",
+                reverse("home")
+            )
+        )
+
+    url = "https://api.brevo.com/v3/contacts"
+
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "api-key": settings.BREVO_API_KEY,
+    }
+
+    payload = {
+        "email": email,
+        "listIds": [
+            settings.BREVO_LIST_ID
+        ],
+        "updateEnabled": True,
+    }
+
+    try:
+        response = requests.post(
+            url,
+            headers=headers,
+            json=payload,
+            timeout=10,
+        )
+
+        response.raise_for_status()
+
+    except requests.RequestException:
+        messages.error(
+            request,
+            "We couldn't complete your "
+            "subscription right now. "
+            "Please try again shortly."
+        )
+
+        return redirect(
+            request.META.get(
+                "HTTP_REFERER",
+                reverse("home")
+            )
+        )
+
+    messages.success(
+        request,
+        "Thank you for subscribing to "
+        "Lily Beauty Bar."
+    )
+
+    return redirect(
+        request.META.get(
+            "HTTP_REFERER",
+            reverse("home")
+        )
+    )

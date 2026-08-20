@@ -228,3 +228,15 @@ BUSINESS_WHATSAPP_NUMBER = os.getenv(
     "BUSINESS_WHATSAPP_NUMBER",
     ""
 )
+
+# Brevo newsletter
+BREVO_API_KEY = config(
+    "BREVO_API_KEY",
+    default=""
+)
+
+BREVO_LIST_ID = config(
+    "BREVO_LIST_ID",
+    default=2,
+    cast=int
+)

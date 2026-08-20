@@ -21,6 +21,7 @@ urlpatterns = [
     path('remove-from-cart/<str:cart_key>/', views.remove_from_cart, name='remove_from_cart'),
     path('update-cart/<str:cart_key>/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
+    path("newsletter/subscribe/", views.newsletter_subscribe, name="newsletter_subscribe",),
     
     # Dashboard (API)
     path("admin-orders/", admin_orders_api, name="admin_orders_api",),

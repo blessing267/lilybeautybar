@@ -411,14 +411,14 @@
       </div>
 
 
-      <form action="#" method="POST" class="flex w-full max-w-lg flex-col gap-3 sm:flex-row">
+      <form action="{% url 'newsletter_subscribe' %}" method="POST" class="flex w-full max-w-lg flex-col gap-3 sm:flex-row">
         {% csrf_token %}
 
         <label for="newsletter-email" class="sr-only">
           Email address
         </label>
 
-        <input id="newsletter-email" type="email" name="email" required placeholder="Enter your email" class="min-h-13 flex-1 rounded-lg border-0 bg-white
+        <input id="newsletter-email" type="email" name="email" required autocomplete="email" placeholder="Enter your email" class="min-h-13 flex-1 rounded-lg border-0 bg-white
                          px-5 py-4 text-gray-900 outline-none
                          placeholder:text-gray-400 focus:ring-4
                          focus:ring-pink-200">
@@ -517,6 +517,9 @@
       const button = document.getElementById("music-toggle");
 
       if (audio && button) {
+        const TIME_KEY = "lilyMusicTime";
+        const PLAYING_KEY = "lilyMusicPlaying";
+
         audio.volume = 0.25;
 
         const updateButton = () => {
@@ -525,116 +528,176 @@
             : '<span>&#10074;&#10074;</span> Pause music';
         };
 
-        const saveMusicState = () => {
-          localStorage.setItem(
-            "lilyMusicTime",
-            String(audio.currentTime || 0)
-          );
-
-          localStorage.setItem(
-            "lilyMusicPlaying",
-            audio.paused ? "false" : "true"
-          );
-        };
-
-        const restoreMusicPosition = () => {
-          const savedTime = Number(
-            localStorage.getItem("lilyMusicTime") || 0
-          );
-
-          if (savedTime > 0 && Number.isFinite(savedTime)) {
-            audio.currentTime = savedTime;
+        const savePosition = () => {
+          if (
+            Number.isFinite(audio.currentTime) &&
+            audio.currentTime > 0
+          ) {
+            localStorage.setItem(
+              TIME_KEY,
+              String(audio.currentTime)
+            );
           }
         };
 
+        const restorePosition = () => {
+          const savedTime = Number(
+            localStorage.getItem(TIME_KEY) || 0
+          );
+
+          if (
+            Number.isFinite(savedTime) &&
+            savedTime > 0
+          ) {
+            try {
+              audio.currentTime = savedTime;
+            } catch (error) {
+              console.log(
+                "Could not restore music position:",
+                error
+              );
+            }
+          }
+        };
+
+        const shouldBePlaying = () => {
+          return (
+            localStorage.getItem(PLAYING_KEY) ===
+            "true"
+          );
+        };
+
+        // Restore saved position once audio metadata exists
         if (audio.readyState >= 1) {
-          restoreMusicPosition();
+          restorePosition();
         } else {
           audio.addEventListener(
             "loadedmetadata",
-            restoreMusicPosition,
+            restorePosition,
             { once: true }
           );
         }
 
-        // Keep the current music position saved
-        audio.addEventListener("timeupdate", () => {
-          localStorage.setItem(
-            "lilyMusicTime",
-            String(audio.currentTime || 0)
-          );
-        });
+        // Save while playing
+        audio.addEventListener(
+          "timeupdate",
+          savePosition
+        );
 
-        // Save position before navigating to another page
-        window.addEventListener("pagehide", () => {
-          localStorage.setItem(
-            "lilyMusicTime",
-            String(audio.currentTime || 0)
-          );
-        });
+        // Save immediately before leaving the page
+        window.addEventListener(
+          "pagehide",
+          savePosition
+        );
 
-        // Music button
-        button.addEventListener("click", async (event) => {
-          event.stopPropagation();
+        window.addEventListener(
+          "beforeunload",
+          savePosition
+        );
 
-          if (audio.paused) {
-            try {
-              await audio.play();
-              localStorage.setItem("lilyMusicPlaying", "true");
-            } catch (error) {
-              console.log("Music could not play:", error);
+        // User-controlled Play / Pause
+        button.addEventListener(
+          "click",
+          async (event) => {
+            event.stopPropagation();
+
+            if (audio.paused) {
+              try {
+                await audio.play();
+
+                localStorage.setItem(
+                  PLAYING_KEY,
+                  "true"
+                );
+              } catch (error) {
+                console.log(
+                  "Music could not play:",
+                  error
+                );
+              }
+            } else {
+              audio.pause();
+
+              localStorage.setItem(
+                PLAYING_KEY,
+                "false"
+              );
             }
-          } else {
-            audio.pause();
-            localStorage.setItem("lilyMusicPlaying", "false");
+
+            savePosition();
+            updateButton();
+          }
+        );
+
+        // Desktop browsers may allow this immediately.
+        const resumeMusic = async () => {
+          if (!shouldBePlaying()) {
+            updateButton();
+            return;
           }
 
-          updateButton();
-        });
+          restorePosition();
 
-        // Try to start automatically
-        const tryAutoplay = async () => {
-          if (
-            localStorage.getItem("lilyMusicPlaying") !== "false"
-          ) {
-            try {
-              await audio.play();
-              localStorage.setItem("lilyMusicPlaying", "true");
-            } catch (error) {
-              // Browser blocked autoplay.
-              // First user interaction will start it instead.
-            }
+          try {
+            await audio.play();
+          } catch (error) {
+            // Mobile Safari/Chrome may require
+            // another real user interaction.
           }
 
           updateButton();
         };
 
-        tryAutoplay();
+        // Run after metadata is available
+        if (audio.readyState >= 1) {
+          resumeMusic();
+        } else {
+          audio.addEventListener(
+            "loadedmetadata",
+            resumeMusic,
+            { once: true }
+          );
+        }
 
-        // If autoplay was blocked, start after first interaction
-        const startAfterInteraction = async () => {
+        // Mobile fallback:
+        // after the next user interaction,
+        // resume from the saved position.
+        const resumeAfterInteraction = async () => {
           if (
-            audio.paused &&
-            localStorage.getItem("lilyMusicPlaying") !== "false"
+            shouldBePlaying() &&
+            audio.paused
           ) {
+            restorePosition();
+
             try {
               await audio.play();
-              localStorage.setItem("lilyMusicPlaying", "true");
               updateButton();
             } catch (error) {
-              // Keep manual Play Music button available
+              // Manual music button remains available.
             }
           }
 
           document.removeEventListener(
-            "click",
-            startAfterInteraction
+            "pointerdown",
+            resumeAfterInteraction
+          );
+
+          document.removeEventListener(
+            "touchstart",
+            resumeAfterInteraction
           );
         };
 
         document.addEventListener(
-          "click",
-          startAfterInteraction
+          "pointerdown",
+          resumeAfterInteraction,
+          { once: true }
+        );
+
+        document.addEventListener(
+          "touchstart",
+          resumeAfterInteraction,
+          { once: true }
         );
 
         updateButton();
