@@ -1,0 +1,49 @@
+name: Lily Beauty Bar CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-check:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # Step 2: Use the same Python version as production
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12.3"
+          cache: pip
+
+      # Step 3: Install Django/Python dependencies
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Set up Node
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # Step 5: Install frontend dependencies
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      # Step 6: Verify that the frontend builds
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build

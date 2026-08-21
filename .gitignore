@@ -21,4 +21,3 @@ media/
 .vscode/
 frontend/node_modules/
 users.json
-shop/migrations/
