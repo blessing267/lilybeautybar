@@ -1,9 +1,11 @@
 # Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *.sqlite3
 *.pyo
 *.pyd
+*.pyc
 
 # Virtual environment
 venv/
@@ -17,3 +19,6 @@ media/
 
 # VSCode
 .vscode/
+frontend/node_modules/
+users.json
+shop/migrations/

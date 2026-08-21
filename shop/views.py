@@ -1568,28 +1568,10 @@ def newsletter_subscribe(request):
         ""
     ).strip().lower()
 
-    consent = request.POST.get(
-        "newsletter_consent"
-    )
-
     if not email:
         messages.error(
             request,
             "Please enter your email address."
-        )
-
-        return redirect(
-            request.META.get(
-                "HTTP_REFERER",
-                reverse("home")
-            )
-        )
-
-    if not consent:
-        messages.error(
-            request,
-            "Please confirm that you would like "
-            "to receive Lily Beauty Bar updates."
         )
 
         return redirect(
