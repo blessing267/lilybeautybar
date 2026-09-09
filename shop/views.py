@@ -1271,7 +1271,7 @@ def success(request):
         Order Note:
         {note_text}
 
-        Delivery Information:
+        I understand that:
         • Orders within Edo State are delivered within 2–3 working days.
         • Orders outside Edo State are delivered within approximately 3–4 working days, depending on your location.
         
